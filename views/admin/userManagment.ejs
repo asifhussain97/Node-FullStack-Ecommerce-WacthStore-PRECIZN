@@ -1,0 +1,132 @@
+<%- include('../layouts/headeradmin.ejs') %>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <div class="p-0 d-flex justify-content-between container-fluid">
+                <h1 class="mt-4 mb-3">User Management</h1>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    Table
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Status</th>
+                                <th>Email</th>
+                                <th>Mobile Number</th>
+                                <th>Block</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Status</th>
+                                <th>Email</th>
+                                <th>Mobile Number</th>
+                                <th>Block</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <% user.forEach(users => { if(users.is_admin!=1){%>
+                                <tr>
+                                    <td>
+                                        <div class="ms-2 mt-2 d-flex align-items-center">
+                                                <%= users.name %>                                            
+                                        </div>     
+                                    </td>
+                                    <td>
+                                        <div class="d-flex mt-2 justify-content-center">
+                                        <% if( users.is_blocked==0) { %>
+                                            <div class="rounded-3 w-50 text-center bg-success text-white mx-2">Active</div>
+                                        <% } 
+                                        else { %>
+                                            <div class="rounded-3 w-50 text-center bg-danger text-white mx-2">Blocked</div>
+                                        <% } %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mt-2">
+                                            <%= users.email %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mt-2">
+                                            <%= users.mobile %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-row justify-content-center gap-1"> 
+                                            <a href="#!" onclick="Unlistandlist('<%= users._id %>', `<%=  users.is_blocked==0 ? 'unlist' : 'list' %>`)" type="button" class="p-2 btn <%= users.is_blocked==0 ? 'btn-danger' : 'btn-success' %>">
+                                                <span class="d-flex align-items-center material-symbols-outlined"><%= users.is_blocked==0 ? 'close' : 'publish' %></span>
+                                            </a>                              
+                                        </div>
+                                    </td>
+                                </tr>
+                            <%} }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        
+        function Unlistandlist(userId, action) {
+                let titleText, confirmText, successText, url;
+                
+                if (action === 'list') {
+                    titleText = "Are you sure?";
+                    confirmText = "Please confirm to unblock this user!";
+                    successText = "User has been unblocked";
+                    buttonText = "Yes!"
+                } else if (action === 'unlist') {
+                    titleText = "Are you sure?";
+                    confirmText = "Please confirm to block this user!";
+                    successText = "User has been blocked";
+                    buttonText = "Yes!"
+                }
+
+                Swal.fire({
+                    title: titleText,
+                    text: confirmText,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: buttonText,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Perform the listing or unlisting via AJAX/fetch to the server
+                        fetch(`/admin/block-unblock_user?id=${userId}`, {
+                            method: 'GET',
+                            // Add other necessary headers or configurations
+                        }).then(response => {
+                            if (response.ok) {
+                                // Success message
+                                Swal.fire({
+                                    title: "Success",
+                                    text: successText,
+                                    icon: "success",
+                                    timer: 2000,
+                                    timeProgressBar: true,
+                                    showConfirmButton: false,
+                                }).then(() => {
+                                    // Redirect after displaying the success message
+                                    window.location.reload(); // Redirect to a suitable page
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to perform the action", "error");
+                            }
+                        }).catch(error => {
+                            Swal.fire("Error!", "Failed to perform the action", "error");
+                        });
+                    }
+                });
+            }
+    </script>
+<%- include('../layouts/footeradmin.ejs') %>

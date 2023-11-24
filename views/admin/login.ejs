@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= locals.title %></title>
+  <meta name="description" content="<%= locals.description %>">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/mystyle.css">
+</head>
+<body >
+    <div class="main2 container d-flex flex-column justify-content-center rounded-5 ">
+        <div class="card-body2 d-flex flex-row  justify-content-around rounded-5 " > 
+            <div class="imagediv2">
+                  <div style="height: 427.735px; width: 21.633463541666668vw;" class=" overflow-hidden d-flex align-items-center custom-rounded-left rounded-left p-0">
+                      <img style="width: 100%; height: 100%;" src="/login2.jpg" />
+                  </div>
+           </div>
+           <div class="content2 text-center" >
+            <h1 class="head card-title text-center"><b>Admin Login</b></h1>
+                    <br>
+                    <div style="position: relative; width: 100%;" class="justify-content-center text-center">
+                        <% 
+                        if (typeof message !== 'undefined') {
+                        %>
+                        <p style="position: absolute; transform: translate(-50%, -50%); left: 50%; color: crimson; font-size: 14px; white-space: nowrap;"><%= message %></p>
+                        <%
+                        }
+                        %>
+                      </div>
+                      <br>
+                      <form action="/admin" method="post">
+                          <div class="mb-1 custom-form-field">
+                            <span class="inputs rounded-4 input-group-text">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <input type="email" class="rounded-4 border-0 ms-2 form-control" id='email' name="email" placeholder="Enter Email-id" >
+                            </span>
+                          </div>
+                          <br>
+                          <div class="mb-1 custom-form-field">
+                            <span class="inputs rounded-4 input-group-text">
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                                <input type="password" class="rounded-4 border-0 ms-2 form-control" id='password' name="password" placeholder="Enter Password" >
+                            </span>
+                            <div id="errorpassword" class="mt-0 ms-2 position-absolute custom-text text-danger">
+                            </div>
+                          </div>
+                          <br>
+                          <div style="height: 3rem;" class="text-center">
+                            <button type="submit" class="rounded-4  btn  btn-full-width btn-dark">Login</button>
+                          </div>
+                      </form>
+                      <p style="color: black;" class="mt-4">go to <a class="text-decoration-none" href="/login">User login</a></p>
+                  </div>
+              </div>
+              <!-- End Login Form -->
+          </div>
+      </div>
+  </div>
+
+
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html> 
+
+
+
+
+
