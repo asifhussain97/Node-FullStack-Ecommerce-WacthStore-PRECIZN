@@ -50,12 +50,14 @@ const insertUser = async (req, res, next) => {
     console.log(error.message);
   }
 };
+
 let otpdata;
 const loadOtp = async (req, res) => {
   const userData = req.session.userData;
   const email = userData.email;
   res.render("otp")
   otpdata=await message.sendVarifyMail(email, req);
+  req.session.otp = otpdata
 }
 
 
@@ -64,6 +66,7 @@ const verifyOtp = async (req,res)=>{
     const otp= req.body.otp
     const userData = req.session.userData;
     const mobile = userData.mobile;
+    console.log( req.session.otp,'made',otp);
     if(otpdata==otp){
       const secure_password = await securePassword(userData.password);
       const user = new User({

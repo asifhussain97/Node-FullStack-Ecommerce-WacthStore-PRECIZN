@@ -1,7 +1,10 @@
+require('dotenv').config(); // Load environment variables first
+
 const express = require("express");
 const session = require('express-session');
 const mongoose = require("mongoose");
-const config = require("./config/config");
+const config = require("./config/config"); // Now require other modules after loading dotenv
+
 mongoose.connect("mongodb://127.0.0.1:27017/e-commerce");
 
 const userRoute = require("./routes/userRoute");

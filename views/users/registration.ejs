@@ -124,7 +124,7 @@
     <script>
         function nameChaking(){
         let name=document.getElementById("name").value;
-        if (name === "") {
+        if (name.trim() === "") {
                 document.getElementById("errorname").innerHTML = "Please enter your name";
                 return false;
             } else if (/^[a-zA-Z ]+$/.test(name) == false) {
@@ -147,7 +147,7 @@
         }
         function numberChaking(){
         let num=document.getElementById("number").value;
-            if(/^\d{10}$/.test(num)==false){
+            if (/^[1-9]\d{9}$/.test(num) === false && /^(.)\1*$/.test(num)) {
                 document.getElementById("errornumber").innerHTML="please enter a valid number";
                 return false
             }else{

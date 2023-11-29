@@ -49,14 +49,6 @@
                             const otpInputs = otpForm.querySelectorAll('input[name="otp"]');
                             const resendLink = document.getElementById('resendLink');
                     
-                            // otpInputs.forEach((input, index) => {
-                            //     input.addEventListener('input', function () {
-                            //         if (input.value.length === 1 && index < otpInputs.length - 1) {
-                            //             otpInputs[index + 1].focus();
-                            //         }
-                            //     });
-                            // });
-                    
                             var storedCountdownValue = localStorage.getItem('countdownValue');
                             var countdownValue = storedCountdownValue ? parseInt(storedCountdownValue) : 30;
                     
@@ -70,7 +62,8 @@
                                 console.log('Resend OTP button clicked');
                                 resendLink.style.pointerEvents = 'none'; // Disable link
                                 resendLink.style.color = 'gray'; // Change link color
-                    
+                                // console.log(countdownInterval,"count");
+                                
                                 clearInterval(countdownInterval);
                                 countdownInterval = setInterval(function() {
                                     countdownValue--;
