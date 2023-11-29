@@ -70,10 +70,9 @@
                     
                                     if (countdownValue <= 0) {
                                         clearInterval(countdownInterval);
-                                        resendLink.style.pointerEvents = 'auto'; // Enable link when countdown ends
-                                        resendLink.style.color = 'blue'; // Restore original link color
-                                        $("#otp-expiry-time").text('');
-                                        countdownValue = 60;
+                                        resendLink.style.pointerEvents = 'auto';
+                                        resendLink.style.color = 'blue';
+                                        otpExpiryTime.textContent = '';
                                     } else {
                                         $("#otp-expiry-time").text('Resend in ' + countdownValue + ' seconds');
                                     }

@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer')
       const otp = generateOTP(4); 
    
       req.session.otp = otp;
+      req.session.otpGeneratedTime = Date.now();
       const transporter = nodemailer.createTransport({
   
         host: 'smtp.gmail.com',
@@ -23,9 +24,8 @@ const nodemailer = require('nodemailer')
         html: `<p>Hello , please enter this OTP: <strong>${otp}</strong> to verify your email.</p>`,
       };
        const information=await  transporter.sendMail( mailOptions);
-       console.log(information.messageId);
+       
        console.log( req.session.otp,"otpin")
-       return otp;
 
     } catch (error) {
       console.log(error);

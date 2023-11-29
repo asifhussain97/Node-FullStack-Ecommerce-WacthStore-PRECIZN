@@ -44,6 +44,9 @@ const insertUser = async (req, res, next) => {
       res.render('registration', { errorMessage: 'this user already exists' })
     } else {
       req.session.userData = newUser;
+      const email = req.session.userData.email;
+      req.session.registerOtpVerify = 1;
+      await message.sendVarifyMail(email, req);
       res.redirect('/verify')
     }
   } catch (error) {
@@ -51,13 +54,14 @@ const insertUser = async (req, res, next) => {
   }
 };
 
-let otpdata;
 const loadOtp = async (req, res) => {
-  const userData = req.session.userData;
-  const email = userData.email;
-  res.render("otp")
-  otpdata=await message.sendVarifyMail(email, req);
-  req.session.otp = otpdata
+  try{
+    const otpGeneratedTime = req.session.otpGeneratedTime;
+  
+    res.render("otp",{ otpGeneratedTime })
+  } catch(error){
+    console.log(error.message);
+  }
 }
 
 
@@ -65,9 +69,20 @@ const verifyOtp = async (req,res)=>{
   try{
     const otp= req.body.otp
     const userData = req.session.userData;
-    const mobile = userData.mobile;
     console.log( req.session.otp,'made',otp);
-    if(otpdata==otp){
+    const otpGeneratedTime = req.session.otpGeneratedTime;
+    const currentTime = Date.now();
+
+    console.log(otpGeneratedTime,'old time',currentTime);
+    
+    if (currentTime - otpGeneratedTime > 60 * 1000) {
+      res.render("otp", {
+        message: "OTP expired",
+        otpGeneratedTime,
+      });
+      return;
+    }
+    if(req.session.otp==otp){
       const secure_password = await securePassword(userData.password);
       const user = new User({
         name: userData.name,
@@ -93,15 +108,13 @@ const verifyOtp = async (req,res)=>{
 const resendOtp = async (req, res) => {
   const userData = req.session.userData;
   const email = userData.email;
-  res.render("otp")
+  res.redirect('/verify')
   await message.sendVarifyMail(email, req);
 }
 
 // login user method
 const loginLoad = async (req, res) => {
   try {
-    console.log( req.session.otp,"otpout")
-
     res.render("login");
   } catch (error) {
     console.log(error.message);
