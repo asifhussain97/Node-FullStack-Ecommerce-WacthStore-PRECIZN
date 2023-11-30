@@ -116,6 +116,6 @@ body{
     height: 707px;
     display: grid;
     place-items: center; 
-    background: linear-gradient(45deg,black,#535353);   
+    background: white 
 }
 
