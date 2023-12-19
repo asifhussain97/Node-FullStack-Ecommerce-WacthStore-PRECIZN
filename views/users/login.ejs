@@ -29,6 +29,20 @@
                         <%
                         }
                         %>
+                        <% if (typeof successmessage !== 'undefined') { %>
+                          <p id="successMessage" style="position: absolute; transform: translate(-50%, -50%); left: 50%; color: rgb(20, 220, 20); font-size: 14px; white-space: nowrap;"><%= successmessage %></p>
+                      <% } %>
+                      
+                      <script>
+                          // Check if the success message exists
+                          const successMessage = document.getElementById('successMessage');
+                          if (successMessage) {
+                              // After 1.5 seconds, hide the success message
+                              setTimeout(function() {
+                                  successMessage.style.display = 'none';
+                              }, 1900);
+                          }
+                      </script>
                       </div>
                       <br>
                       <form action="/login" method="post">

@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Product = require("../models/product")
 const Category = require("../models/category")
+const Cart=require('../models/cartModel')
 const path=require("path")
 const sharp=require("sharp")
 
@@ -225,11 +226,27 @@ const deleteAndaddProduct = async (req, res) => {
 
 const product_details = async (req, res) => {
     try {
-  
-      const userData = await User.findById({ _id: req.session.user_id });
-      const id = req.query.id;
-      const productData= await Product.findById({_id: id}); 
-      res.render("product-details", { user: userData, products:productData  });
+      if(!req.session.user_id){
+        const id = req.query.id;
+        const productData= await Product.findById({_id: id}); 
+        res.render("product-details", { user: null,products:productData  });
+      }  
+      else{
+        const userData = await User.findById({ _id: req.session.user_id });
+        const userId = req.session.user_id;
+        const id = req.query.id;
+        const productData= await Product.findById({_id: id}); 
+
+        let existingCart=false;
+        let existingCartItem=false;
+        existingCart = await Cart.findOne({ user: userId }).populate("items.product");
+
+        if (existingCart) {
+          existingCartItem = existingCart.items.find((item) => item.product._id.toString() === id);
+        }  
+
+        res.render("product-details", { user: userData, products:productData,existingCartItem  });
+      }    
     } catch (error) {
       console.log(error.message);
     }

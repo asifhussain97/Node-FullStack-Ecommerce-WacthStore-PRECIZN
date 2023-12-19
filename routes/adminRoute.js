@@ -8,6 +8,8 @@ const categoryController = require("../controllers/categoryController");
 const productController = require("../controllers/productController");
 const auth = require("../middleware/adminAuth");
 const multer = require("../middleware/multer");
+const orderController=require('../controllers/oderControlleradmin')
+
 // admin_route.use(express.json());
 // admin_route.use(express.urlencoded({ extended: true }));
 
@@ -40,12 +42,18 @@ admin_route.post("/edit-product",multer.uploadProduct.array("image"), productCon
 admin_route.get("/delete-add_product", productController.deleteAndaddProduct);
 
 
-
 admin_route.get("/userManage", auth.isLogin, adminController.loadUsermanage);
 admin_route.get("/block-unblock_user", adminController.blockAndunblockUser);
 
 admin_route.get("/logout", auth.isLogin, adminController.logout);
 admin_route.get("/dashboard", auth.isLogin, adminController.adminDashboard);
+
+
+// All ORDERS
+admin_route.get("/alluserorders", auth.isLogin, orderController.listUserOrders);
+admin_route.get("/orderDetails", auth.isLogin, orderController.listOrderDetails);
+admin_route.post("/orderStatusChange", auth.isLogin, orderController.orderStatusChange);
+admin_route.get("/salesReport", auth.isLogin, orderController.loadSalesReport);
 
 admin_route.get("*", (req, res) => {
   res.redirect("/admin");

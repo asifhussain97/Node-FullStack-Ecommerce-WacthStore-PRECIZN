@@ -1,0 +1,1103 @@
+<%- include('../layouts/headeruser.ejs') %>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .main {
+            flex-grow: 1;
+        }
+
+        .footer {
+            background-color: #000000;
+            color: #ffc800;
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .nav-item .nav-link.active {
+            background-color: rgb(189, 189, 189);
+            /* Change this to the desired color */
+            /* You can add other styling properties as needed */
+        }
+    </style>
+    <main class="main">
+        <section style="padding-top: 200px; padding-bottom: 300px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 m-auto">
+                        <div class="row">
+                            <div class="col-md-4  px-0">
+                                <div class="dashboard-menu card">
+                                    <ul class="nav flex-column " role="tablist">
+                                        <li class="nav-item ">
+                                            <a class="nav-link navaction text-dark  rounded-top" id="dashboard-tab"
+                                                data-bs-toggle="tab" href="#dashboard" role="tab"
+                                                aria-controls="dashboard" aria-selected="false"><i
+                                                    class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+                                        </li>
+                                        <!-- <li class="nav-item">
+                                            <a class="nav-link navaction text-dark" id="orders-tab" data-bs-toggle="tab"
+                                                href="#orders" role="tab" aria-controls="orders"
+                                                aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link navaction text-dark" id="track-orders-tab"
+                                                data-bs-toggle="tab" href="#track-orders" role="tab"
+                                                aria-controls="track-orders" aria-selected="false"><i
+                                                    class="fi-rs-shopping-cart-check mr-10"></i>Track
+                                                Your Order</a>
+                                        </li> -->
+                                        <li class="nav-item">
+                                            <a class="nav-link navaction text-dark" id="address-tab"
+                                                data-bs-toggle="tab" href="#address" role="tab" aria-controls="address"
+                                                aria-selected="true"><i class="fi-rs-marker mr-10"></i>My
+                                                Address</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link navaction text-dark rounded-bottom"
+                                                id="account-detail-tab" data-bs-toggle="tab" href="#account-detail"
+                                                role="tab" aria-controls="account-detail" aria-selected="true"><i
+                                                    class="fi-rs-user mr-10"></i>Account
+                                                details</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="tab-content dashboard-content">
+                                    <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
+                                        aria-labelledby="dashboard-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Hello&nbsp;<%= user.name %>
+                                                </h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>From your account dashboard. you
+                                                    can easily check &amp; view your
+                                                    recent orders,
+                                                    manage your shipping
+                                                        and billing addresses
+                                                    and edit your
+                                                        password and account
+                                                        details.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Your Orders</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Order</th>
+                                                                <th>Date</th>
+                                                                <th>Status</th>
+                                                                <th>Total</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>#1357</td>
+                                                                <td>March 45, 2020</td>
+                                                                <td>Processing</td>
+                                                                <td>$125.00 for 2
+                                                                    item</td>
+                                                                <td><a href="#" class="btn-small d-block">View</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>#2468</td>
+                                                                <td>June 29, 2020</td>
+                                                                <td>Completed</td>
+                                                                <td>$364.00 for 5
+                                                                    item</td>
+                                                                <td><a href="#" class="btn-small d-block">View</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>#2366</td>
+                                                                <td>August 02, 2020</td>
+                                                                <td>Completed</td>
+                                                                <td>$280.00 for 3
+                                                                    item</td>
+                                                                <td><a href="#" class="btn-small d-block">View</a></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
+                                        aria-labelledby="track-orders-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Orders tracking</h5>
+                                            </div>
+                                            <div class="card-body contact-from-area">
+                                                <p>To track your order please enter
+                                                    your OrderID in the box below
+                                                    and press "Track" button. This
+                                                    was given to you on your receipt
+                                                    and in the confirmation email
+                                                    you should have received.</p>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <form class="contact-form-style mt-30 mb-50" action="#"
+                                                            method="post">
+                                                            <div class="input-style mb-20">
+                                                                <label>Order ID</label>
+                                                                <input name="order-id"
+                                                                    placeholder="Found in your order confirmation email"
+                                                                    type="text" class="square">
+                                                            </div>
+                                                            <div class="input-style mb-20">
+                                                                <label>Billing email</label>
+                                                                <input name="billing-email"
+                                                                    placeholder="Email you used during checkout"
+                                                                    type="email" class="square">
+                                                            </div>
+                                                            <button class="submit submit-auto-width"
+                                                                type="submit">Track</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="address" role="tabpanel"
+                                        aria-labelledby="address-tab">
+                                        <div class="row d-flex">
+                                            <div class="col-lg-12">
+                                                <!-- Button trigger modal to add address-->
+                                                <button type="button" class="btn btn-primary mb-2" data-toggle="modal"
+                                                    id="addAddressBtn" data-target="#addAddressModal">
+                                                    Add New Address
+                                                </button>
+                                                <% if (address) { address.forEach(x=> {
+                                                    console.log(user._id,'user ',x.user,'address')
+                                                    if(x.is_listed && String(user._id) === String(x.user)){%>
+                                                    <div class="mb-3">
+                                                        <div class="card mb-3 mb-lg-0">
+                                                            <div class="card-header">
+                                                                <h5 class="mb-0"> Address</h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <address>
+                                                                    <%= x.houseName %><br>
+                                                                        <%= x.street %>,<%= x.city %>, <%= x.state %>
+                                                                                    <br>
+                                                                                    <%= x.pincode %>
+                                                                </address>
+                                                                <p>
+                                                                    <%= x.country %>
+                                                                </p>
+                                                                <!-- <a href="/editAddress/?id=<%= x._id %>" class="btn btn-secondary">Edit</a> -->
+                                                                <button type="button"
+                                                                    class="btn btn-secondary edit-address"
+                                                                    data-id="<%= x._id %>">Edit</button>
+
+                                                                <input type="hidden" name="address_id"
+                                                                    value="<%= x._id %>">
+                                                                <!-- <a class="mx-5" href="/deleteAddress/?id=<%= x._id %>"><button type="button" class="btn btn-danger">DELETE</button></a> -->
+                                                                <button type="button"
+                                                                    class="btn btn-danger delete-address"
+                                                                    data-id="<%= x._id %>">DELETE</button>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } }) } else { %>
+                                                        <p>No address available.</p>
+                                                        <% } %>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal to add address -->
+                                    <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="addAddressModalLabel">Add New Address
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="addressForm">
+                                                        <div class="mb-3">
+                                                            <label for="houseName" class="form-label">House Name</label>
+                                                            <input type="text" class="form-control" id="houseName"
+                                                                name="houseName" required>
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="houseNameError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="street" class="form-label">Street</label>
+                                                            <input type="text" class="form-control" id="street"
+                                                                name="street" required>
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="streetError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="city" class="form-label">City</label>
+                                                            <input type="text" class="form-control" id="city"
+                                                                name="city" required>
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="cityError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="state" class="form-label">State</label>
+                                                            <input type="text" class="form-control" id="state"
+                                                                name="state" required>
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="stateError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="pincode" class="form-label">Pincode</label>
+                                                            <input type="text" class="form-control" id="pincode"
+                                                                name="pincode" required>
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="pincodeError"></p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                id="saveAddressBtn">Save Address</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal for Editing Address -->
+                                    <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="editAddressForm">
+                                                        <div class="mb-3">
+                                                            <label for="editHouseName" class="form-label">House
+                                                                Name</label>
+                                                            <input type="text" class="form-control" id="editHouseName"
+                                                                name="editHouseName">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editHouseNameError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editStreet" class="form-label">Street</label>
+                                                            <input type="text" class="form-control" id="editStreet"
+                                                                name="editStreet">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editStreetError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editCity" class="form-label">City</label>
+                                                            <input type="text" class="form-control" id="editCity"
+                                                                name="editCity">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editCityError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editState" class="form-label">State</label>
+                                                            <input type="text" class="form-control" id="editState"
+                                                                name="editState">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editStateError"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editPincode" class="form-label">Pincode</label>
+                                                            <input type="text" class="form-control" id="editPincode"
+                                                                name="editPincode">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editPincodeError"></p>
+                                                        </div>
+                                                        <input type="hidden" id="editAddressId" name="editAddressId">
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="saveEditedAddress()">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal for Editing User Details -->
+                                    <div class="modal fade" id="editUserDetailsModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="editUserDetailsModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editUserDetailsModalLabel">Edit User
+                                                        Details</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="editUserDetailsForm">
+                                                        <div class="mb-3">
+                                                            <label for="editName" class="form-label">Name</label>
+                                                            <input type="text" class="form-control" id="editName"
+                                                                name="editName">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editNameError"></p> <!-- Error message for name -->
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editEmail" class="form-label">Email
+                                                                Address</label>
+                                                            <input type="email" class="form-control" id="editEmail"
+                                                                name="editEmail" disabled>
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editEmailError"></p>
+                                                            <!-- Error message for email -->
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="editMobile" class="form-label">Mobile
+                                                                Number</label>
+                                                            <input type="text" class="form-control" id="editMobile"
+                                                                name="editMobile">
+                                                            <p style="font-size: 13px;" class="error-message"
+                                                                id="editMobileError"></p>
+                                                            <!-- Error message for mobile -->
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="saveEditedUserDetails()">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal to change password -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                        <p style="font-size: 13px;" class="error-message" id="currentPasswordError"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        <p style="font-size: 13px;" class="error-message" id="newPasswordError"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        <p style="font-size: 13px;" class="error-message" id="confirmPasswordError"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+                                    <div class="tab-pane fade" id="account-detail" role="tabpanel"
+                                        aria-labelledby="account-detail-tab">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Account Details</h5>
+                                            </div>
+                                            <div class="card-body"
+                                                style="display: flex; justify-content: space-between;">
+                                                <div class="col-lg-8">
+                                                    <ul>
+                                                        <li>
+                                                            <strong>Name <span class="required"></span></strong>: <%=
+                                                                user.name %>
+                                                        </li>
+                                                        <li>
+                                                            <strong>Email Address <span
+                                                                    class="required"></span></strong>: <%= user.email %>
+                                                        </li>
+                                                        <li>
+                                                            <strong>Mobile Number<span
+                                                                    class="required"></span></strong>: <%= user.mobile
+                                                                %>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <button type="button"
+                                                        class="btn btn-secondary editUserDetailsButton">EDIT</button>
+                                                    <!-- <a href="/changePassword"><button type="button"
+                                                            class="btn btn-secondary mt-3">Change Password</button></a> -->
+                                                    
+                                                            <button type="button" class="btn btn-secondary mt-3" data-toggle="modal"
+                                                    id="changepasswordbtn" data-target="#changepasswordmodal">
+                                                    Change Password
+                                                </button>
+                                                </div>
+                                            </div>
+                                            <!-- Image upload form section -->
+                                            <div class="row ms-3 mt-4">
+                                                <div class="col-lg-6">
+                                                    <form enctype="multipart/form-data" id="imageForm">
+                                                        <div class="input-upload mb-3">
+                                                            <% if (user.image) { %>
+                                                                <img src="/assets/img/profilepic/<%= user.image %>"
+                                                                    alt="" id="imgView1" style="width: 300px;">
+                                                                <% } else { %>
+                                                                    <img src="/uploadimage.svg" alt="" id="imgView1"
+                                                                        style="width: 300px;">
+                                                                    <% } %>
+                                                                        <input style="display: none;" class="form-data"
+                                                                            type="file" name="image" id="input1"
+                                                                            accept="image/png, image/jpeg, image/jpg">
+                                                                        <label for="input1"
+                                                                            class="btn btn-primary rounded font-md"
+                                                                            style="cursor: pointer; margin-top: 10px;">
+                                                                            <i class="fa-solid fa-upload"></i> Upload
+                                                                            Image
+                                                                        </label>
+                                                        </div>
+                                                        <div class="image-cropper mb-3"
+                                                            style="display:none; width: 300px;">
+                                                            <img src="" id="croppedImg1" alt="">
+                                                            <button type="button" id="saveButton1"
+                                                                class="btn btn-primary">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.js"></script>    \
+    <script>
+        document.getElementById('input1').addEventListener('change', function (event) {
+            let input = event.target;
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                let dataURL = reader.result;
+                let image = document.getElementById('imgView1');
+                image.src = dataURL;
+
+                // Initialize Cropper.js on the image
+                let cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    guides: true,
+                    background: false,
+                    autoCropArea: 1,
+                    zoomable: true
+                });
+
+                // Show the image cropper container
+                let cropperContainer = document.querySelector('.image-cropper');
+                cropperContainer.style.display = 'block';
+
+                // Update the cropped image when the "Save" button is clicked
+                let saveButton = document.getElementById('saveButton1');
+                saveButton.addEventListener('click', function () {
+                    // Get the cropped canvas data
+                    const canvas = cropper.getCroppedCanvas();
+
+                    if (!canvas) {
+                        return;
+                    }
+
+                    // Convert the canvas to a Blob (in this case, to a JPEG file with quality 1.0)
+                    canvas.toBlob(blob => {
+                        const formData = new FormData();
+                        formData.append('croppedImage', blob, 'cropped-image.jpg');
+
+                        // Append any other necessary data to the form (if needed)
+                        // formData.append('otherField', otherValue);
+
+                        // Submit the form data to the backend using Fetch API or XMLHttpRequest
+                        fetch('/updateProfile', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    console.log('Cropped image submitted successfully!');
+                                    window.location.reload();
+                                } else {
+                                    console.error('Failed to submit cropped image.');
+                                    // Optionally, handle failed submission
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error submitting cropped image:', error);
+                            });
+                    }, 'image/jpeg'); // Set the desired image format here
+                });
+            };
+            reader.readAsDataURL(input.files[0]);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.navaction');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (e) {
+                    const activeTab = e.target.getAttribute('href').substr(1);
+                    localStorage.setItem('activeTab', activeTab);
+                });
+            });
+
+            // Retrieve the active tab from local storage and set it as active after reload
+            const activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                // Remove 'active' class from all tabs and tab content elements
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                const tabContents = document.querySelectorAll('.tab-pane');
+                tabContents.forEach(content => {
+                    content.classList.remove('active', 'show');
+                });
+
+                const tab = document.querySelector(`.navaction[href="#${activeTab}"]`);
+                if (tab) {
+                    tab.classList.add('active');
+                    const tabContent = document.getElementById(activeTab);
+                    if (tabContent) {
+                        tabContent.classList.add('active', 'show');
+                    }
+                }
+            }
+        });
+
+
+// Get the button element
+const changePasswordBtn = document.getElementById('changepasswordbtn');
+
+// Add an event listener to the button
+changePasswordBtn.addEventListener('click', function () {
+    // Create a new Bootstrap modal instance
+    const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+
+    // Show the modal
+    modal.show();
+});
+$('#changePasswordBtn').on('click', function () {
+    let isValid = true; // Flag to track validation
+
+    // Get input values
+    const currentPassword = $('#currentPassword').val().trim();
+    const newPassword = $('#newPassword').val().trim();
+    const confirmPassword = $('#confirmPassword').val().trim();
+
+    // Check each field for validation
+    if(currentPassword==''){
+        $('#currentPasswordError').text('Please enter the Old password').css('color', 'red');
+                isValid = false; // Set flag to false
+    } 
+    else {
+                $('#currentPasswordError').text('');
+    }
+    if(newPassword==''){
+        $('#newPasswordError').text('Enter the New password').css('color', 'red');
+                isValid = false; // Set flag to false
+    } 
+    else if(newPassword.length <8){
+        $('#newPasswordError').text('enter minimum of 8 characters').css('color', 'red');
+                isValid = false; // Set flag to false
+    }
+    else {
+                $('#newPasswordError').text('');
+    }
+    if(confirmPassword==''){
+        $('#confirmPasswordError').text(' New password').css('color', 'red');
+                isValid = false; // Set flag to false
+    } 
+    else if(newPassword.length <8){
+        $('#confirmPasswordError').text('enter minimum of 8 characters').css('color', 'red');
+                isValid = false; // Set flag to false
+    }
+    else {
+                $('#confirmPasswordError').text('');
+    }
+    if (!isValid) {
+        return;
+    }
+
+    // Prepare the form data
+    const formData = $('#changePasswordForm').serialize();
+
+    // Make an AJAX POST request to change password
+    $.ajax({
+        url: '/changePassword',
+        method: 'POST',
+        data: formData,
+        success: function (data) {
+            if (data.success) {
+                // If success, show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Password Changed!',
+                    text: data.message // Use the message received from the backend
+                }).then((result) => {
+                    if (result.isConfirmed || result.isDismissed) {
+                        // Close the modal if SweetAlert is confirmed or dismissed
+                        $('#changePasswordModal').modal('hide');
+                        window.location.reload(); // Reload the page or redirect to another page if needed
+                    }
+                });
+            } else {
+                // Handle other scenarios if needed
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.message // Use the error message received from the backend
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            // Handle AJAX errors
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Something went wrong. Please try again.' // Generic error message
+            });
+        }
+    });
+});
+
+        const addAddressBtn = document.getElementById('addAddressBtn');
+        addAddressBtn.addEventListener('click', function () {
+            const modal = new bootstrap.Modal(document.getElementById('addAddressModal'));
+            modal.show();
+        });
+
+        $('#saveAddressBtn').on('click', function () {
+            let isValid = true; // Flag to track validation
+
+            // Get input values
+            const houseName = $('#houseName').val().trim();
+            const street = $('#street').val().trim();
+            const city = $('#city').val().trim();
+            const state = $('#state').val().trim();
+            const pincode = $('#pincode').val().trim();
+
+            // Check each field
+            if (!(houseName.trim().length >= 2 && /^[a-zA-Z]/.test(houseName.trim()))) {
+                $('#houseNameError').text('Please enter the house name.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#houseNameError').text('');
+            }
+
+            if (!(street.trim().length >= 2 && /^[a-zA-Z]/.test(street.trim()))) {
+                $('#streetError').text('Please enter your correct street.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#streetError').text('');
+            }
+
+            if (!(city.trim().length >= 2 && /^[a-zA-Z]/.test(city.trim()))) {
+                $('#cityError').text('Please enter your correct city.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#cityError').text('');
+            }
+
+            if (!(state.trim().length >= 2 && /^[a-zA-Z]/.test(state.trim()))) {
+                $('#stateError').text('Please enter your correct state.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#stateError').text('');
+            }
+
+            if (isNaN(pincode) || pincode.trim().length < 5 || parseFloat(pincode) < 500) {
+                $('#pincodeError').text('Please enter your correct pincode.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#pincodeError').text('');
+            }
+
+            // If any field is empty, prevent form submission
+            if (!isValid) {
+                return;
+            }
+            // Get the form data
+            const formData = $('#addressForm').serialize();
+
+            // Make an AJAX POST request
+            $.ajax({
+                url: '/addressadd',
+                method: 'POST',
+                data: formData,
+                success: function (data) {
+                    if (data.success) {
+                        // If success, show SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message // Use the message received from the backend
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Close the modal if SweetAlert is confirmed or dismissed
+                                $('#addAddressModal').modal('hide');
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        // Handle other scenarios if needed
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message // Use the error message received from the backend
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Something went wrong. Please try again.' // Generic error message
+                    });
+                }
+            });
+        });
+        // JavaScript using AJAX to fetch and populate data in the modal
+        document.addEventListener('DOMContentLoaded', function () {
+            const editButtons = document.querySelectorAll('.edit-address'); // Update selector to target the edit buttons
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const addressId = button.getAttribute('data-id'); // Get the address ID from data-id attribute
+
+                    // Make an AJAX GET request to fetch address details
+                    $.ajax({
+                        url: `/fetchAddress?id=${addressId}`, // Replace with your endpoint to fetch address details
+                        method: 'GET',
+                        success: function (data) {
+                            // Populate the form fields with fetched data
+                            $('#editHouseName').val(data.houseName);
+                            $('#editStreet').val(data.street);
+                            $('#editCity').val(data.city);
+                            $('#editState').val(data.state);
+                            $('#editPincode').val(data.pincode);
+                            // Set the address ID in the hidden field
+                            $('#editAddressId').val(data._id);
+
+                            // Show the modal
+                            $('#editAddressModal').modal('show');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error:', error);
+                            // Handle error if fetching data fails
+                        }
+                    });
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-address');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const addressId = button.getAttribute('data-id');
+
+                    // Show a confirmation dialog before deleting
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to delete this address.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'No, cancel!',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // If confirmed, make an AJAX DELETE request to delete the address
+                            $.ajax({
+                                url: `/deleteAddress?id=${addressId}`, // Replace with your endpoint to delete the address
+                                method: 'DELETE',
+                                success: function (response) {
+                                    // Handle success and failure of deletion process
+                                    if (response.success) {
+                                        // Show SweetAlert success message
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success!',
+                                            text: response.message,
+                                            showConfirmButton: false, // Hide the confirm button
+                                            timer: 2500, // Set the timer for 1.5 seconds
+                                            timerProgressBar: true,
+                                        }).then(() => {
+                                            // Reload the window after the user clicks "OK" in the SweetAlert
+                                            window.location.reload();
+                                        });
+                                        // You might want to update the UI or perform other actions after deletion
+                                    } else {
+                                        // Show SweetAlert error message
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: 'Deletion failed!',
+                                        });
+                                        // Additional actions if the deletion fails
+                                    }
+                                },
+                                error: function (error) {
+                                    // Handle error response
+                                    console.error('Error deleting address:', error);
+                                },
+                            });
+                        } else {
+                            // If canceled, show a message or perform other actions
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Canceled',
+                                text: 'Deletion process canceled.',
+                            });
+                            // Additional actions if the user cancels deletion
+                        }
+                    });
+                });
+            });
+        });
+
+        // Function to save edited address (you'll need to implement this)
+        function saveEditedAddress() {
+            let isValid = true; // Flag to track validation
+
+            // Get input values
+            const editHouseName = $('#editHouseName').val().trim();
+            const editStreet = $('#editStreet').val().trim();
+            const editCity = $('#editCity').val().trim();
+            const editState = $('#editState').val().trim();
+            const editPincode = $('#editPincode').val().trim();
+
+            // Check each field
+            if (!(editHouseName.trim().length >= 2 && /^[a-zA-Z]/.test(editHouseName.trim()))) {
+                $('#editHouseNameError').text('Please enter the house name.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#editHouseNameError').text('');
+            }
+
+            if (!(editStreet.trim().length >= 2 && /^[a-zA-Z]/.test(editStreet.trim()))) {
+                $('#editStreetError').text('Please enter your correct valid street.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#editStreetError').text('');
+            }
+
+            if (!(editCity.trim().length >= 2 && /^[a-zA-Z]/.test(editCity.trim()))) {
+                $('#editCityError').text('Please enter your correct valid city.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#editCityError').text('');
+            }
+
+            if (!(editState.trim().length >= 2 && /^[a-zA-Z]/.test(editState.trim()))) {
+                $('#editStateError').text('Please enter your correct state.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#editStateError').text('');
+            }
+
+            if (isNaN(editPincode) || editPincode.trim().length < 5 || parseFloat(editPincode) < 1) {
+                $('#editPincodeError').text('Please enter your correct pincode.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#editPincodeError').text('');
+            }
+
+            // If any field is invalid, prevent form submission
+            if (!isValid) {
+                return;
+            }
+
+            // Get the form data
+            const formData = $('#editAddressForm').serialize();
+
+            // Make an AJAX put request
+            $.ajax({
+                url: '/addressedit',
+                method: 'PUT',
+                data: formData,
+                success: function (data) {
+                    if (data.success) {
+                        // If success, show SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message // Use the message received from the backend
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Close the modal if SweetAlert is confirmed or dismissed
+                                $('#editAddressModal').modal('hide');
+                                window.location.reload(); // Redirect to a suitable page
+                            }
+                        });
+                    } else {
+                        // Handle other scenarios if needed
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message // Use the error message received from the backend
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Something went wrong. Please try again.' // Generic error message
+                    });
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select the element that triggers the modal
+            const editButton = document.querySelector('.editUserDetailsButton');
+
+            // Event listener for clicking the edit button
+            editButton.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // Make an AJAX GET request to fetch user details
+                $.ajax({
+                    url: '/fetchUserDetails', // Replace with your endpoint to fetch user details
+                    method: 'GET',
+                    success: function (data) {
+                        // Populate the form fields with fetched data
+                        $('#editName').val(data.name);
+                        $('#editEmail').val(data.email);
+                        $('#editMobile').val(data.mobile);
+
+                        // Show the modal
+                        $('#editUserDetailsModal').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        // Handle error if fetching data fails
+                    }
+                });
+            });
+        });
+
+        function saveEditedUserDetails() {
+            let isValid = true; // Flag to track validation
+
+            // Get input values
+            const editName = $('#editName').val().trim();
+            const editEmail = $('#editEmail').val().trim();
+            const editMobile = $('#editMobile').val().trim();
+
+            // Check each field for validation
+            if (!(editName.trim().length >= 2 && /^[a-zA-Z]/.test(editName.trim()))) {
+                $('#editNameError').text('Please enter your name.').css('color', 'red');
+                isValid = false;
+            } else {
+                $('#editNameError').text('');
+            }
+
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(editEmail) == false) {
+                $('#editEmailError').text('Please enter a valid email address.').css('color', 'red');
+                isValid = false;
+            } else {
+                $('#editEmailError').text('');
+            }
+
+            if (/^[1-9]\d{9}$/.test(editMobile) === false && /^(.)\1*$/.test(editMobile)) {
+                $('#editMobileError').text('Please enter a valid 10-digit mobile number.').css('color', 'red');
+                isValid = false;
+            } else {
+                $('#editMobileError').text('');
+            }
+
+            // If any field is invalid, prevent form submission
+            if (!isValid) {
+                return;
+            }
+
+            // Get the form data
+            const formData = $('#editUserDetailsForm').serialize();
+
+            // Make an AJAX POST request to update user details
+            $.ajax({
+                url: '/updateUserDetails', // Replace with your endpoint to update user details
+                method: 'PUT',
+                data: formData,
+                success: function (data) {
+                    if (data.success) {
+                        // If success, show SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message // Use the message received from the backend
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Close the modal if SweetAlert is confirmed or dismissed
+                                $('#editUserDetailsModal').modal('hide');
+                                window.location.reload(); // Redirect to a suitable page
+                            }
+                        });
+                    } else {
+                        // Handle other scenarios if needed
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message // Use the error message received from the backend
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Something went wrong. Please try again.' // Generic error message
+                    });
+                }
+            });
+        }
+    </script>
+
+    <%- include('../layouts/footeruser.ejs') %>

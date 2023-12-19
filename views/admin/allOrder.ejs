@@ -1,0 +1,130 @@
+<%- include('../layouts/headeradmin.ejs') %>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <div id="layoutSidenav_content">
+    <main>
+  <section  class="content-main">
+    <div class="container-fluid px-4">
+        <div class="p-0 d-flex justify-content-between container-fluid">
+            <h1 class="mt-4 mb-3">Order List</h1>
+            <div class="d-flex align-items-center">
+                <!-- <a href="#" class="rounded-3 btn btn-light font-md">Export</a>
+                <a href="#" class="rounded-3 btn btn-light font-md">Import</a>
+                <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a> -->
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Table
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple" class="table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Order</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <% order.forEach(order_data => { %>
+                            <tr>
+                                <td><%= order_data._id %></td>
+                                <td><%= new Date(order_data.orderDate).toLocaleDateString() %></td>
+                                <td><%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
+                                <td><%= order_data.status %></td>
+                                <td><%= order_data.totalAmount %></td>
+                                <td><a href="/admin/orderDetails?id=<%= order_data._id %>" class="btn-small d-block">View</a></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchInput = document.getElementById("searchInput");
+      const table = document.getElementById("products");
+      const rows = table.getElementsByTagName("tr");
+
+      searchInput.addEventListener("keyup", function () {
+        const searchText = searchInput.value.toLowerCase();
+
+        for (let i = 1; i < rows.length; i++) {
+          const rowData = rows[i].textContent.toLowerCase();
+          if (rowData.includes(searchText)) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      });
+    });
+
+
+    function ProductUnlist(productId) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Please confirm to delete this product!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform the deletion via AJAX/fetch to the server
+          fetch(`/admin/deleteProduct/${productId}`, {
+            method: 'GET',
+            // Add other necessary headers or configurations
+          }).then(response => {
+            if (response.ok) {
+              // Product successfully deleted
+              Swal.fire({
+                title: "success",
+                text: "Please confirm to delete this product!",
+                icon: "success",
+                timer: 2000,
+                timeProgressBar: true,
+                showConfirmButton: false,
+
+
+              })
+                .then(() => {
+                  // Redirect after displaying the success message
+                  window.location.href = '/admin/products'; // Redirect to a suitable page
+                });
+            } else {
+              Swal.fire("Error!", "Failed to delete product", "error");
+            }
+          }).catch(error => {
+            Swal.fire("Error!", "Failed to delete product", "error");
+          });
+        }
+      });
+    }
+
+  </script> -->
+
+<%- include('../layouts/footeradmin.ejs') %>

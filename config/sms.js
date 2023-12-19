@@ -25,7 +25,6 @@ const nodemailer = require('nodemailer')
       };
        const information=await  transporter.sendMail( mailOptions);
        
-       console.log( req.session.otp,"otpin")
 
     } catch (error) {
       console.log(error);

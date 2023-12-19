@@ -158,7 +158,7 @@
         let password=document.getElementById("password").value;
         function passwordChaking(){
             password=document.getElementById("password").value;
-            if(password==""){
+            if(password.trim()==""){
                 document.getElementById("errorpassword").innerHTML="create your password";
                 return false
             }

@@ -275,7 +275,7 @@
                 } else {
                     product_discount_error.innerHTML = "";
                 }
-                if (isNaN(product_quantity) || product_quantity.trim() === "" || parseFloat(product_quantity) < 0) {
+                if (isNaN(product_quantity) || product_quantity.trim() === "" || parseFloat(product_quantity) <= -1) {
                     product_quantity_error.innerHTML = "Please enter product quantity";
                     formIsValid = false;
                 } else {

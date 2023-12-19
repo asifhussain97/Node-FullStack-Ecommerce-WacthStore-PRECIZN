@@ -8,6 +8,9 @@
             </div>
         </header> -->
 <%- include('../layouts/headeruser.ejs') %>      
+<!-- Add this in your HTML or EJS file -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <style>
 .image-container {
   width: 440px;
@@ -42,6 +45,9 @@
     flex: 0 0 5.5%; /* Adjust the width percentage as needed */
     max-width: 5.5%;
   }
+                  .checked {
+                    color: orange;
+                  }
 </style>
   <div style="margin-top: 150px; margin-bottom: 200px;" class=" site-section">
     <div class="container">
@@ -65,11 +71,16 @@
           </h2>
           <p></p>
           <p class="mb-4"><%= products.description %></p>
-          <p><strong class="text-primary h4">₹<%= products.discount_price %> - <s>₹
-                  <%= products.price %>
-                </s></strong></p>
-  
-                <div class="mb-5">
+          <p>
+            <strong class="text-dark h4">₹<%= products.discount_price %></strong>
+            - <s class="text-secondary h6">₹<%= products.price %></s>
+          </p>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <!-- <div class="mb-5">
                   <div class="input-group mb-3" style="max-width: 120px;">
                       <div class="input-group-prepend">
                           <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
@@ -101,17 +112,85 @@
                         }
                     });
                 });
-            </script>
+            </script> -->
+            <% if (products.stock<=0) { %>
+              <div class="text-center">
+                  <a class="text-danger text-decoration-none mt-auto" href="#">Out of Stock</a>
+              </div>
+          <% } else { %>
           <div class="d-flex">
-            <p><a href="/cart.html" class="buy-now btn btn-sm btn-primary">Buy Now</a></p>
-            <p class="ms-3"><a href="/cart.html" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
+            <!-- <p><a href="/cart.html" class="buy-now btn btn-sm btn-primary">Buy Now</a></p> -->
+            <form id="myForm">
+              <input type="hidden" value="<%= products._id %>"name="productData_id" id="">
+              <div class="mt-2 d-flex detail-extralink">
+                <%  if(!existingCartItem){ %>
+                    <input type="number" name="qty" class="w-25 me-2" value="1" min="1" max="10">
+                  <% } %>
+                  <div class=" product-extra-link2 my-1">
+
+                      <button type="submit" class="btn btn-outline-dark btn-sm btn-product btn-cart"><i class="fa-solid fa-cart-shopping"></i> <%= existingCartItem ? 'Go To Cart' : 'Add To Cart' %></button>
+
+
+                      <button aria-label="Add To Wishlist" class=" btn action-btn hover-up p-3  "
+                          ><i class="fi-rs-heart  "></i></button>
+                  </div>
+              </div>
+            </form>
+            <!-- <p class="ms-3"><a href="/cart.html" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p> -->
           </div>
+          <% } %>
 
         </div>
       </div>
     </div>
   </div>
   <script>
+// Function to show toast alert
+function showToast(message, type) {
+    Toastify({
+        text: message,
+        duration: 3000, // Duration in milliseconds
+        gravity: 'bottom', // Position: 'top', 'bottom', 'left', 'right'
+        backgroundColor: type === 'success' ? '#33cc33' : '#ff3333', // Change colors based on success/failure
+    }).showToast();
+}
+
+// Function to handle form submission
+function addcartform(event) {
+    event.preventDefault();
+    const formId = event.target.id; // Get the form ID that triggered the event
+    const productData_id = document.querySelector(`#${formId} [name="productData_id"]`).value;
+    const qty = document.querySelector(`#${formId} [name="qty"]`).value;
+
+    fetch('/cart', {
+        method: 'POST',
+        body: JSON.stringify({ productData_id, qty }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      
+        if (!data.existing) {
+            if (data.success) {
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message, 'error');
+            }
+        } else {
+            window.location.href = '/cart';
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        showToast('Internal server error', 'error');
+    });
+}
+// Add event listener to your form submission
+document.getElementById('myForm').addEventListener('submit', addcartform);
+
+
     function changeMainImage(imageUrl) {
     const mainImage = document.getElementById('mainImage');
     mainImage.src = `/assets/img/product/${imageUrl}`;
