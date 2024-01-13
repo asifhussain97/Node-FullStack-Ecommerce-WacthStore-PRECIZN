@@ -30,6 +30,7 @@ user_route.get("/logout", auth.isLogin, userController.userLogout);
 // user
 user_route.get("/product-details", productController.product_details);
 user_route.get("/shop",userController.shop_details);
+user_route.post("/filter",userController.filter_product);
 user_route.get("/profile", auth.isLogin, userController.loadProfile);
 user_route.post("/addressadd", addressController.addAddress);
 user_route.get("/fetchAddress", auth.isLogin, addressController.loadEditAddress);
@@ -49,10 +50,17 @@ user_route.delete("/removeCartItem", cartController.removeFromCart);
 //order
 user_route.get('/checkout',orderController.loadCheckout );
 user_route.post('/checkout',orderController.checkOutPost );
+user_route.post('/razorpayOrder',orderController.razorpayOrder );
 user_route.get('/orderSuccess',orderController.loadOrderDetails );
 user_route.get('/orderDetails/:id',orderController.loadOrderHistory );
 user_route.post('/orderCancel',orderController.orderCancel );
+user_route.post('/return',orderController.returnapprove );
+user_route.get('/invoice/:id',userController.loadInvoice );
 
+
+// user_route.get('/coupons',couponController.userCouponList)
+
+user_route.post('/applyCoupon',orderController.applyCoupon)
 
 module.exports = user_route;
 

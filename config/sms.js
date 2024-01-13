@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer')
+require('dotenv').config(); // Load environment variables from .env file
+
   const sendVarifyMail = async (email,req) => {
     try {
  
@@ -13,8 +15,8 @@ const nodemailer = require('nodemailer')
         secure: false,
         requireTLS: true,
         auth: {
-          user: 'chillus8606@gmail.com',
-          pass: 'fgpu uick hgkz obli',
+          user: process.env.USER_EMAIL,
+          pass: process.env.USER_PASSWORD,
         },
       });
       const mailOptions = {
@@ -25,7 +27,6 @@ const nodemailer = require('nodemailer')
       };
        const information=await  transporter.sendMail( mailOptions);
        
-
     } catch (error) {
       console.log(error);
     }

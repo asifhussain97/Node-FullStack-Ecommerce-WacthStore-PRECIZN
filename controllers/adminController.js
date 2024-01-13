@@ -1,10 +1,23 @@
 const User = require("../models/userModel");
 const Category = require("../models/category")
 const Product = require("../models/product")
+const Order = require("../models/orderModel");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring");
-// const { map } = require("../routes/adminRoute");
 
+const {
+  getMonthlyDataArray,
+  getDailyDataArray,
+  getYearlyDataArray,
+} = require("../config/chartData");
+const loadAdminLogin = async (req, res) => {
+  try {
+    res.render("login");
+  } catch (error) {
+    console.log(error.message);
+ 
+  }
+};
 
 const securePassword = async (password) => {
   try {
@@ -53,48 +66,78 @@ const verifyLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
   try {
-    const userData = await User.findById({ _id: req.session.admin_id });
-    res.render("home", { admin: userData });
+    let query = {};
+    const adminData = await User.findById({ _id: req.session.admin_id });
+
+    const totalRevenue = await Order.aggregate([
+      { $match: {    "items.status": "Delivered"  } }, // Include the conditions directly
+      { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
+    ]);
+
+    const totalUsers = await User.countDocuments({ is_blocked: 1});
+    const totalOrders = await Order.countDocuments();
+    const totalProducts = await Product.countDocuments();
+    const totalCategories = await Category.countDocuments();
+    const order = await Order.find().populate("user").limit(10).sort({ orderDate: -1 });
+
+    const monthlyEarnings = await Order.aggregate([
+      {
+        $match: {
+          "items.status": "Delivered" ,
+          orderDate: {
+            $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+          },
+        },
+      },
+      { $group: { _id: null, monthlyAmount: { $sum: "$totalAmount" } } },
+    ]);
+
+    const totalRevenueValue =
+    totalRevenue.length > 0 ? totalRevenue[0].totalAmount : 0;
+    const monthlyEarningsValue =
+    monthlyEarnings.length > 0 ? monthlyEarnings[0].monthlyAmount : 0;
+
+    const newUsers = await User.find({ is_blocked: 1,isAdmin:0  })
+      .sort({ date: -1 })
+      .limit(5);
+
+      // Get monthly data
+      const monthlyDataArray = await getMonthlyDataArray();
+
+      // Get daily data
+      const dailyDataArray = await getDailyDataArray();
+    
+      // Get yearly data
+      const yearlyDataArray = await getYearlyDataArray();
+
+    const monthlyOrderCounts= monthlyDataArray.map((item) => item.count)
+  
+    const dailyOrderCounts= dailyDataArray.map((item) => item.count)
+
+    const yearlyOrderCounts= yearlyDataArray.map((item) => item.count)
+
+    res.render("home", { 
+      admin: adminData,
+      totalRevenue:totalRevenueValue,
+      totalOrders,
+      totalCategories,
+      totalProducts,
+      totalUsers,
+      newUsers,
+      order,
+      monthlyEarningsValue,
+      monthlyOrderCounts,
+      dailyOrderCounts,
+      yearlyOrderCounts,
+    });
   } catch (error) {
     console.log(error.message);
+    // Handle errors appropriately
   }
 };
 
 
 
-
-// const updateProduct = async (req, res) => {
-//   try {
-//     console.log(req.files,'fiule')
-//     const product = await Product.findById({ _id: req.body.id });
-//     console.log(product)
-//     if (req.body.singleImage) {
-//       const updatedImageIndex = req.body.imageIndexToUpdate; // Index of the image to update
-//       product.image[updatedImageIndex] = req.body.singleImage; // Update the specific image
-//     } else {
-//       const images = [];
-//       for (let i = 0; i < req.files.length; i++) {
-//         images.push(req.files[i].filename);
-//       }
-//       product.image = images;
-//     }
-//     // Update other fields
-//     product.name = req.body.name || product.name;
-//     product.description = req.body.description || product.description;
-//     product.category = req.body.category || product.category;
-//     product.price = req.body.price || product.price;
-//     product.discount_price = req.body.discount_price || product.discount_price;
-//     product.stock = req.body.stock || product.stock;
-//     product.productColor = req.body.productColor || product.productColor;
-//     product.gender = req.body.gender || product.gender;
-
-//     await product.save(); // Save the updated product data
-
-//     res.redirect('/admin/edit-product');
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 
 
 
@@ -137,7 +180,6 @@ const blockAndunblockUser = async (req, res) => {
       );
       res.status(200).json({ success: true, message: 'User unblocked' });
     }
-    // res.redirect("/admin/userManage");
   } catch (error) {
     res.status(500).json({ success: false, message: 'Operation failed' });
 

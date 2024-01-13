@@ -9,6 +9,10 @@ const productController = require("../controllers/productController");
 const auth = require("../middleware/adminAuth");
 const multer = require("../middleware/multer");
 const orderController=require('../controllers/oderControlleradmin')
+const couponController=require('../controllers/couponController')
+const offerController=require('../controllers/offerController')
+
+
 
 // admin_route.use(express.json());
 // admin_route.use(express.urlencoded({ extended: true }));
@@ -54,6 +58,24 @@ admin_route.get("/alluserorders", auth.isLogin, orderController.listUserOrders);
 admin_route.get("/orderDetails", auth.isLogin, orderController.listOrderDetails);
 admin_route.post("/orderStatusChange", auth.isLogin, orderController.orderStatusChange);
 admin_route.get("/salesReport", auth.isLogin, orderController.loadSalesReport);
+admin_route.get("/salesReport/:start/:end", auth.isLogin, orderController.dateFilter);
+admin_route.post('/returnapprove',orderController.returnData );
+
+
+// COUPON
+admin_route.get("/coupenAdd", auth.isLogin,couponController.loadCouponAdd );
+admin_route.post("/coupenAdd",couponController.addCoupon );
+admin_route.get("/couponList", auth.isLogin,couponController.loadCouponList );
+admin_route.get("/couponEdit", auth.isLogin,couponController.loadEditCoupon );
+admin_route.put("/couponEdit",couponController.editCoupon );
+admin_route.get("/delete-add_coupon",couponController.deleteAndaddCoupon );
+
+//OFFER
+admin_route.get("/offerAdd", auth.isLogin,offerController.loadOfferAdd );
+admin_route.post("/offerAdd",offerController.addOffer );
+admin_route.get("/offerlist", auth.isLogin,offerController.OfferList );
+admin_route.get("/blockOffer", auth.isLogin,offerController.offerBlock );
+
 
 admin_route.get("*", (req, res) => {
   res.redirect("/admin");

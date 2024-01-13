@@ -1,0 +1,371 @@
+<%- include('../layouts/headeradmin.ejs') %>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <div class="p-0 d-flex justify-content-between container-fluid">
+                <h1 class="mt-4 mb-3">Add Offer</h1>
+            </div>
+            <form  id="offer-form">
+                <section class="content-main">
+                    <div class="ms-3 row">
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="offer" class="form-label">Offer Name</label>
+                                        <input type="text" name="name" placeholder="Enter offer name" class="form-control" id="offer_name">
+                                        <div class="error-message" style="color: red;" id="offer_name-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="discountType" class="form-label">Discount Type</label>
+                                        <select class="form-select" id="discountType" name="discountType">
+                                            <option value="" selected disabled>Select discount type</option>
+                                            <option value="percentage">Percentage</option>
+                                            <option value="fixed Amount">Fixed Amount</option>
+                                        </select>
+                                        <div class="error-message" style="color: red;" id="discountType-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="limit" class="form-label">Discount</label>
+                                        <input type="number" name="discountValue" placeholder="Enter discount" class="form-control" id="discount">
+                                        <div class="error-message" style="color: red;" id="discount-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="limit" class="form-label">Maximum Amount</label>
+                                        <input type="number" name="maxAmt" placeholder="Enter maximum amount" class="form-control" id="maxAmt">
+                                        <div class="error-message" style="color: red;" id="maxAmt-error"></div>
+                                    </div>
+                                    <!-- <div class="mb-4">
+                                        <label for="maxAmt" class="form-label">Maximum Amount</label>
+                                        <input type="number" name="maxAmt" placeholder="Enter maximum amount" class="form-control" id="maxAmt">
+                                        <div class="error-message" style="color: red;" id="maxAmt-error"></div>
+                                    </div> -->
+                                    <!-- <div class="text-end">
+                                        <input type="submit" value="submit" class=" btn btn-primary btn-md rounded font-sm hover-up">
+                                    </div>  -->
+                                </div>
+                            </div> <!-- card end// -->
+                            
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <div class="form-group">
+                                            <label class="form-label mt-3" for="discountOn">Discount On:</label>
+                                            <select class="form-select" id="discountOn" name="discountOn">
+                                                <option value="" selected disabled>Select discount on</option>
+                                                <option value="product">Product</option>
+                                                <option value="category">Category</option>
+                                            </select>
+                                            <div class="error-message" style="color: red;" id="discountOn-error"></div>
+                                        </div>
+                                    </div>
+
+                                    <div id="categorySelect" style="display: none;">
+                                        <label class="form-label">Category</label>
+                                        <select name="discountedCategory" class="form-select">
+                                            <option value="" selected disabled>Select a category</option>
+                                            <% if (category && category.length> 0) {
+                                                category.forEach(categoryData=> {
+                                                if (categoryData.is_listed) {
+                                                %>
+                                                <option value="<%= categoryData._id %>">
+                                                    <%= categoryData.name %>
+                                                </option>
+                                                <% } }); } else { %>
+                                                    <option value="" disabled>No products available</option>
+                                                    <% } %>
+                                        </select>
+                                        <div class="error-message" style="color: red;" id="categorySelect-error"></div>
+                                        <br>
+                                    </div>
+
+                                    <div id="productSelect" style="display: none;">
+                                        <label class="form-label" class="form-label">Product</label>
+                                        <select name="discountedProduct" class="form-select">
+                                            <option value="" selected disabled>Select a product</option>
+                                            <% if (product && product.length> 0) {
+        
+                                                product.forEach(productData=> {
+                                                if (productData.is_listed) {
+                                                %>
+                                                <option value="<%= productData._id %>">
+                                                    <%= productData.name %>
+                                                </option>
+                                                <% } }); } else { %>
+                                                    <option value="" disabled>No products available</option>
+                                                    <% } %>
+                                        </select>
+                                        <div class="error-message" style="color: red;" id="productSelect-error"></div>
+                                        <br>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label for="category_name" class="form-label">Start Date</label>
+                                        <input type="date" name="startDate" placeholder="Type here" class="form-control"
+                                            id="startDate" min="<%= new Date().toISOString().split('T')[0] %>">
+                                        <div class="error-message" style="color: red;" id="startDate-error"></div>
+                                    </div>
+        
+                                    <div class="mb-2">
+                                        <label for="start date" class="form-label">Expiry Date</label>
+                                        <input type="date" name="expiryDate" placeholder="Type here" class="form-control"
+                                            id="expiryDate">
+                                        <div class="error-message" style="color: red;" id="expiryDate-error"></div>
+                                    </div>
+
+                                </div>
+                            </div> <!-- card end// -->
+                            <div>
+                                <input type="submit" value="submit" class="btn btn-primary btn-md rounded font-sm hover-up">
+                            </div>
+                        </div>
+                    </div>
+                </section> <!-- content-main end// -->
+            </form>
+            <div id="invalid" style="position: relative; width: 100%;" class="justify-content-center text-center">
+                <% 
+                if (typeof message !== 'undefined') {
+                %>
+                <p style="position: absolute; transform: translate(-50%, -50%); left: 50%; color: crimson; white-space: nowrap;"><%= message %></p>
+                <%
+                }
+                %>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.getElementById('startDate').addEventListener('change', function () {
+            var startDateValue = this.value;
+            document.getElementById('expiryDate').disabled = false;
+            document.getElementById('expiryDate').min = startDateValue;
+        });
+    </script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const offer_name = document.getElementById("offer_name");
+            const offer_name_error = document.getElementById("offer_name-error");
+            const discountType = document.getElementById("discountType");
+            const discountType_error = document.getElementById("discountType-error");
+            const discount = document.getElementById("discount");
+            const discount_error = document.getElementById("discount-error");
+            const maxAmt = document.getElementById("maxAmt");
+            const maxAmt_error = document.getElementById("maxAmt-error");
+            const discountOn = document.getElementById("discountOn");
+            const discountOn_error = document.getElementById("discountOn-error");
+            const categorySelect = document.getElementById("categorySelect");
+            const categorySelect_error = document.getElementById("categorySelect-error");
+            const productSelect = document.getElementById("productSelect");
+            const productSelect_error = document.getElementById("productSelect-error");
+            const startDate = document.getElementById("startDate");
+            const startDate_error = document.getElementById("startDate-error");
+            const expiryDate = document.getElementById("expiryDate");
+            const expiryDate_error = document.getElementById("expiryDate-error");
+            const form = document.getElementById('offer-form');
+
+            // Input Event Listeners for Validation
+            offer_name.addEventListener('input', function () {
+                offer_name_error.innerHTML = offer_name.value.trim() === "" ? "Please enter offer name" : "";
+            });
+
+            discountType.addEventListener('change', function () {
+                discountType_error.innerHTML = discountType.value.trim() === "" ? "Please select discount type" : "";
+            });
+
+            discount.addEventListener('input', function () {
+                discount_error.innerHTML = discount.value.trim() === "" ? "Please enter discount" : "";
+            });
+
+            maxAmt.addEventListener('input', function () {
+                maxAmt_error.innerHTML = maxAmt.value.trim() === "" ? "Please enter maximum amount" : "";
+            });
+
+            discountOn.addEventListener('change', function () {
+                if (discountOn.value === "category") {
+                    categorySelect.style.display = "block";
+                    productSelect.style.display = "none";
+                    categorySelect_error.innerHTML = categorySelect.value.trim() === "" ? "Please select a category" : "";
+                    productSelect_error.innerHTML = "";
+                    productSelect.value='';
+                } else if (discountOn.value === "product") {
+                    productSelect.style.display = "block";
+                    categorySelect.style.display = "none";
+                    productSelect_error.innerHTML = productSelect.value.trim() === "" ? "Please select a product" : "";
+                    categorySelect_error.innerHTML = "";
+                    categorySelect.value='';
+                } else {
+                    categorySelect.style.display = "none";
+                    productSelect.style.display = "none";
+                    categorySelect_error.innerHTML = "";
+                    productSelect_error.innerHTML = "";
+                }
+            });
+            startDate.addEventListener('input', function () {
+                startDate_error.innerHTML = startDate.value.trim() === "" ? "Please enter start date" : "";
+            });
+
+            expiryDate.addEventListener('input', function () {
+                expiryDate_error.innerHTML = expiryDate.value.trim() === "" ? "Please enter expiry date" : "";
+            });
+
+            // Event listener to validate form on submission
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                // Validate the form
+                const formIsValid = validateForm('offer-form');
+
+                if (formIsValid) {
+                    const formData = new FormData(form);
+
+                    try {
+                        const response = await fetch(`/admin/offerAdd`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams(new FormData(form)).toString(),
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Coupon has been added',
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href='/admin/offerlist'; // Redirect to a suitable page
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: result.message,
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6', // Change the color as needed
+                                confirmButtonText: 'OK',
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while adding the coupon',
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6', // Change the color as needed
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                }
+            });
+        });
+
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+
+            const offer_name = document.getElementById("offer_name").value.trim();
+            const discountType = document.getElementById("discountType").value.trim();
+            const discount = document.getElementById("discount").value.trim();
+            const maxAmt = document.getElementById("maxAmt").value.trim();
+            const discountOn = document.getElementById("discountOn").value.trim();
+            const categorySelect = document.getElementById("categorySelect");
+            const productSelect = document.getElementById("productSelect");
+            const startDate = document.getElementById("startDate").value.trim();
+            const expiryDate = document.getElementById("expiryDate").value.trim();
+
+            const offer_name_error = document.getElementById("offer_name-error");
+            const discountType_error = document.getElementById("discountType-error");
+            const discount_error = document.getElementById("discount-error");
+            const maxAmt_error = document.getElementById("maxAmt-error");
+            const discountOn_error = document.getElementById("discountOn-error");
+            const categorySelect_error = document.getElementById("categorySelect-error");
+            const productSelect_error = document.getElementById("productSelect-error");
+            const startDate_error = document.getElementById("startDate-error");
+            const expiryDate_error = document.getElementById("expiryDate-error");
+
+            let formIsValid = true;
+
+            if (!(offer_name.trim().length >= 2 && /^[a-zA-Z]/.test(offer_name))) {
+                offer_name_error.innerHTML = "Please enter coupon code";
+                formIsValid = false;
+            } else {
+                offer_name_error.innerHTML = "";
+            }
+
+            if (discountType === "") {
+                discountType_error.innerHTML = "Please enter valid discount";
+                formIsValid = false;
+            } else {
+                discountType_error.innerHTML = "";
+            }
+
+            if (!(discount.trim().length > 0 && /^\d+$/.test(discount))) {
+                discount_error.innerHTML = "Please enter valid usage limit";
+                formIsValid = false;
+            } else {
+                discount_error.innerHTML = "";
+            }
+
+            if (!(maxAmt.trim().length > 0 && /^\d+(\.\d{1,2})?$/.test(maxAmt))) {
+                maxAmt_error.innerHTML = "Please enter valid maximum amount";
+                formIsValid = false;
+            } else {
+                maxAmt_error.innerHTML = "";
+            }
+
+            if (discountOn === "") {
+                discountOn_error.innerHTML = "Please select discount on";
+                formIsValid = false;
+            } else {
+                discountOn_error.innerHTML = "";
+
+                if (discountOn === "category") {
+                    if (categorySelect.style.display !== "none" && categorySelect.value === "") {
+                        categorySelect_error.innerHTML = "Please select a category";
+                        formIsValid = false;
+                    } else {
+                        categorySelect_error.innerHTML = "";
+                    }
+                }
+
+                if (discountOn === "product") {
+                    if (productSelect.style.display !== "none" && productSelect.value === "") {
+                        productSelect_error.innerHTML = "Please select a product";
+                        formIsValid = false;
+                    } else {
+                        productSelect_error.innerHTML = "";
+                    }
+                }
+            }
+
+
+            // Validate startDate and expiryDate outside the discountOn condition
+            if (startDate === "") {
+                startDate_error.innerHTML = "Please enter start date";
+                formIsValid = false;
+            } else {
+                startDate_error.innerHTML = "";
+            }
+
+            if (expiryDate === "") {
+                expiryDate_error.innerHTML = "Please enter expiry date";
+                formIsValid = false;
+            } else {
+                expiryDate_error.innerHTML = "";
+            }
+
+            return formIsValid;
+        }
+    </script>
+
+<%- include('../layouts/footeradmin.ejs') %>

@@ -32,11 +32,12 @@ const addProduct = async(req,res)=>{
     const userData = await User.findById({ _id: req.session.admin_id });  
     const categoryData = await Category.find(); 
     const images = [];
+    console.log(req.body,'body');
     const subcat = req.body.sub_category
     for (let i = 0; i < req.files.length; i++) {
       // Modify this to the path of the temporary uploaded file
       const file = req.files[i];
-
+console.log(req.file,'file');
       // Generate a random integer for the file name
       const randomInteger = Math.floor(Math.random() * 20000001);
       const imageDirectory = path.join('public', 'assets', 'img', 'product');

@@ -17,23 +17,23 @@
                     </span> <br>
                     <small class="text-muted">Order ID: 3453012</small>
                 </div>
-                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <li class="dropdown nav-item me-4">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">select status </a>
+                <!-- <div class="col-lg-6 col-md-6 ms-auto text-md-end"> -->
+                     <!-- <li class="dropdown nav-item me-4">
+                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">select status </a> 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <!-- <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Confirmed">Confirmed</a>
+                            <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Confirmed">Confirmed</a>
                             <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Shipped">Shipped</a>
-                            <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Delivered">Delivered</a> -->
-                            <!-- <a class="dropdown-item"href="/admin/orderStatusChange?id=<%= order._id%>&status=Cancelled">Cancelled</a> -->
+                            <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Delivered">Delivered</a> 
+                              <a class="dropdown-item"href="/admin/orderStatusChange?id=<%= order._id%>&status=Cancelled">Cancelled</a> 
                      
                            
                          
                         </div>
-                    </li>
+                    </li>  -->
                     
                
-                    <!-- <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a> -->
-                </div>
+                     <!-- <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>  -->
+                <!-- </div> -->
             </div>
         </header>
         <div class="card-body">
@@ -46,7 +46,7 @@
                         <div class="text">
                             <h6 class="mb-1">Customer</h6>
                             <p class="mb-1">
-                                <%=order.user.name %> <br> <%=order.user.mobile %>
+                                <%= order.user.name %> <br> <%=order.user.mobile %>
                             </p>
                             <br>
                             <!-- <a href="#">View profile</a> -->
@@ -63,9 +63,19 @@
                             <p class="mb-1">
                                 Shipping: Fargo express <br>
                                 Pay method:
-                                <%= order.paymentMethod  %> <br>
+                                <%= order.items[0].paymentMethod  %> <br>
                                 Status:
-                                <%= order.status %>
+                                <% let f = 0;
+                                    order.items.forEach(function(item) {
+                                        if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') {
+                                            f = 1;
+                                         }
+                                     });
+                                     if (f === 0) { %>
+                                         Completed
+                                     <% } else { %>
+                                         Pending
+                                     <% } %>
                             </p>
                             <!-- <a href="#">Download info</a> -->
                         </div>
@@ -131,54 +141,62 @@
                                             </td>
                                             <td>
                                                 <%
-                                                if(item.status != 'Delivered') {%>
-                                                <select id="status_<%= item.product._id %>" onchange="cancelProductconfirm('<%= order._id %>','<%= item.product._id %>')">
+                                                if(item.status != 'Delivered'&& item.status != 'Returned' && (item.approve==null || item.approve=='not set') && item.status != 'Cancelled') {%>
+                                                <select id="status_<%= item.product._id %>" onchange="statusChangeConfirm('<%= order._id %>','<%= item.product._id %>')">
 
-                                                    <option value="Cancelled" <%= item.status === 'Shipped' ? 'disabled' : (item.status === 'Cancelled' ? 'selected' : '') %>>Cancel</option>
+                                                    <!-- <option value="Cancelled" <%= item.status === 'Shipped' ? 'disabled' : (item.status === 'Cancelled' ? 'selected' : '') %>>Cancel</option> -->
                                                     <option value="Confirmed" <%= item.status === 'Shipped' ? 'disabled' : (item.status === 'Confirmed' ? 'selected' : '') %>>Confirmed</option>
                                                     <option value="Shipped" <%= item.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
                                                     <option value="Delivered" <%= item.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                                                     <!-- Uncomment the following line to add the Cancelled option -->
                                                     <!-- <option value="Cancelled" <%= item.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option> -->
                                                 </select>
-                                                <% }else{ %>
+                                                <% }else if(item.approve=='pending'){ %>
+                                                    <button type="button" class="btn btn-success" onclick="returnProductconfirm('<%= order._id %>','<%=item.product._id %>')">Approve Return</button>
+                                                <% } else{%>
                                                     ....
                                                 <% } %>
+
                                             </td>
-                                            <!-- <td class="text-end">
-                                                <% if (item.status=="Confirmed" ) { %> <button class="btn bg-danger btn-sm"
-
-                                                id="cancelModalData" data-bs-toggle="modal"
-                                    data-bs-target="#cancelModal<%=item.product._id %>"
-                               >cancel</button>
-                                <% }  else{ %>
-                                    <button class="btn bg-secondary btn-sm" disabled>cancel</button>
-                                    <% } %>
-
-                                            </td> -->
+                                            
                                         </tr>
                                         <% 
                                             }) %>
                                 <tr>
+                                    <td colspan="3"></td>
 
-                                    <td colspan="4">
+                                    <td colspan="3">
                                         <article class="float-end">
-                                            <dl class="dlist">
+                                            <dl class="dlist d-flex">
                                                 <dt>Subtotal:</dt>
-                                                <dd>₹<%= subtotal %></dd>
+                                                <dd class="ms-2">₹<%= subtotal %></dd>
                                             </dl>
-                                            <dl class="dlist">
+                                            <dl class="dlist d-flex">
                                                 <dt>Shipping cost:</dt>
-                                                <dd>₹0.00</dd>
+                                                <dd class="ms-2">₹0.00</dd>
                                             </dl>
-                                            <dl class="dlist">
+                                            <dl class="dlist d-flex">
                                                 <dt>Grand total:</dt>
-                                                <dd> <b class="h5">₹<%= subtotal %></b> </dd>
+                                                    <% if(order.coupon){ %>
+                                                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %> </b> (Coupon Applied)</dd>
+                                                    <% } else { %>
+                                                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %></b> </dd>
+                                                    <% } %>
                                             </dl>
-                                            <dl class="dlist">
+                                            <dl class="dlist d-flex">
                                                 <dt class="text-muted">Status:</dt>
                                                 <dd>
-                                                    <span class="badge rounded-pill alert-success text-secondary">Pending</span>
+                                                    <% let t = 0;
+                                                        order.items.forEach(function(item) {
+                                                            if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.paymentStatus=='Pending') {
+                                                                t = 1;
+                                                            }
+                                                        });
+                                                        if (t === 0) { %>
+                                                            <span class="badge rounded-pill alert-success text-success">Success</span>
+                                                        <% } else { %>
+                                                            <span class="badge rounded-pill alert-success text-secondary">Pending</span>
+                                                        <% } %>
                                                 </dd>
                                             </dl>
                                         </article>
@@ -197,7 +215,7 @@
 </main>
 <script>
     
-    function cancelProductconfirm(id,productId) {
+    function statusChangeConfirm(id,productId) {
         const status = document.getElementById(`status_${productId}`).value;
         if (!status) {
             alert('Status not recieved');
@@ -214,7 +232,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 // User clicked "Yes," so proceed with removing the item
-                cancelProduct(id,productId,status);
+                statusChange(id,productId,status);
             }
             else{
                 window.location.reload();
@@ -222,7 +240,7 @@
         });
     }
 
-    function cancelProduct(id,productId,status) {
+    function statusChange(id,productId,status) {
 
         const requestData = {
 
@@ -260,5 +278,58 @@
                 alert('Error occurred while canceling order');
             });
     }
+
+    function returnProductconfirm(id,productId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes," so proceed with removing the item
+                    returnProduct(id,productId);
+                }
+            });
+        }
+
+        function returnProduct(id,productId) {
+            
+            const requestData = {
+                productId
+            };
+            console.log(requestData,'');
+            fetch(`/admin/returnapprove?id=${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Success",
+                            text: data.message,
+                            icon: "success",
+                            timer: 2000,
+                            timeProgressBar: true,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert('Error occurred while canceling order');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error occurred while returning order');
+                });
+        }
 </script>
 <%- include('../layouts/footeradmin.ejs') %>

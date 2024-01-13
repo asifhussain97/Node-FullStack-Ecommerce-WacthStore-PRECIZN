@@ -1,0 +1,294 @@
+<%- include('../layouts/headeradmin.ejs') %>
+<div id="layoutSidenav_content">
+    <main>
+        <section class="content-main">
+            <div class="d-flex p-3 pt-4 justify-content-between content-header">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Filter
+                </button>
+                <ul class="dropdown-menu">
+                  <a href="/admin/salesReport?status=All" class="dropdown-item" >All</a>
+                  <a href="/admin/salesReport?status=Daily" class="dropdown-item" >Daily</a>
+                  <a href="/admin/salesReport?status=Weekly" class="dropdown-item" >Weekly</a>
+                  <a href="/admin/salesReport?status=Monthly" class="dropdown-item" >Monthly</a>
+                  <a href="/admin/salesReport?status=Yearly" class="dropdown-item" >Yearly</a>
+           
+                </ul>
+              </div>
+              
+                <div class="mb-2" >
+                    <label for="category_name" class="form-label">Start Date</label>
+                    <input type="date" name="startDate" placeholder="Type here" class="form-control" id="startDate">
+                    <div class="error-message" style="color: red;" id="startDate-error"></div>
+                </div>
+        
+                <div class="mb-2" >
+                    <label for="start date" class="form-label">End Date</label>
+                    <input type="date" name="endDate" placeholder="Type here" class="form-control" id="endDate">
+                    <div class="error-message" style="color: red;" id="endDate-error"></div>
+                </div>
+                <div>
+                    <div class="pb-3 d-flex justify-content-end">
+                        <button type="button" class="btn my-3 btn-primary" onclick="dateFilter()">Filter by date</button>
+                    </div>
+                </div>  
+              <div>
+                <div class="pb-3 d-flex justify-content-end">
+                    <button id="pdfButton" class="btn btn-secondary print ms-2"><i class="icon material-icons md-print"></i> Download PDF</button>
+                    <button class="btn btn-secondary print ms-2"  onclick="export_data()"><i class="icon material-icons md-print"></i>Download xlsx </button>
+                </div>
+              </div>       
+            </div>
+            
+            <div class="card mb-4 mx-3">
+                <header class="card-header">
+                    <div class="row align-items-center" >              
+                        <form action="" method="get">
+                            <div style="display: flex;  align-items: center;">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search for Orders...">              
+                            <div class="col-md-1 col-12 me-auto mb-md-0 mb-3" style="display: flex;">           
+                        </div>
+                        </form>
+                    </div>
+                </header>
+            
+                <div class="card-body" id="report">
+                    <div class="d-flex" style="justify-content: center;">
+                        <h2 class="content-title card-title">Sales Report</h2>
+                        
+                    </div>
+
+                    <p>Total Revenue:₹ <%= totalRevenue.toFixed(2) %> </p>
+
+                    <!-- Display Number of Orders with Status "Returned" -->
+                    <!-- <p>Number of Returned Orders: <%#= returnedOrders.length %></p> -->
+
+                    <!-- Display Total Number of Sales -->
+                    <p>Total Sales: <%= totalSales %></p>
+
+                    <!-- Display Number of Products Sold -->
+                    <p>Total Products Sold: <%= totalProductsSold %></p>
+
+                    <!-- Display Product that is Mostly Sold -->
+
+                    <% if (orders && orders.length > 0) { %>
+                    <table id="products" class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col">Order Id</th>
+                            <th scope="col">Billing Name</th>
+                            <th scope="col">Ordered Date</th>
+                            <th scope="col">Delivery Date</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                        
+                            <th scope="col">Payment Method</th>
+                        </tr>
+                        </thead>
+                        <tbody id="products tbody">
+
+                        <% orders.forEach((order) => {
+                            order.items.forEach((item) => { %>
+                            <tr>
+                                <td><%= order._id %></td>
+                                <td><%= order.user.name %></td>
+                                <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                                <td><%= new Date(order.deliveryDate).toLocaleDateString() %></td>
+                                <td><%= order.totalAmount %></td>
+                                <td>
+                                    <% if (item.status == 'Confirmed') { %>
+                                        <p class=" text-info"><%= item.status %></p>
+                                    <% } else if (item.status == 'Shipped') { %>
+                                        <span class="text-dark"><%= item.status %></span>
+                                    <% } else if (item.status == 'Delivered') { %>
+                                        <span class="text-success"><%= item.status %></span>
+                                    <% } else { %>
+                                        <span class="text-danger"><%= item.status %></span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <p><%= item.paymentMethod %></p>
+                                </td>
+                            </tr>
+                            <% });
+                            }); %> 
+                        </tbody>
+                    </table>
+                    <%  } else { %>
+                        <p class="text-danger text-center">There are no Orders</p>
+                    <% } %>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+        </section> <!-- content-main end// -->
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const table = document.getElementById("products");
+            const rows = table.getElementsByTagName("tr");
+        
+            searchInput.addEventListener("keyup", function () {
+                const searchText = searchInput.value.toLowerCase();
+        
+                for (let i = 1; i < rows.length; i++) {
+                    const rowData = rows[i].textContent.toLowerCase();
+                    if (rowData.includes(searchText)) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            });
+        });
+        
+        $(document).ready(function ($) {
+            $(document).on('click', '#pdfButton', function (event) {
+                event.preventDefault();
+                var element = document.getElementById('report');
+                let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
+                var opt = {
+                    margin: 0,
+                    filename: 'SalesReport' + randomNumber + '.pdf',
+                    html2canvas: { scale: 10 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+    
+                html2pdf().set(opt).from(element).save();
+            });
+        });
+        
+        function export_data() {
+            let data = document.getElementById('products');
+            let wb = XLSX.utils.table_to_book(data, { sheet: 'vishal' });
+            
+            let wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+            
+            function s2ab(s) {
+                const buf = new ArrayBuffer(s.length);
+                const view = new Uint8Array(buf);
+                for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+                return buf;
+            }
+            let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+            saveAs(blob, 'test.xlsx'); // This will prompt a download for the file
+        }
+    </script>
+<script>
+    function validation(startDate, endDate) {
+      // Your validation logic here
+      // For example, check if startDate and endDate are valid dates
+      if (!startDate || !endDate) {
+          console.error('Start date and end date are required.');
+          return true; // Indicate validation error
+      } 
+      if(startDate>=endDate){
+        return true; // Indicate validation error
+      }
+  
+      // Additional validation logic if needed
+  
+      return false; // Indicate no validation error
+  }
+</script>
+  <script>
+      function renderOrders(orders) {
+          const ordersTableBody = document.querySelector('#products tbody');
+          ordersTableBody.innerHTML = ''; // Clear existing table body
+  
+          orders.forEach(order => {
+              order.items.forEach(item => {
+                  const orderDate = new Date(order.orderDate).toLocaleDateString();
+                  const deliveryDate = new Date(order.deliveryDate).toLocaleDateString();
+                  const startDate = document.getElementById("startDate").value;
+ 
+                  const endDate = document.getElementById("endDate").value;
+  
+                  
+                      const newRow = ordersTableBody.insertRow();
+                      newRow.innerHTML = `
+                        <tr>
+                            <td>${order._id}</td>
+                            <td>${order.user.name}</td>
+                            <td>${orderDate}</td>
+                            <td>${deliveryDate}</td>
+                            <td>${order.totalAmount}</td>
+                            <td>
+                                ${item.status === 'Confirmed' ? `<p class="text-info">${item.status}</p>` :
+                                    item.status === 'Shipped' ? `<span class="text-dark">${item.status}</span>` :
+                                    item.status === 'Delivered' ? `<span class="text-success">${item.status}</span>` :
+                                    `<span class="text-danger">${item.status}</span>`
+                                }
+                            </td>
+                            <td>
+                                <p>${item.paymentMethod}</p>
+                            </td>
+                        <tr>
+                      `;
+                  
+              });
+          });
+      }
+  </script>
+  
+  <script>
+    function dateFilter() {
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+      const startDateError = document.getElementById("startDate-error");
+      const endDateError = document.getElementById("endDate-error");
+      const error = validation(startDate, endDate);
+
+    // Clear previous error messages
+    startDateError.textContent = "";
+    endDateError.textContent = "";
+
+      if (!error) {
+          fetch(`/admin/salesReport/${startDate}/${endDate}`, {
+              method: 'GET',
+          })
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+                  return response.json();
+              })
+              .then(data => {
+                  if (data.success) {
+                      const orders = data.orders;
+                      renderOrders(orders);
+                  } else {
+                      // Handle server-side error
+                      console.error('Server error:', data.error);
+                  }
+              })
+              .catch(error => {
+                  // Handle network or other fetch-related errors
+                  console.error('Fetch error:', error);
+              });
+      } else {
+        // Display validation errors
+        if (startDateError && endDateError) {
+            if (!startDate) {
+                startDateError.textContent = "Start date is required.";
+            }
+            if (!endDate) {
+                endDateError.textContent = "End date is required.";
+            }
+            if (startDate >= endDate) {
+                endDateError.textContent = "End date should be greater than start date.";
+            }
+        }
+     }
+  }
+  
+  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <!-- xlsx.core.min.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.core.min.js"></script>
+<%- include('../layouts/footeradmin.ejs') %>

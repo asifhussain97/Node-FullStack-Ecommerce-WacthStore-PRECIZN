@@ -187,7 +187,6 @@ const loadCategory = async (req, res) => {
         res.status(200).json({ success: true, message: 'Category listed' });
 
       }
-      // res.redirect("/admin/category");
     } catch (error) {
       res.status(500).json({ success: false, message: 'Operation failed' });
     }

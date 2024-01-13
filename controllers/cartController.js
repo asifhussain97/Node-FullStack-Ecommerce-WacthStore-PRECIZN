@@ -46,7 +46,6 @@ const loadCartPage = async (req, res) => {
                   }
                 }
               }
-              console.log('inside load cart if');
               res.render("cart", { user:userData,
                 productTotal,
       subtotalWithShipping,
@@ -78,32 +77,25 @@ const addTocart = async (req, res) => {
     }
 
     const product_Id = req.body.productData_id;
-    console.log(product_Id,'proid');
     const {qty} = req.body;
 
     const existingCart = await Cart.findOne({ user: userId }).populate("items.product");
-    // console.log(userId,'id user'); .populate("items.product");
     
-   console.log(existingCart,'existing cart');
     const productToUpdate = await Product.findById(product_Id);
     
     if (productToUpdate) {
-      console.log(productToUpdate,'productToUpdate if in');
       if (productToUpdate.stock >= parseInt(qty)) {
 
         if (existingCart) {
        
            
           const existingCartItem = existingCart.items.find((item) => item.product._id.toString() === product_Id);
-          console.log(existingCartItem,'existingitem');
 
           if(existingCartItem){
             return res.status(200).json({ success: true, existing:true })
           }
           
-          // console.log(existingCartItem,"lll21ll");
-          // if (existingCartItem) {
-          //   existingCartItem.quantity += parseInt(qty);
+          
         
           else {
             existingCart.items.push({
@@ -111,10 +103,7 @@ const addTocart = async (req, res) => {
               quantity: parseInt(qty)            
             });
           }
-          // existingCart.total = existingCart.items.reduce(
-          //   (total, item) => total + (item.quantity || 0),
-          //   0
-          // );
+          
 
           await existingCart.save();
           res.status(200).json({ success: true, message: 'Cart updated successfully' });

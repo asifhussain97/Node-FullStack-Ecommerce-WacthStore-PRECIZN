@@ -84,9 +84,11 @@
                                             <div class="mt-2">
 
                                                 <% if(product.is_listed)  {
-                                                    if(product.stock<=10) { %>
+                                                    if(product.stock<=0) { %>
+                                                        <div class="rounded-3 px-1 text-center bg-danger text-white text-nowrap">Out of stock</div>
+                                                    <% } else if(product.stock<=10 ){ %>  
                                                         <div class="rounded-3 px-1 text-center bg-warning text-white text-nowrap">Low stock</div>
-                                                    <% } else{ %>  
+                                                    <% } else {%>  
                                                         <div class="rounded-3 px-1 text-center bg-success text-white text-nowrap">In stock</div>
                                                     <% } 
                                                 } else{ %>    

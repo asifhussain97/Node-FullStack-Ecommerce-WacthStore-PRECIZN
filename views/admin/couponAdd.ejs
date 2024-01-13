@@ -1,0 +1,239 @@
+<%- include('../layouts/headeradmin.ejs') %>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <div class="p-0 d-flex justify-content-between container-fluid">
+                <h1 class="mt-4 mb-3">Add Coupon</h1>
+            </div>
+            <form  id="coupon-form">
+                <section class="content-main">
+                    <div class="ms-3 row">
+                        <div class="col-lg-8">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="code" class="form-label">Coupon Code</label>
+                                        <input type="text" name="code" placeholder="Enter coupon code" class="form-control" id="code">
+                                        <div class="error-message" style="color: red;" id="code-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="discount" class="form-label">Discount</label>
+                                        <input type="number" name="discount" placeholder="Enter discount" class="form-control" id="discount">
+                                        <div class="error-message" style="color: red;" id="discount-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="limit" class="form-label">Discount Limit</label>
+                                        <input type="number" name="limit" placeholder="Enter usage limit" class="form-control" id="limit">
+                                        <div class="error-message" style="color: red;" id="limit-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="expiry" class="form-label">Expiry Date</label>
+                                        <input type="date" name="expiry" class="form-control" id="expiry">
+                                        <div class="error-message" style="color: red;" id="expiry-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="minAmt" class="form-label">Minimum Amount</label>
+                                        <input type="number" name="minAmt" placeholder="Enter minimum amount" class="form-control" id="minAmt">
+                                        <div class="error-message" style="color: red;" id="minAmt-error"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="maxAmt" class="form-label">Maximum Amount</label>
+                                        <input type="number" name="maxAmt" placeholder="Enter maximum amount" class="form-control" id="maxAmt">
+                                        <div class="error-message" style="color: red;" id="maxAmt-error"></div>
+                                    </div>
+                                    <div class="text-end">
+                                        <input type="submit" value="submit" class=" btn btn-primary btn-md rounded font-sm hover-up">
+                                    </div> 
+                                </div>
+                            </div> <!-- card end// -->
+                            
+                        </div>
+                    </div>
+                </section> <!-- content-main end// -->
+            </form>
+            <div style="position: relative; width: 100%;" class="justify-content-center text-center">
+                <% 
+                if (typeof errorMessage !== 'undefined') {
+                %>
+                <p style="position: absolute; transform: translate(-50%, -50%); left: 50%; color: crimson; white-space: nowrap;"><%= errorMessage %></p>
+                <%
+                }
+                %>
+            </div>
+        </div>
+    </main>
+    <script>
+        // Get the current date
+        const today = new Date().toISOString().split('T')[0];
+
+        // Set the minimum attribute of the date input field to today's date
+        document.getElementById('expiry').setAttribute('min', today);
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const code = document.getElementById("code");
+            const code_error = document.getElementById("code-error");
+            const discount = document.getElementById("discount");
+            const discount_error = document.getElementById("discount-error");
+            const limit = document.getElementById("limit");
+            const limit_error = document.getElementById("limit-error");
+            const expiry = document.getElementById("expiry");
+            const expiry_error = document.getElementById("expiry-error");
+            const minAmt = document.getElementById("minAmt");
+            const minAmt_error = document.getElementById("minAmt-error");
+            const maxAmt = document.getElementById("maxAmt");
+            const maxAmt_error = document.getElementById("maxAmt-error");
+            const form = document.getElementById('coupon-form');
+
+            // Input Event Listeners for Validation
+            code.addEventListener('input', function () {
+                code_error.innerHTML = code.value.trim() === "" ? "Please enter coupon code" : "";
+            });
+
+            discount.addEventListener('input', function () {
+                discount_error.innerHTML = discount.value.trim() === "" ? "Please enter discount" : "";
+            });
+
+            limit.addEventListener('input', function () {
+                limit_error.innerHTML = limit.value.trim() === "" ? "Please enter usage limit" : "";
+            });
+
+            expiry.addEventListener('input', function () {
+                expiry_error.innerHTML = expiry.value.trim() === "" ? "Please enter expiry date" : "";
+            });
+
+            minAmt.addEventListener('input', function () {
+                minAmt_error.innerHTML = minAmt.value.trim() === "" ? "Please enter minimum amount" : "";
+            });
+
+            maxAmt.addEventListener('input', function () {
+                maxAmt_error.innerHTML = maxAmt.value.trim() === "" ? "Please enter maximum amount" : "";
+            });
+
+            // Event listener to validate form on submission
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                // Validate the form
+                const formIsValid = validateForm('coupon-form');
+
+                if (formIsValid) {
+                    const formData = new FormData(form);
+
+                    try {
+const response = await fetch(`/admin/coupenAdd`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(new FormData(form)).toString(),
+});
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Coupon has been added',
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href='/admin/couponList'; // Redirect to a suitable page
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: result.error,
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6', // Change the color as needed
+                                confirmButtonText: 'OK',
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while adding the coupon',
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6', // Change the color as needed
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                }
+            });
+        });
+
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+
+            const code = document.getElementById("code").value.trim();
+            const discount = document.getElementById("discount").value.trim();
+            const limit = document.getElementById("limit").value.trim();
+            const expiry = document.getElementById("expiry").value.trim();
+            const minAmt = document.getElementById("minAmt").value.trim();
+            const maxAmt = document.getElementById("maxAmt").value.trim();
+
+            const code_error = document.getElementById("code-error");
+            const discount_error = document.getElementById("discount-error");
+            const limit_error = document.getElementById("limit-error");
+            const expiry_error = document.getElementById("expiry-error");
+            const minAmt_error = document.getElementById("minAmt-error");
+            const maxAmt_error = document.getElementById("maxAmt-error");
+
+            let formIsValid = true;
+
+            if (!(code.trim().length >= 2 && /^[a-zA-Z]/.test(code))) {
+                code_error.innerHTML = "Please enter coupon code";
+                formIsValid = false;
+            } else {
+                code_error.innerHTML = "";
+            }
+
+            if (!(discount.trim().length > 0 && /^\d+(\.\d{1,2})?$/.test(discount))) {
+                discount_error.innerHTML = "Please enter valid discount";
+                formIsValid = false;
+            } else {
+                discount_error.innerHTML = "";
+            }
+
+            if (!(limit.trim().length > 0 && /^\d+$/.test(limit))) {
+                limit_error.innerHTML = "Please enter valid usage limit";
+                formIsValid = false;
+            } else {
+                limit_error.innerHTML = "";
+            }
+
+            if (expiry.trim() === "") {
+                expiry_error.innerHTML = "Please enter expiry date";
+                formIsValid = false;
+            } else {
+                expiry_error.innerHTML = "";
+            }
+
+            if (!(minAmt.trim().length > 0 && /^\d+(\.\d{1,2})?$/.test(minAmt))) {
+                minAmt_error.innerHTML = "Please enter valid minimum amount";
+                formIsValid = false;
+            } else {
+                minAmt_error.innerHTML = "";
+            }
+
+            if (!(maxAmt.trim().length > 0 && /^\d+(\.\d{1,2})?$/.test(maxAmt))) {
+                maxAmt_error.innerHTML = "Please enter valid maximum amount";
+                formIsValid = false;
+            } else {
+                maxAmt_error.innerHTML = "";
+            }
+
+            return formIsValid;
+        }
+    </script>
+
+<%- include('../layouts/footeradmin.ejs') %>

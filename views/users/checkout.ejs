@@ -1,5 +1,4 @@
 <%- include('../layouts/headeruser.ejs') %>      
-
     <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -9,47 +8,15 @@
                     <span></span> Checkout
                 </div>
             </div>
-            <div id="cartNotification"
-                style="display: none; position: fixed; top: 20px; right: 20px; background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
-                the address is not added
-            </div>
         </div>
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 mb-sm-15">
-                        <!-- <div class="toggle_info">
-                        <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Already have an account?</span> <a href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to login</a></span>
-                    </div> -->
-                        <div class="panel-collapse collapse login_form" id="loginform">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have shopped with us before, please enter your details
-                                    below. If you are a new customer, please proceed to the Billing &amp; Shipping
-                                    section.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" name="email" placeholder="Username Or Email">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" name="password" placeholder="Password">
-                                    </div>
-                                    <div class="login_footer form-group">
-                                        <div class="chek-form">
-
-                                        </div>
-                                        <a href="#">Forgot password?</a>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-md" name="login">Log in</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <!-- <div class="toggle_info">
+                    
+                    <!-- <div class="col-lg-6">
+                        <div class="toggle_info">
                         <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                    </div> -->
+                    </div>
                         <div class="panel-collapse collapse coupon_form " id="coupon">
                             <div class="panel-body">
                                 <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
@@ -63,17 +30,17 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-12">
                         <div class="divider mt-50 mb-50"></div>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
                     <div class="col-md-6">
-
-                        <div class="row">
+                        
+                        <div class="row ">
 
 
                             <% addressData?.forEach((address,index)=> {
@@ -81,8 +48,8 @@
 
 
 
-                                %> <div class="col-12">
-                                    <div class="card mb-3 mb-lg-0">
+                                %> <div class="col-12 mb-2">
+                                    <div class="card mb-lg-0">
                                         <div class="card-header">
                                             <h5 class="mb-0">
 
@@ -150,54 +117,88 @@
                                 </label>
                             </div>
                         </div>
-                        <form action="/addAddress" method="post" onsubmit="return validationChecking()">
+                        <form id="addressForm">
                             <div class=" ship_detail">
                                 <div id="collapseAddress" class="different_address collapse">
-                                    <div class="row">
-                                        <div class="pb-2 pt-2 form-group">
+                                    <div class="row pt-3">
+                                        <div class="pb-2 form-group">
                                                   <input type="text" class="w-100" id="houseName" name="houseName"
-                                                      placeholder="Enter Name" />
-                                                  <div id="errorhouseName" class="ms-2 text-danger"></div>
+                                                      placeholder="Enter House Name" />
+                                                  <div id="houseNameError" class="ms-2 text-danger"></div>
                                               </div>
-                                              <div class="pb-2 pt-2 form-group ">
-                                                  <input type="text" id="street" name="street" placeholder="Enter street" />
-                                                  <div id="errorstreet" class="ms-2 text-danger"></div>
-                                              </div>
-                                              <br>
-                                              <div class="pb-2 pt-2 form-group ">
-                                                  <input type="text" id="city" name="city" placeholder="Enter city" />
-                                                  <div id="errorcity" class="ms-2 text-danger"></div>
+                                              <div class="pb-2 form-group ">
+                                                  <input type="text" class="w-100" id="street" name="street" placeholder="Enter Street" />
+                                                  <div id="streetError" class="ms-2 text-danger"></div>
                                               </div>
                                               <br>
-                                              <div class="row">
+                                              <div class="pb-2 form-group ">
+                                                  <input type="text" class="w-100" id="city" name="city" placeholder="Enter City" />
+                                                  <div id="cityError" class="ms-2 text-danger"></div>
+                                              </div>
+                                              <br>
+                                              <div class="row pe-0">
                                                   <div class="form-group col-md-6">
-                                                      <input type="text" id="state" name="state" placeholder="Enter state" />
-                                                      <div id="errorstate" class="ms-2 text-danger"></div>
+                                                      <input type="text" class="w-100" id="state" name="state" placeholder="Enter State" />
+                                                      <div id="stateError" class="ms-2 text-danger"></div>
                                                   </div>
-                                                  <div class="form-group col-md-6">
-                                                      <input type="text" id="pincode" name="pincode"
-                                                          placeholder="Enter pincode" />
-                                                      <div id="errorpincode" class="ms-2 text-danger"></div>
+                                                  <div class="form-group pe-0 col-md-6">
+                                                      <input type="text" class="w-100" id="pincode" name="pincode"
+                                                          placeholder="Enter Pincode" />
+                                                      <div id="pincodeError" class="ms-2 text-danger"></div>
                                                   </div>
                                               </div>
                                           </div>
       
       
                                           <br>
+                                          
                                           <div class="text-center">
-                                              <button class="btn btn-primary " type="submit">Save changes</button>
+                                              <button type="button" class="btn btn-primary"
+                                                                id="saveAddressBtn">Save changes</button>
                                           </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="col-md-6">
-                        <hr style="margin-top: 0px;">
+                        <div class="mb-2 col-lg-12">
+                            <div class="mb-2 toggle_info">
+                                <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="text-decoration-none collapsed" aria-expanded="false">Click here to enter your code</a></span>
+                            </div>
+                            <div class="panel-collapse collapse coupon_form " id="coupon">
+                                <div class="panel-body">
+                                    <div class="card col-lg-8">
+                                        <div class="card-body">
+                                            <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
+                                            <form method="post">
+                                                <div class="mb-2 form-group">
+                                                    <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code..." class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <button class="btn btn-md btn-primary" name="login" id="applyCouponButton">Apply Coupon</button>
+                                                </div>
+                                                <div id="couponSuccessMessage" class="text-success"></div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
+                                    <form method="post">
+                                        <div class="form-group">
+                                            <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code...">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn  btn-md" name="login" id="applyCouponButton">Apply Coupon</button>
+                                        </div>
+                                        <div id="couponSuccessMessage" class="text-success"></div>
+                                    </form> -->
+                                </div>
+                            </div>
+                        </div>
                         <div class="order_review">
                             <div class="mb-20">
                                 <h4>Your Orders</h4>
                             </div>
-                            <div class="table-responsive order_table text-center">
+                            <div class="table-responsive card order_table text-center">
                                 <table class="table">
                                     <thead>
                                         <hr style="margin-bottom: 0px;">
@@ -222,14 +223,14 @@
                                                         </a></h6>
                                                     <span class="product-qty">x <%= cartData.quantity %></span>
                                                 </td>
-                                                <td>$<%=productTotal[index] %>
+                                                <td>₹<%=productTotal[index] %>
                                                 </td>
                                             </tr>
 
                                             <% }) } %>
                                                 <tr>
                                                     <th>SubTotal</th>
-                                                    <td class="product-subtotal" colspan="2">$<%=subtotalWithShipping %>
+                                                    <td id="totalAmount" class="product-subtotal" colspan="2">₹<%=subtotalWithShipping %>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -238,9 +239,9 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Total</th>
-                                                    <td colspan="2" class="product-subtotal"><span
-                                                            class="font-xl text-brand fw-900">$<%=subtotalWithShipping
-                                                                %></span></td>
+                                                    <td colspan="2" class="product-subtotal">
+                                                        <span id="totalAfterCoupon" class="font-xl text-brand fw-900">₹<%=subtotalWithShipping %></span>
+                                                    </td>
                                                 </tr>
 
 
@@ -260,25 +261,25 @@
 
                                 <div class="payment_option">
                                     <div class="custome-radio">
-                                        <input class="form-check-input" value="CashOnDelivery" required="" type="radio"
+                                        <input class="form-check-input" value="Cash On Delivery" required="" type="radio"
                                             name="payment_option" id="exampleRadios1" checked="">
                                         <label class="form-check-label" for="exampleRadios1" data-bs-toggle="collapse"
                                             data-target="#CashOnDelivery1" aria-controls="CashOnDelivery1">Cash On
                                             Delivery</label>
                                     </div>
-                                    <!-- <div class="custome-radio">
-                                        <input class="form-check-input" value="onlinePayment" required="" type="radio"
+                                    <div class="custome-radio">
+                                        <input class="form-check-input" value="Online Payment" required="" type="radio"
                                             name="payment_option" id="exampleRadios2">
                                         <label class="form-check-label" for="exampleRadios2" data-bs-toggle="collapse"
-                                            data-target="#onlinePayment" aria-controls="onlinePayment">online
+                                            data-target="#onlinePayment" aria-controls="onlinePayment">Online
                                             Payment</label>
                                     </div>
                                     <div class="custome-radio">
-                                        <input class="form-check-input" value="Wallet" required="" type="radio"
+                                        <input class="form-check-input" value="Wallet Payment" required="" type="radio"
                                             name="payment_option" id="exampleRadios3">
                                         <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse"
-                                            data-target="#Wallet" aria-controls="Wallet">Wallet</label>
-                                    </div> -->
+                                            data-target="#Wallet" aria-controls="Wallet">Wallet Payment</label>
+                                    </div>
                                 </div>
 
 
@@ -290,21 +291,103 @@
             </div>
         </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-// Get the checkbox element and the form's collapseAddress section
-document.addEventListener('DOMContentLoaded', function() {
-    const checkbox = document.getElementById('differentaddress');
-    const collapseAddress = document.getElementById('collapseAddress');
 
-    if (checkbox && collapseAddress) {
-        checkbox.addEventListener('change', function() {
-            collapseAddress.classList.toggle('show'); // Toggle the 'show' class
+        // Get the checkbox element and the form's collapseAddress section
+        document.addEventListener('DOMContentLoaded', function() {
+            const couponSuccessMessage = document.getElementById('couponSuccessMessage');
+
+            const checkbox = document.getElementById('differentaddress');
+            const collapseAddress = document.getElementById('collapseAddress');
+
+            if (checkbox && collapseAddress) {
+                checkbox.addEventListener('change', function() {
+                    collapseAddress.classList.toggle('show'); // Toggle the 'show' class
+                });
+            }
         });
-    }
-});
 
-        let btn_checkout = document.getElementById('btn_checkout');
+        
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+          const applyCouponButton = document.getElementById('applyCouponButton');
+          const couponCodeInput = document.getElementById('couponCodeInput');
+          const orderTotalElement = document.getElementById('totalAmount');
+          const couponInfo = document.getElementById('couponInfo');
+        
+          const couponCode = couponCodeInput.value;
+        
+          applyCouponButton.addEventListener('click', async function (event) {
+                    event.preventDefault();
+                    const couponCode = couponCodeInput.value;
+                     console.log(couponCode,"couponCode");
+            if (couponCode.trim() === '') {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please enter a coupon code',
+                    icon: 'error',
+                });
+                return;
+            }
+        
+            try {
+                const response = await fetch('/applyCoupon', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ couponCode }),
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Coupon application failed');
+                }
+        
+                const data = await response.json();
+        
+                console.log('Coupon Application Response:', data);
+        
+                if (data.errorMessage) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Coupon error: ' + data.errorMessage,
+                        icon: 'error',
+                    });
+                } else {
+
+                    const discountedTotal = data.discountedTotal;
+                    
+                    const normalPrice = parseFloat(orderTotalElement.innerHTML.replace("₹", ""));
+                    const difference = (normalPrice - discountedTotal).toFixed(0);
+                    // Display coupon success message
+                    
+                    couponSuccessMessage.innerText = 'Coupon applied successfully';
+
+                    totalAfterCouponElement.innerText = `₹${discountedTotal} (Coupon Applied)`;
+                    couponCodeInput.readOnly = true;
+                    Swal.fire({
+                    title: 'Success',
+                    text: 'Coupon applied successfully',
+                    icon: 'success',
+                })
+        
+                }
+            } catch (error) {
+                console.error('Error applying coupon:', error);
+        
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error applying coupon',
+                    icon: 'error',
+                });
+            }
+        });
+          const totalAfterCouponElement = document.getElementById('totalAfterCoupon');
+
+          let btn_checkout = document.getElementById('btn_checkout');
         btn_checkout.addEventListener('click', function () {
 
             placeOrder();
@@ -315,28 +398,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedAddress = document.querySelector('input[name="checkAddress"]:checked');
             let selectedPaymentMethod = document.querySelector('input[name="payment_option"]:checked').value;
 
-
+            let couponCode='';
+            couponCode = couponCodeInput.value;
 
             if (!selectedAddress) {
-                const notification = document.getElementById('cartNotification');
-                notification.style.display = 'block';
+                console.log('inside selectedAddress');
 
-                // Hide the notification after 2 seconds
-                setTimeout(() => {
-                    notification.style.display = 'none';
-
-                }, 2000);
+                Toastify({
+                    text: "Billing address not selected",
+                    duration: 3000, // Duration in milliseconds
+                    gravity: 'bottom', // Position: 'top', 'bottom', 'left', 'right'
+                    backgroundColor: '#ff3333', // Change colors based on success/failure
+                }).showToast()
+                return
             }
 
             const address = selectedAddress.value;
 
             const requestData = {
-
+                couponCode,
                 address: address,
                 paymentMethod: selectedPaymentMethod,
+                
             };
 
-            if (selectedPaymentMethod == "CashOnDelivery"  ) {
+            if (selectedPaymentMethod == "Cash On Delivery"  ) {
+                console.log('inside if');
                 fetch('/checkout', {
                     method: 'POST',
                     headers: {
@@ -361,14 +448,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                 window.location.href = '/orderSuccess';
                             });
                         } else {
-                            Swal.fire("Error!", "Failed to perform the action", "error");
+                            Toastify({
+                                text: data.error,
+                                duration: 3000, // Duration in milliseconds
+                                gravity: 'bottom', // Position: 'top', 'bottom', 'left', 'right'
+                                backgroundColor: '#ff3333', // Change colors based on success/failure
+                            }).showToast()
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('Error occurred while placing order');
                     });
-            } else if (selectedPaymentMethod == "onlinePayment") {
+            } else if (selectedPaymentMethod == "Online Payment") {
         
                 fetch('/razorpayOrder', {
                     method: 'POST',
@@ -383,10 +475,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (data.success) {
                           
                             const options = {
-                                key: "rzp_test_rwud39pugiL6zo",
+                                key: "rzp_test_IDlkzIz4qVseOb",
                                 amount: data.order.amount,
                                 currency: "INR",
-                                name: "hookah.in",
+                                name: "precizn.in",
                                 description: "Payment for Your Order",
                                 order_id: data.order.id,
                                 handler: async function (response) {
@@ -402,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             headers: {
                                                 "Content-Type": "application/json",
                                             },
-                                            body: JSON.stringify(requestData),
+                                            body: JSON.stringify({ ...requestData, amount: (options.amount) / 100 }),
                                         });
                            
 
@@ -419,15 +511,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 },
                                 prefill: {
-                                    name: "Hookah",
-                                    email: "hookah@gmail.com",
-                                    contact: "7994711326"
+                                    name: "PRECIZN",
+                                    email: "precizn@gmail.com",
+                                    contact: "9074914690"
                                 },
                                 notes: {
                                     address: "Razorpay Corporate Office"
                                 },
                                 theme: {
-                                    color: "#3399cc"
+                                    color: "#ffc800"
                                 }
                             };
 
@@ -443,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Error:', error);
                         alert('Error occurred while placing orderewew');
                     });
-            } else  if (selectedPaymentMethod == "Wallet" ) {
+            } else  if (selectedPaymentMethod == "Wallet Payment" ) {
                 fetch('/checkout', {
                     method: 'POST',
                     headers: {
@@ -477,72 +569,163 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
             }
         }
-    </script>
-    <script>
+                     
+    })
+
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     const houseName = document.getElementById("houseName");
+        //     const errorhouseName = document.getElementById("errorhouseName");
+        //     const street = document.getElementById("street");
+        //     const errorstreet = document.getElementById("errorstreet");
+        //     const city = document.getElementById("city");
+        //     const errorcity = document.getElementById("errorcity");
+        //     const state = document.getElementById("state");
+        //     const errorstate = document.getElementById("errorstate");
+        //     const pincode = document.getElementById("pincode");
+        //     const errorpincode = document.getElementById("errorpincode");
+
+        //     houseName.addEventListener('input', function () {
+        //         errorhouseName.innerHTML = houseName.value.trim() === "" ? "Please enter house name" : /^[a-zA-Z ]+$/.test(houseName.value) == false ? "Please enter alphabets only" : "";
+        //     });
+        //     street.addEventListener('input', function () {
+        //         errorstreet.innerHTML = street.value.trim() === "" ? "Please enter street name" : /^[a-zA-Z ]+$/.test(street.value) == false ? "Please enter alphabets only" : "";
+        //     });
+        //     city.addEventListener('input', function () {
+        //         errorcity.innerHTML = city.value.trim() === "" ? "Please enter city name" : /^[a-zA-Z ]+$/.test(city.value) == false ? "Please enter alphabets only" : "";
+        //     });
+        //     state.addEventListener('input', function () {
+        //         errorstate.innerHTML = state.value.trim() === "" ? "Please enter state name" : /^[a-zA-Z ]+$/.test(state.value) == false ? "Please enter alphabets only" : "";
+        //     });
+
+        //     pincode.addEventListener('input', function () {
+        //         errorpincode.innerHTML = pincode.value.trim() === "" ? "Please enter  number" : /^\d{6}$/.test(pincode.value) == false ? "Please enter valid  number" : "";
+        //     });
 
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const houseName = document.getElementById("houseName");
-            const errorhouseName = document.getElementById("errorhouseName");
-            const street = document.getElementById("street");
-            const errorstreet = document.getElementById("errorstreet");
-            const city = document.getElementById("city");
-            const errorcity = document.getElementById("errorcity");
-            const state = document.getElementById("state");
-            const errorstate = document.getElementById("errorstate");
-            const pincode = document.getElementById("pincode");
-            const errorpincode = document.getElementById("errorpincode");
+        // });
+        // function validationChecking() {
+        //     const houseName = document.getElementById("houseName");
+        //     const errorhouseName = document.getElementById("errorhouseName");
+        //     const street = document.getElementById("street");
+        //     const errorstreet = document.getElementById("errorstreet");
+        //     const city = document.getElementById("city");
+        //     const errorcity = document.getElementById("errorcity");
+        //     const state = document.getElementById("state");
+        //     const errorstate = document.getElementById("errorstate");
+        //     const pincode = document.getElementById("pincode");
+        //     const errorpincode = document.getElementById("errorpincode");
 
-            houseName.addEventListener('input', function () {
-                errorhouseName.innerHTML = houseName.value.trim() === "" ? "Please enter home name" : /^[a-zA-Z ]+$/.test(houseName.value) == false ? "Please enter alphabets only" : "";
-            });
-            street.addEventListener('input', function () {
-                errorstreet.innerHTML = street.value.trim() === "" ? "Please enter street name" : /^[a-zA-Z ]+$/.test(street.value) == false ? "Please enter alphabets only" : "";
-            });
-            city.addEventListener('input', function () {
-                errorcity.innerHTML = city.value.trim() === "" ? "Please enter city name" : /^[a-zA-Z ]+$/.test(city.value) == false ? "Please enter alphabets only" : "";
-            });
-            state.addEventListener('input', function () {
-                errorstate.innerHTML = state.value.trim() === "" ? "Please enter state name" : /^[a-zA-Z ]+$/.test(state.value) == false ? "Please enter alphabets only" : "";
-            });
+        //     let isValid = true;
 
-            pincode.addEventListener('input', function () {
-                errorpincode.innerHTML = pincode.value.trim() === "" ? "Please enter  number" : /^\d{6}$/.test(pincode.value) == false ? "Please enter valid  number" : "";
-            });
+        //     errorhouseName.innerHTML = houseName.value.trim() === "" ? "Please enter home name" : /^[a-zA-Z ]+$/.test(houseName.value) == false ? "Please enter alphabets only" : "";
+        //     errorstreet.innerHTML = street.value.trim() === "" ? "Please enter street name" : /^[a-zA-Z ]+$/.test(street.value) == false ? "Please enter alphabets only" : "";
+        //     errorcity.innerHTML = city.value.trim() === "" ? "Please enter city name" : /^[a-zA-Z ]+$/.test(city.value) == false ? "Please enter alphabets only" : "";
+        //     errorstate.innerHTML = state.value.trim() === "" ? "Please enter state name" : /^[a-zA-Z ]+$/.test(state.value) == false ? "Please enter alphabets only" : "";
+        //     errorpincode.innerHTML = pincode.value.trim() === "" ? "Please enter pincode" : /^\d{6}$/.test(pincode.value) == false ? "Please enter valid pincode" : "";
 
+        //     if (
+        //         errorhouseName.innerHTML ||
+        //         errorstreet.innerHTML ||
+        //         errorcity.innerHTML ||
+        //         errorstate.innerHTML ||
+        //         errorpincode.innerHTML
+        //     ) {
+        //         isValid = false;
+        //     }
 
-        });
-        function validationChecking() {
-            const houseName = document.getElementById("houseName");
-            const errorhouseName = document.getElementById("errorhouseName");
-            const street = document.getElementById("street");
-            const errorstreet = document.getElementById("errorstreet");
-            const city = document.getElementById("city");
-            const errorcity = document.getElementById("errorcity");
-            const state = document.getElementById("state");
-            const errorstate = document.getElementById("errorstate");
-            const pincode = document.getElementById("pincode");
-            const errorpincode = document.getElementById("errorpincode");
+        //     return isValid;
+        // }
+        $('#saveAddressBtn').on('click', function () {
+            let isValid = true; // Flag to track validation
 
-            let isValid = true;
+            // Get input values
+            const houseName = $('#houseName').val().trim();
+            const street = $('#street').val().trim();
+            const city = $('#city').val().trim();
+            const state = $('#state').val().trim();
+            const pincode = $('#pincode').val().trim();
 
-            errorhouseName.innerHTML = houseName.value.trim() === "" ? "Please enter home name" : /^[a-zA-Z ]+$/.test(houseName.value) == false ? "Please enter alphabets only" : "";
-            errorstreet.innerHTML = street.value.trim() === "" ? "Please enter street name" : /^[a-zA-Z ]+$/.test(street.value) == false ? "Please enter alphabets only" : "";
-            errorcity.innerHTML = city.value.trim() === "" ? "Please enter city name" : /^[a-zA-Z ]+$/.test(city.value) == false ? "Please enter alphabets only" : "";
-            errorstate.innerHTML = state.value.trim() === "" ? "Please enter state name" : /^[a-zA-Z ]+$/.test(state.value) == false ? "Please enter alphabets only" : "";
-            errorpincode.innerHTML = pincode.value.trim() === "" ? "Please enter pincode" : /^\d{6}$/.test(pincode.value) == false ? "Please enter valid pincode" : "";
-
-            if (
-                errorhouseName.innerHTML ||
-                errorstreet.innerHTML ||
-                errorcity.innerHTML ||
-                errorstate.innerHTML ||
-                errorpincode.innerHTML
-            ) {
-                isValid = false;
+            // Check each field
+            if (!(houseName.trim().length >= 2 && /^[a-zA-Z]/.test(houseName.trim()))) {
+                $('#houseNameError').text('Please enter the house name.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#houseNameError').text('');
             }
 
-            return isValid;
-        }
+            if (!(street.trim().length >= 2 && /^[a-zA-Z]/.test(street.trim()))) {
+                $('#streetError').text('Please enter your correct street.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#streetError').text('');
+            }
+
+            if (!(city.trim().length >= 2 && /^[a-zA-Z]/.test(city.trim()))) {
+                $('#cityError').text('Please enter your correct city.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#cityError').text('');
+            }
+
+            if (!(state.trim().length >= 2 && /^[a-zA-Z]/.test(state.trim()))) {
+                $('#stateError').text('Please enter your correct state.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#stateError').text('');
+            }
+
+            if (isNaN(pincode) || pincode.trim().length < 5 || parseFloat(pincode) < 500) {
+                $('#pincodeError').text('Please enter your correct pincode.').css('color', 'red');
+                isValid = false; // Set flag to false
+            } else {
+                $('#pincodeError').text('');
+            }
+
+            // If any field is empty, prevent form submission
+            if (!isValid) {
+                return;
+            }
+            // Get the form data
+            const formData = $('#addressForm').serialize();
+
+            // Make an AJAX POST request
+            $.ajax({
+                url: '/addressadd',
+                method: 'POST',
+                data: formData,
+                success: function (data) {
+                    if (data.success) {
+                        // If success, show SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message // Use the message received from the backend
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Close the modal if SweetAlert is confirmed or dismissed
+                                $('#addAddressModal').modal('hide');
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        // Handle other scenarios if needed
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message // Use the error message received from the backend
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Something went wrong. Please try again.' // Generic error message
+                    });
+                }
+            });
+        })
     </script>
     <%- include('../layouts/footeruser.ejs') %>

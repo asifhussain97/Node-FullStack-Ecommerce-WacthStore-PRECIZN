@@ -13,6 +13,9 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  coupon: {
+    type:String
+  },
   deliveryDate: {
     type: Date,
   },
@@ -51,6 +54,10 @@ const orderSchema = new mongoose.Schema({
         type:String,
         default:'Pending'
       },
+      approve:{
+        type:String,
+        default:null
+      }
     },
   ],
 });

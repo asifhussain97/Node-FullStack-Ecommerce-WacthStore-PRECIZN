@@ -1,4 +1,6 @@
 <%- include('../layouts/headeruser.ejs') %>      
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+
 <style>
   body {
       display: flex;
@@ -27,8 +29,55 @@
 <main class="main">
 
   <section class="pt-150 pb-150">
-  
-      <div class="container">
+    <div class="mb-4">
+      
+      <div class="card mx-3">
+          <table id="datatablesSimple">
+              <thead>
+                  <tr>
+                      <th>Order</th>
+                      <th>Order Date</th>
+                      <th>Delivery Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tfoot>
+                  <tr>
+                      <th>Order</th>
+                      <th>Order Date</th>
+                      <th>Delivery Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+              </tfoot>
+              <tbody>
+                  <% order.forEach(order_data => { %>
+                      <tr>
+                          <td><%= order_data._id %></td>
+                          <td><%= new Date(order_data.orderDate).toLocaleDateString() %></td>
+                          <td><%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
+                          <td>
+                            <% let f = 0;
+                               order_data.items.forEach(function(item) {
+                                   if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') {
+                                       f = 1;
+                                   }
+                               });
+                               if (f === 0) { %>
+                                   Completed
+                               <% } else { %>
+                                   Pending
+                               <% } %>
+                          </td>
+                          <td><a href="/orderDetails/<%= order_data._id%>"  class="btn btn-primary btn-sm d-block text-decoration-none">View</a></td>
+                      </tr>
+                  <% }); %>
+              </tbody>
+          </table>
+      </div>
+  </div>
+      <!-- <div class="container">
     
           <div class="row">
               <div class="col-lg-12 m-auto">
@@ -65,8 +114,7 @@
                                       
                                     </h5>
                                   </div>
-                               <%order_data.items.forEach((item_value)=>{
-                                console.log(item_value,"item_value");%>
+                               <%order_data.items.forEach((item_value)=>{ %>
                            <div class="card-body row">
                                     <div class="col-5">
                                         <div class="d-flex align-items-center">
@@ -82,7 +130,7 @@
                                     </div>
                                     <div class="col-1"></div>
                                     <div class="col-1">
-                                        <%= item_value.product.discount_price %>
+                                        <%= item_value.price %>
                                         </div>
                                     <div class="col-1"></div>
                                     <div class="col-4 ">
@@ -143,8 +191,24 @@
                   </div>
               </div>
           </div>
-      </div>
+      </div> -->
   </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', event => {
+        // Simple-DataTables
+        // https://github.com/fiduswriter/Simple-DataTables/wiki
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            new simpleDatatables.DataTable(datatablesSimple);
+        }
+    });
+
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
 <%- include('../layouts/footeruser.ejs') %>

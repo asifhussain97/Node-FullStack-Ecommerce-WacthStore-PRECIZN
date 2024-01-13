@@ -1,4 +1,5 @@
 <%- include('../layouts/headeruser.ejs') %>      
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
 
     <section style="padding-top: 78px;" class="content-main">
 
@@ -38,26 +39,43 @@
                 </div>
             
             </header>
-            <div class="card-body">
-               <div class="container">
+        </div>
+
+               <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="table-responsive">
-                            <table class="table">
+                        <div class="table-responsive ">
+                            <div class="text-end mt-3 mb-3">
+                                <a href="/invoice/<%= order._id%>" class="p-2 rounded-2" style="text-decoration: none; background-color: grey; color: #fff; " >View Invoice</a>
+                            </div>
+                            <div class="card">
+                            <table id="datatablesSimple" >
                                 <thead>
                                     <tr>
-                                        <th width="40%">Product</th>
-                                        <th width="20%">Unit Price</th>
-                                        <th width="20%">Quantity</th>
-                                        <th width="20%">Status</th>
-                                        <th width="20%" class="text-end">Total</th>
-                                        <th width="20%" class="text-end">Payment</th>
-                                        <th width="20%" class="text-end">Action</th>
+                                        <th>Product</th>
+                                        <th class="text-center">Unit Price</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="text-center">Payment Method</th>
+                                        <th class="text-center">Payment Status</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
-
+                                <tfoot>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Unit Price</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="text-center">Payment Method</th>
+                                        <th class="text-center">Payment Status</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </tfoot>
                                 <tbody>
-                                    <% let subtotal=0; order.items.forEach(function(item) { let total=item.product.discount_price * item.quantity; 
+                                    <% let subtotal=0; order.items.forEach(function(item) { let total=item.product.discountPrice?item.product.discountPrice * item.quantity:item.product.price * item.quantity;
                                         if (item.status!="Cancelled" ) 
                                     {  subtotal +=total;}   %>
                                         <tr>
@@ -72,90 +90,72 @@
                                                     </div>
                                                 </a>
                                             </td>
-                                            <td>
-                                                ₹<%=item.product.discount_price %>
+                                            <td class="text-center">
+                                                ₹<%=item.price %>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 <%=item.quantity %>
-                                            </td>
-                                            <td>
+                                            </td class="text-center">
+                                            <td class="text-center">
                                                 <%=item.status %>
-                                            </td>
-                                            <td class="text-end">
+                                            </td class="text-center">
+                                            <td class="text-center">
                                                 ₹<%= total %>
                                             </td>
-                                            <td class="text-end">
+                                            <td class="text-center">
                                                 <%= item.paymentMethod %>
                                             </td>
-                                            <td class="text-end">
-                                                <% if (item.status=="Confirmed" ) { %> <button class="btn bg-danger btn-sm"
-
-                                                id="cancelModalData" data-bs-toggle="modal"
-                                    data-bs-target="#cancelModal<%=item.product._id %>"
-                               >cancel</button>
-                                <% }  else{ %>
-                                    <button class="btn bg-secondary btn-sm" disabled>cancel</button>
-                                    <% } %>
-
+                                            <td class="text-center">
+                                                <%= item.paymentStatus %>
+                                            </td>
+                                            <td class="text-center">
+                                                <% if (item.status=="Confirmed" ) { %> 
+                                                    <button class="btn bg-danger btn-sm"id="cancelModalData" data-bs-toggle="modal" data-bs-target="#cancelModal<%=item.product._id %>">cancel</button>
+                                                <% }  else if(item.status=="Delivered" && item.approve=="not set"){ %>
+                                                    <button class="btn bg-danger btn-sm"id="cancelModalData" data-bs-toggle="modal" data-bs-target="#cancelModal<%=item.product._id %>">return</button>
+                                                <% }  else if(item.status=="Request Send" && item.approve=="pending"){ %>
+                                                    <button class="btn bg-secondary btn-sm" disabled>return</button>
+                                                <% }  else if(item.status=="Cancelled" ){%>
+                                                    <button class="btn bg-secondary btn-sm" disabled>cancel</button>
+                                                <% } else if(item.status=="Returned" ){%>
+                                                    <button class="btn bg-secondary btn-sm" disabled>return</button>
+                                                <% } %>
                                             </td>
                                         </tr>
-<div class="modal fade" id="cancelModal<%=item.product._id %>" tabindex="-1" aria-labelledby="cancelModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div>
-                                <label class="form-label">Reason</label>
-                                <!-- Adjust the "rows" attribute to set the number of visible rows -->
-                                <textarea placeholder="Type here" name="reason" class="form-control" rows="10"
-                                    id="reason"></textarea>
-                                <div class="error-message" style="color: red;" id="reason-error"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary"
-                                onclick="cancelProductconfirm('<%= order._id %>','<%=item.product._id %>')">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                                        <% }) %>
-                                            <tr >
-                                                <td colspan="4"></td>
+                                            <div class="modal fade" id="cancelModal<%=item.product._id %>" tabindex="-1" aria-labelledby="cancelModalLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div>
+                                                                <label class="form-label">Reason</label>
+                                                                <!-- Adjust the "rows" attribute to set the number of visible rows -->
+                                                                <textarea placeholder="Type here" name="reason" class="form-control" rows="10" id="reason_<%=item.product._id %>"></textarea>
 
-                                                <td colspan="3">
-                                                    <article class="">
-                                                        <dl class="dlist">
-                                                            <dt>Subtotal:
-                                                            ₹<%= subtotal %>
-                                                            </dt>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Shipping cost:
-                                                            ₹0.00</dt>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt>Grand total:
-                                                             <b class="h5">₹<%= subtotal %></b> </dt>
-                                                        </dl>
-                                                        <dl class="dlist">
-                                                            <dt class="text-muted">Status:
-                                                         
-                                                                <span
-                                                                    class="badge rounded-pill alert-success text-secondary">Pending</span>
-                                                                </dt>
-                                                        </dl>
-                                                    </article>
-                                                </td>
-                                            </tr>
+                                                                <div class="error-message" style="color: red;" id="reason-error"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                            <% if (item.status=="Delivered" ) { %> 
+                                                                onclick="returnProductconfirm('<%= order._id %>','<%=item.product._id %>')">Submit</button>
+                                                            <% }  else {%>
+                                                                onclick="cancelProductconfirm('<%= order._id %>','<%=item.product._id %>')">Submit</button>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }) %>
                                 </tbody>
                                
                             </table>
+                            </div>
                         </div> <!-- table-responsive// -->
                     </div>
 
@@ -166,8 +166,41 @@
                 </div>
                </div>
       
-            </div>
         </div>
+        <article class="float-end me-4">
+            <dl class="dlist d-flex">
+                <dt>Subtotal:</dt>
+                <dd class="ms-2">₹<%= subtotal %></dd>
+            </dl>
+            <dl class="dlist d-flex">
+                <dt>Shipping cost:</dt>
+                <dd class="ms-2">₹0.00</dd>
+            </dl>
+            <dl class="dlist d-flex">
+                <dt>Grand total:</dt>
+                    <% if(order.coupon){ %>
+                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %> </b> (Coupon Applied)</dd>
+                    <% } else { %>
+                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %></b> </dd>
+                    <% } %>
+            </dl>
+            <!-- <dl class="dlist d-flex">
+                <dt class="text-muted">Payment Status:</dt>
+                <dd>
+                    <% let t = 0;
+                        order.items.forEach(function(item) {
+                            if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.paymentStatus=='Pending') {
+                                t = 1;
+                            }
+                        });
+                        if (t === 0) { %>
+                            <span class="badge rounded-pill alert-success text-success">Success</span>
+                        <% } else { %>
+                            <span class="badge rounded-pill alert-success text-secondary">Pending</span>
+                        <% } %>
+                </dd>
+            </dl> -->
+        </article>
     </section>
    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -176,8 +209,7 @@
 
     <script>
         function cancelProductconfirm(id,productId) {
-            const reason = document.getElementById('reason').value;
-            console.log(id, "akkkkk",productId);
+            const reason = document.getElementById(`reason_${productId}`).value;
             if (!reason) {
                 alert('Please provide a reason');
                 return
@@ -189,7 +221,7 @@
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, cancel it!",
+                confirmButtonText: "Yes",
             }).then((result) => {
                 if (result.isConfirmed) {
                     // User clicked "Yes," so proceed with removing the item
@@ -204,7 +236,7 @@
 
                reason,
                productId
-             };
+            };
    
 
             fetch(`/orderCancel?id=${id}`, {
@@ -237,19 +269,34 @@
                 });
         }
 
-        function returnProduct(id) {
-            const reason = document.getElementById('reason').value;
-            console.log(id, "akkkkk");
 
-
+        function returnProductconfirm(id,productId) {
+            const reason = document.getElementById(`reason_${productId}`).value;
             if (!reason) {
-                alert('Please select an address.');
-
+                alert('Please provide a reason');
+                return
             }
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes," so proceed with removing the item
+                    returnProduct(id,productId,reason);
+                }
+            });
+        }
+
+        function returnProduct(id,productId,reason) {
+            
             const requestData = {
-
                 reason,
-
+                productId
             };
 
             fetch(`/return?id=${id}`, {
@@ -262,10 +309,18 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        window.location.href = '/orderSuccess';
-                        console.log("sucess");
+                        Swal.fire({
+                            title: "Success",
+                            text: data.message,
+                            icon: "success",
+                            timer: 2000,
+                            timeProgressBar: true,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.reload();
+                        });
                     } else {
-                        alert('Error occurred while placing order');
+                        alert('Error occurred while canceling order');
                     }
                 })
                 .catch(error => {
@@ -289,6 +344,22 @@
     <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="assets/js/main.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', event => {
+        // Simple-DataTables
+        // https://github.com/fiduswriter/Simple-DataTables/wiki
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            new simpleDatatables.DataTable(datatablesSimple);
+        }
+    });
+
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
     </body>
 
 

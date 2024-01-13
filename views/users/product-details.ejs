@@ -45,9 +45,9 @@
     flex: 0 0 5.5%; /* Adjust the width percentage as needed */
     max-width: 5.5%;
   }
-                  .checked {
+                  /* .checked {
                     color: orange;
-                  }
+                  } */
 </style>
   <div style="margin-top: 150px; margin-bottom: 200px;" class=" site-section">
     <div class="container">
@@ -71,15 +71,34 @@
           </h2>
           <p></p>
           <p class="mb-4"><%= products.description %></p>
+
+          <div class="product_sort_info font-xs mb-4">
+            <ul style="list-style: none; ">
+                <li class="mb-10 text-muted"><i class="fa-solid fa-crown"></i> 1 Year Warranty</li>
+                <li class="mb-10 text-muted"><i class="fa-solid fa-rotate"></i> 7 Day Return
+                    Policy</li>
+                <li class="text-muted"><i class="fa-regular fa-credit-card"></i> Cash on Delivery available
+                </li>
+            </ul>
+          </div>
+          <%if( products.discountStatus==true && new Date(products.discountStart) <= new Date() && new Date() <= new Date(products.discountEnd)){
+            const percentageOff = ((products.price - products.discountPrice) / products.price) * 100; %>
           <p>
-            <strong class="text-dark h4">₹<%= products.discount_price %></strong>
-            - <s class="text-secondary h6">₹<%= products.price %></s>
+            <strong class="text-dark h4">₹<%= products.discountPrice %></strong>
+            - <s class="text-secondary h6">₹<%= products.price %></s> <span style="font-size: 12px; background-color: rgb(255, 255, 255); " class=" text-success"><%= percentageOff.toFixed(2) %>% Off</span>
           </p>
-                <span class="fa fa-star checked"></span>
+          <% } else { %>
+            <p>
+              <strong class="text-dark h4">₹<%= products.price %></strong>
+            </p>
+          <% } %>
+
+                <!-- <span class="fa fa-star checked"></span>
                 <span class="fa fa-star checked"></span>
                 <span class="fa fa-star checked"></span>
                 <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span> -->
+
                 <!-- <div class="mb-5">
                   <div class="input-group mb-3" style="max-width: 120px;">
                       <div class="input-group-prepend">
@@ -125,7 +144,9 @@
               <div class="mt-2 d-flex detail-extralink">
                 <%  if(!existingCartItem){ %>
                     <input type="number" name="qty" class="w-25 me-2" value="1" min="1" max="10">
-                  <% } %>
+                  <% } else  {%>
+                    <input type="hidden" name="qty" value="0">
+                  <% }%>
                   <div class=" product-extra-link2 my-1">
 
                       <button type="submit" class="btn btn-outline-dark btn-sm btn-product btn-cart"><i class="fa-solid fa-cart-shopping"></i> <%= existingCartItem ? 'Go To Cart' : 'Add To Cart' %></button>

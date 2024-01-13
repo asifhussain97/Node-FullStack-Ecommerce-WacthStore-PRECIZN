@@ -1,24 +1,7 @@
 const User = require("../models/userModel")
 const Address = require("../models/address")
 
-// load add address form
 
-// const loadAddAddress = async(req,res)=>{
-//   try {
-//     const userId = req.session.user_id
-
-//     const userData = await User.findById(userId)
-
-//     if(userData){
-//       res.render("user/addAddress",{})
-//     }else{
-//       res.redirect("/login")
-//     }
-    
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
 
 // add address post
 
@@ -78,7 +61,6 @@ const  loadEditAddress = async(req,res)=>{
           res.status(404).json({ success: false, message: 'Address not found' });
       }
 
-    // res.render("user/editAddress",{userData,Address:address})
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -91,7 +73,6 @@ const updateAddress = async (req, res) => {
       const id = req.body.editAddressId;
 
       const { editHouseName, editStreet, editCity, editState, editPincode } = req.body;
-      console.log(id,req.body,'data');
       const updatedAddress = await Address.findByIdAndUpdate(
           { _id:id },
           {
@@ -104,7 +85,6 @@ const updateAddress = async (req, res) => {
               }
           }
       );
-      console.log(updatedAddress,'updatedata');
 
       if (updatedAddress) {
           res.status(200).json({ success: true, message: 'Address has been updated' });
@@ -129,7 +109,6 @@ const deleteAddress = async (req, res) => {
       const deletedAddress = await Address.findByIdAndDelete(id);
 
       if (!deletedAddress) {
-        console.log("if deletion");
            res.status(404).json({ success: false, error: "Address not found" });
            return
       }
@@ -140,23 +119,7 @@ const deleteAddress = async (req, res) => {
        return
   }
 };
-// const deleteAddress = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-   
-//     const AddressData = await Address.findByIdAndUpdate(
-//       { _id: id },
-//       {
-//         $set: {
-//           is_listed: false,
-//         },
-//       }
-//     );
-//     res.redirect("/user-profile");
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
+
 
 module.exports = {
   addAddress,

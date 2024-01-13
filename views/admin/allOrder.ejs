@@ -45,7 +45,19 @@
                                 <td><%= order_data._id %></td>
                                 <td><%= new Date(order_data.orderDate).toLocaleDateString() %></td>
                                 <td><%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
-                                <td><%= order_data.status %></td>
+                                <td>
+                                  <% let f = 0;
+                                     order_data.items.forEach(function(item) {
+                                         if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') {
+                                             f = 1;
+                                         }
+                                     });
+                                     if (f === 0) { %>
+                                         Completed
+                                     <% } else { %>
+                                         Pending
+                                     <% } %>
+                                </td>
                                 <td><%= order_data.totalAmount %></td>
                                 <td><a href="/admin/orderDetails?id=<%= order_data._id %>" class="btn-small d-block">View</a></td>
                             </tr>

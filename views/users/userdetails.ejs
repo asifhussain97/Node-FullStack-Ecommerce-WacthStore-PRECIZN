@@ -1,4 +1,6 @@
 <%- include('../layouts/headeruser.ejs') %>
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+
     <style>
         body {
             display: flex;
@@ -184,7 +186,6 @@
                                                     Add New Address
                                                 </button>
                                                 <% if (address) { address.forEach(x=> {
-                                                    console.log(user._id,'user ',x.user,'address')
                                                     if(x.is_listed && String(user._id) === String(x.user)){%>
                                                     <div class="mb-3">
                                                         <div class="card mb-3 mb-lg-0">
@@ -216,10 +217,9 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <% } }) } else { %>
-                                                        <p>No address available.</p>
-                                                        <% } %>
-
+                                                <% } }) } else { %>
+                                                    <p>No address available.</p>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </div>
@@ -419,6 +419,42 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="viewwalletModal" tabindex="-1" role="dialog" aria-labelledby="viewwalletModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewwalletModalLabel">Wallet Transaction</h5>
+            </div>
+            <div class="modal-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <% if (wallet &&wallet.transaction) { wallet.transaction.forEach(x => { %>
+                            <tr>
+                                <td><%= x.date.toLocaleString('en-US') %></td>
+                                <td><%= x.amount %></td>
+                                <td><%= x.type %></td>
+                            </tr>
+                        <% }); } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel"
                                         aria-labelledby="account-detail-tab">
                                         <div class="card">
@@ -438,22 +474,30 @@
                                                                     class="required"></span></strong>: <%= user.email %>
                                                         </li>
                                                         <li>
-                                                            <strong>Mobile Number<span
+                                                            <strong>Mobile Number <span
                                                                     class="required"></span></strong>: <%= user.mobile
+                                                                %>
+                                                        </li>
+                                                        <% if(wallet){ %>
+                                                        <li>
+                                                            <strong>Your Wallet <span
+                                                                    class="required"></span></strong>: <%= wallet.walletBalance
+                                                                %>
+                                                        </li>
+                                                        <% } %>
+                                                        <li>
+                                                            <strong>Referral Code <span
+                                                                    class="required"></span></strong>: <%= user.referralCode
                                                                 %>
                                                         </li>
                                                     </ul>
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <button type="button"
-                                                        class="btn btn-secondary editUserDetailsButton">EDIT</button>
-                                                    <!-- <a href="/changePassword"><button type="button"
-                                                            class="btn btn-secondary mt-3">Change Password</button></a> -->
+                                                    <button type="button" class="btn btn-secondary editUserDetailsButton">EDIT</button>
                                                     
-                                                            <button type="button" class="btn btn-secondary mt-3" data-toggle="modal"
-                                                    id="changepasswordbtn" data-target="#changepasswordmodal">
-                                                    Change Password
-                                                </button>
+                                                    <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" id="changepasswordbtn" data-target="#changepasswordmodal">Change Password</button>
+                                                    <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" id="viewwallet" data-target="#viewwalletmodal">View Wallet History</button>
+
                                                 </div>
                                             </div>
                                             <!-- Image upload form section -->
@@ -609,6 +653,17 @@ changePasswordBtn.addEventListener('click', function () {
 
     // Show the modal
     modal.show();
+});
+
+const viewwallet = document.getElementById('viewwallet');
+
+// Add an event listener to the button
+viewwallet.addEventListener('click', function () {
+    // Create a new Bootstrap modal instance
+    const modalwallet = new bootstrap.Modal(document.getElementById('viewwalletModal'));
+
+    // Show the modal
+    modalwallet.show();
 });
 $('#changePasswordBtn').on('click', function () {
     let isValid = true; // Flag to track validation
@@ -1044,7 +1099,7 @@ $('#changePasswordBtn').on('click', function () {
                 $('#editEmailError').text('');
             }
 
-            if (/^[1-9]\d{9}$/.test(editMobile) === false && /^(.)\1*$/.test(editMobile)) {
+            if (/^[1-9]\d{9}$/.test(editMobile) === false || /^(.)\1*$/.test(editMobile)) {
                 $('#editMobileError').text('Please enter a valid 10-digit mobile number.').css('color', 'red');
                 isValid = false;
             } else {
@@ -1099,5 +1154,20 @@ $('#changePasswordBtn').on('click', function () {
             });
         }
     </script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', event => {
+        // Simple-DataTables
+        // https://github.com/fiduswriter/Simple-DataTables/wiki
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            new simpleDatatables.DataTable(datatablesSimple);
+        }
+    });
 
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
     <%- include('../layouts/footeruser.ejs') %>

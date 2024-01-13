@@ -49,7 +49,7 @@
 }
 .content{
     width: 30vw; 
-    height: 565.6px;
+    /* height: 565.6px; */
     margin-left: 50px;
 }
 .content2{
@@ -64,14 +64,14 @@
     width: min-content; 
     height: auto;
     border: 1px solid black;
-    background-color: rgba(119, 119, 119, 0.556);
+    background-color: rgb(135, 135, 135);
 }
 .main2{
     padding: 0px;
     width: min-content; 
     height: auto;
     border: 1px solid black;
-    background-color: rgba(144, 144, 144, 0.53);
+    background-color: rgb(135, 135, 135);
 }
 .card-body{
     margin-left: 30px;
@@ -118,6 +118,6 @@ body{
     height: 707px;
     display: grid;
     place-items: center; 
-    background: linear-gradient(to top right, rgb(0, 0, 0), #404040); /* Replace #ffffff with white's hex code if needed */
+    background: linear-gradient(to top right, #000000, #404040); /* Replace #ffffff with white's hex code if needed */
 }
 

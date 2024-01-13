@@ -30,6 +30,16 @@ const Product = new mongoose.Schema({
     type: Number,
     required: true
   },
+  discountPrice: {
+    type: Number,
+  },
+  discountStatus:{
+    type:Boolean,
+    default:false
+  },
+  discount:Number,
+  discountStart:Date,
+  discountEnd:Date,
   stock: {
     type: Number,
     required: true

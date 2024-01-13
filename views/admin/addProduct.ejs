@@ -23,7 +23,7 @@
                                     <div class="mb-4">
                                         <label for="product_category" class="form-label">Product category</label>
                                         <select name="category" class="form-control" id="categorySelect" onchange="displaySubCategory(this.value, '<%= JSON.stringify(category) %>')">
-                                            <option value="" selected></option>
+                                            <option value="" disabled selected>Select Category</option>
                                             <% category.forEach((cat) => {
                                                  if(cat.is_listed) { %>
                                                     <option value="<%= cat._id %>"><%= cat.name %></option>
@@ -55,7 +55,8 @@
                                                 const subCategoryHTML = `
                                                     <label for="product_subcategory" class="form-label">Product sub-category</label>
                                                     <select name="sub_category" class="form-control" id="subCategorySelect">
-                                                        <option value="">${subCategories}</option>
+                                                        <option disabled selected value="">Select Sub-Category</option>
+                                                        ${subCategories}
                                                     </select>
                                                     <div class="error-message" style="color: red;" id="product_sub_category-error"></div>
                                                 `;
@@ -74,7 +75,7 @@
                                         <div class="error-message" style="color: red;" id="product_price-error"></div>
                                     </div>
                                     <div class="mb-4">
-                                        <label for="product_discount" class="form-label">Discount rice</label>
+                                        <label for="product_discount" class="form-label">Discount Price</label>
                                         <input type="text" name="discount_price" placeholder="Type here" class="form-control" id="product_discount">
                                         <div class="error-message" style="color: red;" id="product_discount-error"></div>
                                     </div>
@@ -91,7 +92,7 @@
                                     <div class="mb-4">
                                         <label for="product_gender" class="form-label">Gender</label>
                                         <select name="gender" class="form-select" id="product_gender">
-                                            <option value="">Select Gender</option>
+                                            <option disabled selected value="">Select Gender</option>
                                             <option value="Men">Men</option>
                                             <option value="Women">Women</option>
                                             <option value="Kids">Kids</option>
@@ -115,7 +116,6 @@
                                     
                                     <div class="card">
                                         <div class="card-body">
-                                            
                                             <div class="images-container">
                                                 <div class="image-preview-container d-flex flex-wrap justify-content-center">
                                                     <!-- Placeholder for default image -->
@@ -345,7 +345,7 @@
                             confirmButtonText: 'OK',
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.reload(); // Redirect to a suitable page
+                                window.location.href='/admin/product'; // Redirect to a suitable page
                             }
                         });
                     } else {

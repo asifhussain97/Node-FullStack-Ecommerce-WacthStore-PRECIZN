@@ -4,6 +4,10 @@ const Category = require("../models/category")
 const Product = require("../models/product")
 const Address = require("../models/address")
 const message = require("../config/sms")
+const Wallet = require("../models/walletModel");
+const Order = require("../models/orderModel");
+var easyinvoice = require('easyinvoice');
+
 let newUser;
 const securePassword = async (password) => {
   try {
@@ -16,7 +20,10 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
   try {
-    res.render("registration");
+    referral = req.session.referralCode;
+    console.log(referral,"referral");
+
+    res.render("registration",referral);
   } catch (error) {
     console.log(error.message);
   }
@@ -31,6 +38,22 @@ const insertUser = async (req, res, next) => {
       password: req.body.password,
       password2: req.body.cpassword,
       is_admin: 0,
+    }
+    req.session.referralCode = req.body.referralCode || null;
+    const referralCode = req.session.referralCode;
+     // const existnumber = await User.findOne({ email: email });
+     if (referralCode) {
+      referrer = await User.findOne({ referralCode });
+
+      if (!referrer) {
+        res.render("registration", { errorMessage: "Invalid referral code." });
+      }
+
+      if (referrer.userReferred && referrer.userReferred.includes(req.body.email)) {
+        res.render("registration", {
+          errorMessage: "Referral code has already been used by this email.",
+        });
+      }
     }
     const existuser = await User.findOne({email:newUser.email})
     if (!newUser.name||!newUser.email||!newUser.mobile||!newUser.password||!newUser.password2
@@ -58,7 +81,6 @@ const insertUser = async (req, res, next) => {
 const loadOtp = async (req, res) => {
   try{
     const otpGeneratedTime = req.session.otpGeneratedTime;
-    console.log('otp load in');
     res.render("otp",{ otpGeneratedTime })
   } catch(error){
     console.log(error.message);
@@ -83,6 +105,7 @@ const verifyOtp = async (req,res)=>{
     }
     if(req.session.otp ==otp){
       const secure_password = await securePassword(userData.password);
+      console.log('otp matchs');
       const user = new User({
         name: userData.name,
         email: userData.email,
@@ -90,10 +113,64 @@ const verifyOtp = async (req,res)=>{
         password: secure_password,
         is_admin: 0,
         is_blocked:0,
+        userReferred:[],
       })
       const userDataSave = await user.save();
       if(userDataSave){
         req.session.registrationsuccess=true
+        if (req.session.referralCode) {
+console.log(userDataSave._id,'id');
+        console.log(req.session.referralCode,'findinf wallet');
+        
+        const walletData = await Wallet.findOne({ user: userDataSave._id });
+        if (walletData) {
+          walletData.walletBalance +=50;
+          walletData.transaction.push({
+            type: "credit",
+            amount:50,
+          });
+        
+          await walletData.save(); 
+        }else{
+          const wallet = new Wallet({
+            user: userDataSave._id,
+            transaction:[{type:"credit",amount:50}],
+            walletBalance:50,
+          });
+        await wallet.save();
+        }
+      
+      
+        const referrer = await User.findOne({
+          referralCode: req.session.referralCode,
+        });
+        const user = await User.findOne({ _id: userDataSave._id });
+        console.log(user,'user');
+
+        referrer.userReferred.push(user.email);
+        let gets = await referrer.save();
+        console.log(gets,'got');
+        const walletrefer = await Wallet.findOne({ user: referrer._id });
+
+          if (walletrefer) {
+            walletrefer.walletBalance +=100;
+            walletrefer.transaction.push({
+              type: "credit",
+              amount:100,
+            });
+          
+            await walletrefer.save(); 
+          }else{
+            const wallet = new Wallet({
+              user: referrer._id,
+              transaction:[{type:"credit",amount:100}],
+              walletBalance:100,
+          });
+          await wallet.save();
+          }
+          delete req.session.referralCode;
+
+        }
         res.redirect('/login')
       } else{
         res.render("register", { errorMessage: "Registration Failed" });
@@ -199,12 +276,53 @@ const shop_details = async (req, res) => {
   }
 };
 
+const filter_product = async (req, res) => {
+  try {
+      const productData= await Product.find(); 
+      const categoryData=await Category.find();
+
+      const { subcategory, priceRange } = req.body;
+
+      let filterCriteria = {};
+
+      if (subcategory && priceRange) {
+        filterCriteria = {
+          sub_category: subcategory,
+          price: { $gte: parseInt(priceRange.split('_')[0]), $lte: parseInt(priceRange.split('_')[1]) }
+        };
+      } else if (subcategory) {
+        filterCriteria = { sub_category: subcategory };
+      } else if (priceRange) {
+        filterCriteria = {
+          price: { $gte: parseInt(priceRange.split('_')[0]), $lte: parseInt(priceRange.split('_')[1]) }
+        };
+      } else {
+        return res.status(400).json({ message: 'Please select at least one filter option' });
+      }
+
+      
+
+      const filteredProducts = await Product.find(filterCriteria);
+      console.log('done');
+      res.status(200).json({ filteredProducts });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 const loadProfile  = async (req, res) => {
   try{
+    let walletData=null
     const userData = await User.findById({ _id: req.session.user_id });
+    walletData = await Wallet.findOne({ user: req.session.user_id });
     const productData = await Product.find(); 
     const addressData = await Address.find();
-    res.render("userdetails", { user: userData, products: productData, address:addressData });
+    if(walletData){
+      res.render("userdetails", { user: userData, products: productData, address:addressData, wallet:walletData });
+    }
+    else{
+      res.render("userdetails", { user: userData, products: productData, address:addressData, wallet:walletData });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -310,6 +428,42 @@ const changepassword = async (req, res) => {
   }
 };
 
+// const loadInvoice = async(req,res)=>{
+//   try {
+//       const orderId = req.query.orderId;
+//       const userId = req.session.user_id;
+
+//       let order = await Order.findById(orderId).populate({path:"items.product"});
+//       const address = order.address  
+//       const user = await User.findById(userId);
+
+//       res.render('invoice',{title:'Invoice',order,address,user,username:user.name});
+//   } catch (error) {
+//       console.log(error);
+//   }
+// }
+const loadInvoice = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const orderId = req.params.id;
+    const userData = await User.findById(userId);
+    const order = await Order.findById(orderId)
+      .populate("user")
+      .populate({
+        path: "address",
+        model: "Address",
+      })
+      .populate({
+        path: "items.product",
+        model: "Product",
+      });
+
+    res.render("invoice2", { user:userData, order });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   loadRegister,
   insertUser,
@@ -320,10 +474,12 @@ module.exports = {
   userLogout,
   loadEditUserdetails,
   shop_details,
+  filter_product,
   updateUserProfilepic,
   UpdateEditUserdetails,
   changepassword,
   loadOtp,
   verifyOtp,
   resendOtp,
+  loadInvoice,
 };

@@ -2,25 +2,49 @@
 
 
 const calculateSubtotal = (cart) => {
+  let subtotal = 0;
+  for (const cartItem of cart) {
+    const isDiscounted = cartItem.product.discountStatus &&
+    new Date(cartItem.product.discountStart) <= new Date() &&
+    new Date(cartItem.product.discountEnd) >= new Date();
+
+const priceToConsider = isDiscounted ? cartItem.product.discountPrice : cartItem.product.price;
+
+  subtotal += priceToConsider * cartItem.quantity;
+}
+  return subtotal;
+};
   
-    let subtotal = 0;
-    for (const cartItem of cart) {
- 
-      subtotal += cartItem.product.discount_price * cartItem.quantity;
-    }
-    return subtotal;
-  };
-  
-  const calculateProductTotal = (cart) => {
-    const productTotals = [];
-    for (const cartItem of cart) {
-      const total = cartItem.product.discount_price * cartItem.quantity;
-      productTotals.push(total);
-    }
-    return productTotals;
-  };
+const calculateProductTotal = (cart) => {
+  const productTotals = [];
+  for (const cartItem of cart) {
+    const isDiscounted = cartItem.product.discountStatus &&
+    new Date(cartItem.product.discountStart) <= new Date() &&
+    new Date(cartItem.product.discountEnd) >= new Date();
+
+const priceToConsider = isDiscounted ? cartItem.product.discountPrice : cartItem.product.price;
+
+const total = priceToConsider * cartItem.quantity; 
+
+productTotals.push(total);
+  }
+  return productTotals;
+};
+
+function calculateDiscountedTotal(total, discountPercentage) {
+  if (discountPercentage < 0 || discountPercentage > 100) {
+    throw new Error('Discount percentage must be between 0 and 100.');
+  }
+
+  const discountAmount = (discountPercentage / 100) * total;
+  const discountedTotal = total - discountAmount;
+
+  return discountedTotal;
+};
+
   module.exports = {
 
     calculateSubtotal,
     calculateProductTotal,
+    calculateDiscountedTotal,
   };  
