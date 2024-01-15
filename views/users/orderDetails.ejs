@@ -20,7 +20,6 @@
                                    <small class="text-muted">CUSTOMER MOBILE:   <%=order.user.mobile %></small>
                             
                                 <br>
-                                <!-- <a href="#">View profile</a> -->
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4  ">
@@ -32,7 +31,6 @@
                                             <%=order.address.houseName %> <br>
                                                 <%=order.address.pincode %>
                                 </p>
-                                <!-- <a href="#">View profile</a> -->
                             </div>
                         </div>
                     </div>
@@ -184,22 +182,6 @@
                         <dd><b class="ms-2 h6">₹<%= order.totalAmount %></b> </dd>
                     <% } %>
             </dl>
-            <!-- <dl class="dlist d-flex">
-                <dt class="text-muted">Payment Status:</dt>
-                <dd>
-                    <% let t = 0;
-                        order.items.forEach(function(item) {
-                            if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.paymentStatus=='Pending') {
-                                t = 1;
-                            }
-                        });
-                        if (t === 0) { %>
-                            <span class="badge rounded-pill alert-success text-success">Success</span>
-                        <% } else { %>
-                            <span class="badge rounded-pill alert-success text-secondary">Pending</span>
-                        <% } %>
-                </dd>
-            </dl> -->
         </article>
     </section>
    
@@ -347,8 +329,7 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <script>
     window.addEventListener('DOMContentLoaded', event => {
-        // Simple-DataTables
-        // https://github.com/fiduswriter/Simple-DataTables/wiki
+
         const datatablesSimple = document.getElementById('datatablesSimple');
         if (datatablesSimple) {
             new simpleDatatables.DataTable(datatablesSimple);

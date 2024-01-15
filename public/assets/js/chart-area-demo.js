@@ -7,7 +7,6 @@ let dailySessionsArray = document.getElementById("dailySessionsArray").value;
 dailySessionsArray = dailySessionsArray.trim(); // Remove leading and trailing whitespace
 dailySessionsArray = dailySessionsArray.split(",");
 dailySessionsArray = dailySessionsArray.map((item) => Number(item));
-console.log(dailySessionsArray, "dailySessionsArray");
 
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");

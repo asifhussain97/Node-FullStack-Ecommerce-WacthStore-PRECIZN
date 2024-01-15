@@ -61,8 +61,6 @@
 
                     <p>Total Revenue:₹ <%= totalRevenue.toFixed(2) %> </p>
 
-                    <!-- Display Number of Orders with Status "Returned" -->
-                    <!-- <p>Number of Returned Orders: <%#= returnedOrders.length %></p> -->
 
                     <!-- Display Total Number of Sales -->
                     <p>Total Sales: <%= totalSales %></p>
@@ -181,8 +179,7 @@
     </script>
 <script>
     function validation(startDate, endDate) {
-      // Your validation logic here
-      // For example, check if startDate and endDate are valid dates
+
       if (!startDate || !endDate) {
           console.error('Start date and end date are required.');
           return true; // Indicate validation error

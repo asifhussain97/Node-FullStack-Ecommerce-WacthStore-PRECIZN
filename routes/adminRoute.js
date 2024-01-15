@@ -2,7 +2,6 @@ const express = require("express");
 const admin_route = express();
 const session = require("express-session");
 const config = require("../config/config");
-// const bodyParser = require("body-parser");
 const adminController = require("../controllers/adminController");
 const categoryController = require("../controllers/categoryController");
 const productController = require("../controllers/productController");
@@ -14,18 +13,11 @@ const offerController=require('../controllers/offerController')
 
 
 
-// admin_route.use(express.json());
-// admin_route.use(express.urlencoded({ extended: true }));
 
-// admin_route.set("view engine", "ejs");
 admin_route.set("views", "./views/admin");
 
 
-// admin_route.use(session({ 
-//   secret: config.sessionSecret,
-//   resave: false,
-//   saveUninitialized: true,
-// }));
+
 
 admin_route.get("/", auth.isLogout, adminController.loadLogin);
 admin_route.post("/", adminController.verifyLogin);

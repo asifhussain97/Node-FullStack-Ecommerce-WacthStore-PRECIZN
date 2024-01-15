@@ -40,13 +40,3 @@ const storageuserIMG = multer.diskStorage({
     uploadProfilePic:multer({ storage:storageuserIMG})
   }
 
-// const storeproductIMG = multer.diskStorage({
-//   destination: async function (req, file, cb) {
-    
-//     cb(null, 'public/assets/img/product');
-//   },
-//   filename: async function (req, file, cb) {
-//     const fileName = Date.now() + path.extname(file.originalname);
-//     cb(null, fileName);
-//   }
-// });

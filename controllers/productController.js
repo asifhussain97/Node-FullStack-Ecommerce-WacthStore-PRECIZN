@@ -32,18 +32,15 @@ const addProduct = async(req,res)=>{
     const userData = await User.findById({ _id: req.session.admin_id });  
     const categoryData = await Category.find(); 
     const images = [];
-    console.log(req.body,'body');
     const subcat = req.body.sub_category
     for (let i = 0; i < req.files.length; i++) {
       // Modify this to the path of the temporary uploaded file
       const file = req.files[i];
-console.log(req.file,'file');
       // Generate a random integer for the file name
       const randomInteger = Math.floor(Math.random() * 20000001);
       const imageDirectory = path.join('public', 'assets', 'img', 'product');
       const imgFileName = "cropped" + randomInteger + ".jpg";
       const imagePath = path.join(imageDirectory, imgFileName);
-      console.log(imagePath, "Image path");
 
       // Perform cropping using sharp module
       const croppedImage = await sharp(file.path)
@@ -154,7 +151,6 @@ const updateProduct = async (req, res) => {
           const imgFileName = "cropped" + randomInteger + ".jpg";
           const imagePath = path.join(imageDirectory, imgFileName);
     
-          console.log(imagePath, "Image path");
     
           // Perform cropping using sharp module
           const croppedImage = await sharp(file.path)

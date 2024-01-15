@@ -64,7 +64,3 @@ const Product = new mongoose.Schema({
 module.exports = mongoose.model('Product', Product);
 
 
-//   brand:{
-//     type:String,
-//     required:true
-// },

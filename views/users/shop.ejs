@@ -101,28 +101,7 @@ body{
         font-size: 12px; /* Adjust the size as needed */
         }
 </style>
-<!-- <script>
-// Adding event listeners to each category link for toggling subcategories
-    const categoryLinks = document.querySelectorAll('.custom-nav-link');
 
-    categoryLinks.forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
-            const categoryId = this.getAttribute('data-category-id');
-            const subcategory = document.getElementById(`custom-subcategory_${categoryId}`);
-
-            if (subcategory.style.display === 'none' || subcategory.style.display === '') {
-                subcategory.style.display = 'block';
-                this.querySelector('.custom-fas.fa-plus-circle').style.display = 'none';
-                this.querySelector('.custom-fas.fa-minus-circle').style.display = 'inline';
-            } else {
-                subcategory.style.display = 'none';
-                this.querySelector('.custom-fas.fa-plus-circle').style.display = 'inline';
-                this.querySelector('.custom-fas.fa-minus-circle').style.display = 'none';
-            }
-        });
-    });
-</script> -->
 <body id="page-top">
   <!-- Navigation-->
     <nav  style="background-color: black; z-index: 2000;" class=" navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink" id="mainNav">
@@ -146,9 +125,6 @@ body{
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="#team"></a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     <% if (user) { %>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i id="profileicon" class="fas fa-bars"></i></a>
@@ -250,9 +226,7 @@ body{
                                 %>
                                 <div class="cardsofproduct col mb-4"> <!-- Adjusted mb-4 instead of mb-5 -->
                                     <div class="card h-100" style="max-width: 230px;"> <!-- Added max-width to limit card size -->
-                                        <!-- Sale badge
-                                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem;">Sale</div>
-                                        Product image -->
+                                        
                                         <% if (product.image.length > 0) { %>
                                             <a style="height: 200px; margin: 10px;" href="/product-details?id=<%= product._id %>">
                                                 <img style="height: 200px;" class="card-img-top" src="/assets/img/product/<%= product.image[0] %>" alt="..." />
@@ -282,23 +256,12 @@ body{
                                         </div>
                                         <!-- Product actions-->
                                         <div class="d-flex justify-content-center card-footer px-4 pt-0 pb-3 border-top-0 bg-transparent">
-                                            <!-- <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Buy Now</a></div>
-                                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#"><i class="fa-solid fa-cart-shopping"></i></a></div> -->
+
                                             <% if (product.stock<=0) { %>
                                                 <div class="text-center">
                                                     <a class="text-danger text-decoration-none mt-auto" href="#">Out of Stock</a>
                                                 </div>
                                             <% } else { %>
-                                                <!-- <div class="text-center">
-                                                    <a  href="/product-details?id=<%= product._id %>" class="btn btn-outline-dark btn-sm mt-auto" href="#">Buy Now</a>
-                                                </div> -->
-
-
-                                                <!-- <span class="fa fa-star checked"></span>
-                                                <span class="fa fa-star checked"></span>
-                                                <span class="fa fa-star checked"></span>
-                                                <span class="fa fa-star"></span>
-                                                <span class="fa fa-star"></span> -->
                                                 <div class=" w-100">
                                                     <form id="myForm<%= product._id %>">                   
                                                         <div class="product-action-1 float-end show">
@@ -328,9 +291,9 @@ body{
             <div class="row align-items-center">
                 <div style="color: #ffc800" class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
                 <div class="col-lg-4 my-3 my-lg-0">
-                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800"  href="#!" aria-label="Twitter"><i style="color: black;" class="fab fa-twitter"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="#!" aria-label="Facebook"><i style="color: black;" class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="#!" aria-label="LinkedIn"><i style="color: black;" class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800"  href="https://twitter.com/" target="_blank" aria-label="Twitter"><i style="color: black;" class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="https://www.facebook.com/" target="_blank" aria-label="Facebook"><i style="color: black;" class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="https://www.linkedin.com/" target="_blank" aria-label="LinkedIn"><i style="color: black;" class="fab fa-linkedin-in"></i></a>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <a style="color: #ffc800" class=" text-decoration-none me-3" href="#!">Privacy Policy</a>
@@ -346,10 +309,6 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
 <script src="/scripts.js"></script>
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-<!-- * *                               SB Forms JS                               * *-->
-<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 <script src="/scriptsadmin.js"></script>
 
@@ -483,7 +442,6 @@ $(document).ready(function() {
             performFilterRequest(null, priceRangeValue);
         } else {
             // Neither subcategory nor price range is selected
-            console.log('Please select at least one option');
             // Prevent form submission
             return false;
         }
@@ -501,7 +459,6 @@ $(document).ready(function() {
             },
             success: function(response) {
                 // Handle success response
-                console.log('Filter request successful');
                 const filteredProducts = response.filteredProducts;
                 // Update the product listing with filtered products
                 updateProductListing(filteredProducts);

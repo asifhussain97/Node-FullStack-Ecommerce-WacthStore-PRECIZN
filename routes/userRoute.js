@@ -16,9 +16,9 @@ user_route.set("views", "./views/users");
 user_route.get("/register", auth.isLogout, userController.loadRegister);
 user_route.post("/register", userController.insertUser);
 
-user_route.get("/verify", auth.isLogout, userController.loadOtp);
+user_route.get("/verify", userController.loadOtp);
 user_route.post("/verify", userController.verifyOtp);
-user_route.get("/resendotp", auth.isLogout, userController.resendOtp);
+user_route.get("/resendotp", userController.resendOtp);
 
 //login
 user_route.get("/", auth.isLogout, userController.loadHome);
@@ -26,6 +26,10 @@ user_route.get("/login", auth.isLogout, userController.loginLoad);
 user_route.post("/login", userController.verifyLogin);
 user_route.get("/home", auth.isLogin, userController.loadHome);
 user_route.get("/logout", auth.isLogin, userController.userLogout);
+user_route.get('/forgotPassword',userController.loadForgetpassword );
+user_route.post('/forgotpassword',userController.forgotPasswordOTP );
+user_route.get('/resetPassword',userController.loadResetPassword );
+user_route.post('/resetPassword',userController.changepassword );
 
 // user
 user_route.get("/product-details", productController.product_details);
@@ -58,34 +62,9 @@ user_route.post('/return',orderController.returnapprove );
 user_route.get('/invoice/:id',userController.loadInvoice );
 
 
-// user_route.get('/coupons',couponController.userCouponList)
 
 user_route.post('/applyCoupon',orderController.applyCoupon)
 
 module.exports = user_route;
 
 
-// user_route.use(
-//   session({
-//     secret: config.sessionSecret,
-//     resave: false,
-//     saveUninitialized: true,
-//   })
-// );
-
-/* const storage = multer.diskStorage({
-    destination:function(req,res,cb){
-        cb(null,path.join(__dirname,'../public/userImages'));
-    },
-    filename:function(req,file,cb){
-        const name =Date.now()+'-'+file.originalname;
-        cb(null,name);
-    }
-})
-
-const upload = multer({storage:storage}); */
-
-// user_route.use(express.json());
-// user_route.use(express.urlencoded({ extended: true }));
-// user_route.use(flash());
-// user_route.set("view engine", "ejs");

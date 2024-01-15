@@ -34,7 +34,6 @@ const loadCheckout = async (req, res) => {
       .exec();
 
     if (!cart) {
-      console.log("Cart not found.");
     }
     const cartItems = cart.items || [];
     const subtotal = calculateSubtotal(cartItems);
@@ -250,7 +249,6 @@ const  checkOutPost = async (req, res) => {
               paymentStatus: "success",
             })),
           });
-          console.log(order);
 
           await order.save();
         } else {
@@ -382,7 +380,6 @@ const orderCancel = async (req, res) => {
       });
     const user = order.user;
     let totalAmount = order.totalAmount;
-    console.log(totalAmount, "totalAmount");
     const product = order.items.find(
       (item) => item.product._id.toString() === productId
     );
@@ -442,7 +439,6 @@ const orderCancel = async (req, res) => {
       { new: true }
     );
     if(updateData){
-      console.log('all done');
       return res.status(200).json({success: true, message: "Order cancelled successfully" });
     }
   } catch (error) {
@@ -452,95 +448,7 @@ const orderCancel = async (req, res) => {
       .json({ error: "An error occurred while cancelling the order" });
   }
 };
-// const orderCancel = async (req, res) => {
-//   try {
-  
-//     const orderId = req.query.id;
-//     const {reason,productId}=req.body
-//     console.log(productId,"reason",reason);
-//     const userId = req.session.user_id;
-//     const userData = await User.findById(userId);
 
-//     const order = await Order.findOne({ _id: orderId })
-//       .populate("user")
-//       .populate({
-//         path: "address",
-//         model: "Address",
-//       })
-//       .populate({
-//         path: "items.product",
-//         model: "Product",
-//       });
-//       const user = order.user;
-
-//    console.log(order,"jjjjj");
-
-   
-        
-
-// //         for (const item of order.items) {
-// //           const products = item.product;
-// //           console.log(products,"bjhfdbjdfkhfjkdhk");
-// //  const product= products.filter((product)=>{
-// //         product._id==productId
-// //       }).sizes.map((size) => {
-// //             if (size.size == item.size ) {
-// //               size.stock += item.quantity;
-// //             }
-// //           });
-
-// //           // await product.save();
-// //         }
-      
-
-      
-//   //     if (
-//   //       order.paymentMethod == "Wallet" ||
-//   //       (order.paymentMethod == "onlinePayment"
-//   //       )
-//   //     ) {
-//   //       user.walletBalance += order.totalAmount;
-//   //       await user.save();
-//   //       order.paymentStatus = "Refunded";
-//   //     } else {
-//   //       order.paymentStatus = "Declined";
-//   //     }
-//   if (order) {
-//     const itemToUpdate = order.items.find(
-//       (item) => item.status === 'Confirmed' && item.product.toString() === productId
-//     );
-  
-//     if (itemToUpdate) {
-//       itemToUpdate.status = 'Cancelled';
-//     }
-//       console.log('for in');
-//       if (item.status === 'Confirmed') {
-//         console.log('if in');
-
-//         const updateData = await Order.items.findByIdAndUpdate(
-//           productId,
-//           {
-//             $set: {
-//               status: 'Cancelled',
-//             },
-//           }
-//         );
-//         if(updateData){
-//           res.status(200).json({ success: true, message: "Cancel sucessfully" });
-//         }
-//         else{
-//           res.status(200).json({ success: false, message: "Cancelation failed" });
-//         }
-//     }
-    
-//   }
- 
-
-//   //   res.redirect("/orderSuccess");  
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 
 const returnapprove = async(req,res)=>{
   try{
@@ -585,7 +493,6 @@ const returnapprove = async(req,res)=>{
 const applyCoupon = async (req, res) => {
   try {
 
-    console.log('inside applyCoupon');
     const { couponCode } = req.body;
     const userId = req.session.user_id;
     const coupon = await Coupon.findOne({ code: couponCode });
@@ -593,7 +500,6 @@ const applyCoupon = async (req, res) => {
     let errorMessage;
 
     if (!coupon) {
-      console.log('No Coupon found');
 
       errorMessage = "Coupon not found";
       return res.json({ errorMessage });
@@ -647,7 +553,6 @@ const applyCoupon = async (req, res) => {
       return res.json({ errorMessage });
     }
 
-  console.log(discountedTotal,'discount');
     res.status(200).json({ success: true,discountedTotal, message: "return sucessfully" });
     
   } catch (error) {

@@ -242,7 +242,6 @@ const currentURL = window.location.href;
     
 
     function validateCategoryForm() {
-        console.log("Category is validating");
 
         const categoryNameInput = document.getElementById('category_name');
         const categoryNameError = document.getElementById('category_name-error');

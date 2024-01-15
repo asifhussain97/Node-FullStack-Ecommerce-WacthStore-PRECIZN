@@ -29,7 +29,6 @@ const addOffer = async (req, res) => {
       discountedProduct,
       discountedCategory,
     } = req.body;
-console.log(req.body,'offer body');
     const existingNameOffer = await Offer.findOne({ name: name });
     const existingCategoryOffer =
       discountedCategory && (await Offer.findOne({ discountedCategory }));
@@ -62,7 +61,6 @@ console.log(req.body,'offer body');
           error: "An offer for this product already exists.",
         });
     }
-    console.log("fdfgsjfdsfjhfdgsfdsj");
     const newOffer = new Offer({
       name: name,
       discountOn,
@@ -79,7 +77,6 @@ console.log(req.body,'offer body');
 
     if (discountedProduct) {
       const discountedProductData = await Product.findById(discountedProduct);
-      console.log(discountedProductData);
 
       let discount = 0;
       if (discountType === "percentage") {
@@ -123,7 +120,6 @@ console.log(req.body,'offer body');
       const discountedProductData = await Product.find({
         category: categoryData._id,
       });
-      console.log(discountedProductData, "discountedProductData");
       for (const product of discountedProductData) {
         let discount = 0;
         if (discountType === "percentage") {
@@ -167,7 +163,6 @@ console.log(req.body,'offer body');
 // Helper function to calculate discount price
 function calculateDiscountPrice(price, discountType, discountValue) {
   // Implement your logic to calculate the discounted price here
-  // For example:
   let discountedPrice = price;
 
   if (discountType === "percentage") {
@@ -208,7 +203,6 @@ const loadOfferEdit = async (req, res) => {
       .populate("discountedCategory");
     const startDate = new Date(offer.startDate).toISOString().split("T")[0];
     const endDate = new Date(offer.endDate).toISOString().split("T")[0];
-    console.log(offer);
     res.render("admin/offerEdit", {
       admin,
       offer,
@@ -240,7 +234,6 @@ const editOffer = async (req, res) => {
       discountedCategory,
     } = req.body;
 
-    console.log(req.body);
     const existingOffer = await Offer.findById(offerId);
 
     if (!existingOffer) {
@@ -339,7 +332,6 @@ const editOffer = async (req, res) => {
       );
     } else if (discountedCategory) {
       const categoryData = await Category.findById(discountedCategory);
-console.log("fghfh");
       await Category.updateOne(
         { _id: discountedCategory },
         {

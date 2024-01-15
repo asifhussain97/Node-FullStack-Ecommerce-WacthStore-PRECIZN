@@ -26,7 +26,6 @@ require('dotenv').config(); // Load environment variables from .env file
         html: `<p>Hello , please enter this OTP: <strong>${otp}</strong> to verify your email.</p>`,
       };
        const information=await  transporter.sendMail( mailOptions);
-       
     } catch (error) {
       console.log(error);
     }

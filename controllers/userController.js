@@ -21,7 +21,6 @@ const securePassword = async (password) => {
 const loadRegister = async (req, res) => {
   try {
     referral = req.session.referralCode;
-    console.log(referral,"referral");
 
     res.render("registration",referral);
   } catch (error) {
@@ -41,7 +40,6 @@ const insertUser = async (req, res, next) => {
     }
     req.session.referralCode = req.body.referralCode || null;
     const referralCode = req.session.referralCode;
-     // const existnumber = await User.findOne({ email: email });
      if (referralCode) {
       referrer = await User.findOne({ referralCode });
 
@@ -81,6 +79,7 @@ const insertUser = async (req, res, next) => {
 const loadOtp = async (req, res) => {
   try{
     const otpGeneratedTime = req.session.otpGeneratedTime;
+
     res.render("otp",{ otpGeneratedTime })
   } catch(error){
     console.log(error.message);
@@ -95,7 +94,6 @@ const verifyOtp = async (req,res)=>{
     const otpGeneratedTime = req.session.otpGeneratedTime;
     const currentTime = Date.now();
 
-    
     if (currentTime - otpGeneratedTime > 80 * 1000) {
       res.render("otp", {
         errorMessage: "OTP expired",
@@ -103,9 +101,9 @@ const verifyOtp = async (req,res)=>{
       });
       return;
     }
+    if (!req.session.user_id) {
     if(req.session.otp ==otp){
       const secure_password = await securePassword(userData.password);
-      console.log('otp matchs');
       const user = new User({
         name: userData.name,
         email: userData.email,
@@ -119,8 +117,6 @@ const verifyOtp = async (req,res)=>{
       if(userDataSave){
         req.session.registrationsuccess=true
         if (req.session.referralCode) {
-console.log(userDataSave._id,'id');
-        console.log(req.session.referralCode,'findinf wallet');
         
         const walletData = await Wallet.findOne({ user: userDataSave._id });
         if (walletData) {
@@ -145,11 +141,9 @@ console.log(userDataSave._id,'id');
           referralCode: req.session.referralCode,
         });
         const user = await User.findOne({ _id: userDataSave._id });
-        console.log(user,'user');
 
         referrer.userReferred.push(user.email);
         let gets = await referrer.save();
-        console.log(gets,'got');
         const walletrefer = await Wallet.findOne({ user: referrer._id });
 
           if (walletrefer) {
@@ -178,7 +172,15 @@ console.log(userDataSave._id,'id');
     } else{
       res.render("otp", { errorMessage: "The OTP is incorrect" });
     }
-  } catch(error){
+  } else {
+
+    if (req.session.otp ==otp){
+      res.redirect("/resetPassword");
+    }else{
+      res.render("otp", { errorMessage: "The OTP is incorrect" });
+    }
+  }  
+} catch(error){
     console.log(error.message)
   }
 }
@@ -266,7 +268,6 @@ const shop_details = async (req, res) => {
     }
     else{
       const userData = await User.findById({ _id: req.session.user_id });
-      // const id = req.query.id;
       const productData= await Product.find(); 
       const categoryData=await Category.find();
       res.render("shop", { user: userData,products:productData, category:categoryData});
@@ -303,7 +304,6 @@ const filter_product = async (req, res) => {
       
 
       const filteredProducts = await Product.find(filterCriteria);
-      console.log('done');
       res.status(200).json({ filteredProducts });
   } catch (error) {
     console.log(error.message);
@@ -371,11 +371,10 @@ const loadEditUserdetails = async (req, res) => {
 const UpdateEditUserdetails = async (req, res) => {
   try {
       const userId = req.session.user_id;
-      const userData = await User.findById(userId); // Changed from { _id: userId }
-      console.log(req.body,"full");
+      const userData = await User.findById(userId);
       if (userData) {
           const updatedUserData = await User.findByIdAndUpdate(
-              userId, // Changed from { _id: req.body.user_id }
+              userId, 
               {
                   $set: {
                       name: req.body.editName,
@@ -383,7 +382,7 @@ const UpdateEditUserdetails = async (req, res) => {
                       mobile: req.body.editMobile, // Corrected to match the frontend variable name
                   },
               },
-              { new: true } // Added { new: true } to return updated data
+              { new: true } 
           );
 
           res.status(200).json({ success: true, message: 'User details updated successfully', data: updatedUserData });
@@ -404,7 +403,6 @@ const changepassword = async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
     const user = await User.findById({_id:userId})
     const passwordMatch = await bcrypt.compare(currentPassword,user.password)
-    console.log(passwordMatch)
     if(!passwordMatch){
 
       res.status(200).json({ success: false, message: 'The old password entered is incorrect' });
@@ -428,20 +426,7 @@ const changepassword = async (req, res) => {
   }
 };
 
-// const loadInvoice = async(req,res)=>{
-//   try {
-//       const orderId = req.query.orderId;
-//       const userId = req.session.user_id;
 
-//       let order = await Order.findById(orderId).populate({path:"items.product"});
-//       const address = order.address  
-//       const user = await User.findById(userId);
-
-//       res.render('invoice',{title:'Invoice',order,address,user,username:user.name});
-//   } catch (error) {
-//       console.log(error);
-//   }
-// }
 const loadInvoice = async (req, res) => {
   try {
     const userId = req.session.user_id;
@@ -459,6 +444,55 @@ const loadInvoice = async (req, res) => {
       });
 
     res.render("invoice2", { user:userData, order });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const loadForgetpassword  = async (req, res) => {
+  try{
+    res.render("forgotPassword");
+
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+const forgotPasswordOTP = async (req, res) => {
+  try {
+    const emaildata = req.body.email;
+  
+
+    const userExist = await User.findOne({ email: emaildata });
+    if (userExist && userExist.is_admin == 0) {
+      const data = await message.sendVarifyMail(userExist.email, req);
+      req.session.userData=userExist;
+      req.session.user_id = userExist._id;
+      return res.redirect("/verify");
+    } else {
+    
+      return res.render("forgotPassword", {
+        errorMessage: "Attempt Failed",
+        User: null,
+      });
+    }
+
+  } catch (error) {
+    console.log("Error:", error.message);
+  }
+};
+
+const loadResetPassword = async (req, res) => {
+  try {
+    if (req.session.user_id) {
+      const userId = req.session.user_id;
+
+      
+      const user = await User.findById(userId);
+
+      res.render("resetPassword");
+    } else {
+      res.redirect("/forgotPassword");
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -482,4 +516,7 @@ module.exports = {
   verifyOtp,
   resendOtp,
   loadInvoice,
+  loadForgetpassword,
+  forgotPasswordOTP,
+  loadResetPassword,
 };

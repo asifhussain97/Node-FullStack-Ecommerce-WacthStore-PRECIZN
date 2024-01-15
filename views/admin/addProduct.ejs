@@ -42,10 +42,8 @@
 
                                             const subCategoryDiv = document.getElementById('subCategoryDiv');
                                             const parsedCategories = JSON.parse(categories); // Parse JSON string to object
-                                            console.log('Parsed Categories:', parsedCategories);
 
                                             const selectedCategory = parsedCategories.find(cat => cat._id === selectedValue);
-                                            console.log('Selected Category:', selectedCategory);
 
                                             if (selectedCategory) {
                                                 const subCategories = selectedCategory.sub_category.map(subCat => `

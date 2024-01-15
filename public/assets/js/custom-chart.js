@@ -8,7 +8,6 @@
     dailyOrderArray = dailyOrderArray.map((item) => Number(item));
     dailyOrderArray = Array(dailyOrderArray);
     dailyOrderArray = dailyOrderArray[0];
-    console.log(dailyOrderArray,"dailyOrderArray123");
   
         if ($('#myChartWeekly').length) {
             var ctx = document.getElementById('myChartWeekly').getContext('2d');

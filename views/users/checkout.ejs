@@ -323,7 +323,6 @@
           applyCouponButton.addEventListener('click', async function (event) {
                     event.preventDefault();
                     const couponCode = couponCodeInput.value;
-                     console.log(couponCode,"couponCode");
             if (couponCode.trim() === '') {
                 Swal.fire({
                     title: 'Error',
@@ -348,7 +347,6 @@
         
                 const data = await response.json();
         
-                console.log('Coupon Application Response:', data);
         
                 if (data.errorMessage) {
                     Swal.fire({
@@ -402,7 +400,6 @@
             couponCode = couponCodeInput.value;
 
             if (!selectedAddress) {
-                console.log('inside selectedAddress');
 
                 Toastify({
                     text: "Billing address not selected",
@@ -423,7 +420,6 @@
             };
 
             if (selectedPaymentMethod == "Cash On Delivery"  ) {
-                console.log('inside if');
                 fetch('/checkout', {
                     method: 'POST',
                     headers: {
@@ -483,7 +479,6 @@
                                 order_id: data.order.id,
                                 handler: async function (response) {
                                     // Handle successful payment response here
-                                    console.log("Payment successful:", response);
                                     if (response.razorpay_payment_id) {
                                         // Move the order creation logic here
                                    
@@ -501,7 +496,6 @@
                                         const orderData = await createOrderResponse.json();
 
                                         if (orderData.success) {
-                                            console.log("Order created successfully");
                                             // Redirect to order confirmation page or any other desired action
                                             window.location.href = "/orderSuccess";
                                         } else {
@@ -572,69 +566,6 @@
                      
     })
 
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     const houseName = document.getElementById("houseName");
-        //     const errorhouseName = document.getElementById("errorhouseName");
-        //     const street = document.getElementById("street");
-        //     const errorstreet = document.getElementById("errorstreet");
-        //     const city = document.getElementById("city");
-        //     const errorcity = document.getElementById("errorcity");
-        //     const state = document.getElementById("state");
-        //     const errorstate = document.getElementById("errorstate");
-        //     const pincode = document.getElementById("pincode");
-        //     const errorpincode = document.getElementById("errorpincode");
-
-        //     houseName.addEventListener('input', function () {
-        //         errorhouseName.innerHTML = houseName.value.trim() === "" ? "Please enter house name" : /^[a-zA-Z ]+$/.test(houseName.value) == false ? "Please enter alphabets only" : "";
-        //     });
-        //     street.addEventListener('input', function () {
-        //         errorstreet.innerHTML = street.value.trim() === "" ? "Please enter street name" : /^[a-zA-Z ]+$/.test(street.value) == false ? "Please enter alphabets only" : "";
-        //     });
-        //     city.addEventListener('input', function () {
-        //         errorcity.innerHTML = city.value.trim() === "" ? "Please enter city name" : /^[a-zA-Z ]+$/.test(city.value) == false ? "Please enter alphabets only" : "";
-        //     });
-        //     state.addEventListener('input', function () {
-        //         errorstate.innerHTML = state.value.trim() === "" ? "Please enter state name" : /^[a-zA-Z ]+$/.test(state.value) == false ? "Please enter alphabets only" : "";
-        //     });
-
-        //     pincode.addEventListener('input', function () {
-        //         errorpincode.innerHTML = pincode.value.trim() === "" ? "Please enter  number" : /^\d{6}$/.test(pincode.value) == false ? "Please enter valid  number" : "";
-        //     });
-
-
-        // });
-        // function validationChecking() {
-        //     const houseName = document.getElementById("houseName");
-        //     const errorhouseName = document.getElementById("errorhouseName");
-        //     const street = document.getElementById("street");
-        //     const errorstreet = document.getElementById("errorstreet");
-        //     const city = document.getElementById("city");
-        //     const errorcity = document.getElementById("errorcity");
-        //     const state = document.getElementById("state");
-        //     const errorstate = document.getElementById("errorstate");
-        //     const pincode = document.getElementById("pincode");
-        //     const errorpincode = document.getElementById("errorpincode");
-
-        //     let isValid = true;
-
-        //     errorhouseName.innerHTML = houseName.value.trim() === "" ? "Please enter home name" : /^[a-zA-Z ]+$/.test(houseName.value) == false ? "Please enter alphabets only" : "";
-        //     errorstreet.innerHTML = street.value.trim() === "" ? "Please enter street name" : /^[a-zA-Z ]+$/.test(street.value) == false ? "Please enter alphabets only" : "";
-        //     errorcity.innerHTML = city.value.trim() === "" ? "Please enter city name" : /^[a-zA-Z ]+$/.test(city.value) == false ? "Please enter alphabets only" : "";
-        //     errorstate.innerHTML = state.value.trim() === "" ? "Please enter state name" : /^[a-zA-Z ]+$/.test(state.value) == false ? "Please enter alphabets only" : "";
-        //     errorpincode.innerHTML = pincode.value.trim() === "" ? "Please enter pincode" : /^\d{6}$/.test(pincode.value) == false ? "Please enter valid pincode" : "";
-
-        //     if (
-        //         errorhouseName.innerHTML ||
-        //         errorstreet.innerHTML ||
-        //         errorcity.innerHTML ||
-        //         errorstate.innerHTML ||
-        //         errorpincode.innerHTML
-        //     ) {
-        //         isValid = false;
-        //     }
-
-        //     return isValid;
-        // }
         $('#saveAddressBtn').on('click', function () {
             let isValid = true; // Flag to track validation
 

@@ -7,7 +7,6 @@ let dailyOrderArray = document.getElementById("dailyOrderArray").value;
 dailyOrderArray = dailyOrderArray.trim(); // Remove leading and trailing whitespace
 dailyOrderArray = dailyOrderArray.split(",");
 dailyOrderArray = dailyOrderArray.map((item) => Number(item));
-console.log(dailyOrderArray,"dailyOrderArray");
 // Bar Chart Example
 var ctx = document.getElementById("myBarChart");
 var myLineChart = new Chart(ctx, {

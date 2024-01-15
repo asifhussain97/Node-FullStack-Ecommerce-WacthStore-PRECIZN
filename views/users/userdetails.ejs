@@ -41,18 +41,6 @@
                                                 aria-controls="dashboard" aria-selected="false"><i
                                                     class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
                                         </li>
-                                        <!-- <li class="nav-item">
-                                            <a class="nav-link navaction text-dark" id="orders-tab" data-bs-toggle="tab"
-                                                href="#orders" role="tab" aria-controls="orders"
-                                                aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link navaction text-dark" id="track-orders-tab"
-                                                data-bs-toggle="tab" href="#track-orders" role="tab"
-                                                aria-controls="track-orders" aria-selected="false"><i
-                                                    class="fi-rs-shopping-cart-check mr-10"></i>Track
-                                                Your Order</a>
-                                        </li> -->
                                         <li class="nav-item">
                                             <a class="nav-link navaction text-dark" id="address-tab"
                                                 data-bs-toggle="tab" href="#address" role="tab" aria-controls="address"
@@ -202,14 +190,12 @@
                                                                 <p>
                                                                     <%= x.country %>
                                                                 </p>
-                                                                <!-- <a href="/editAddress/?id=<%= x._id %>" class="btn btn-secondary">Edit</a> -->
                                                                 <button type="button"
                                                                     class="btn btn-secondary edit-address"
                                                                     data-id="<%= x._id %>">Edit</button>
 
                                                                 <input type="hidden" name="address_id"
                                                                     value="<%= x._id %>">
-                                                                <!-- <a class="mx-5" href="/deleteAddress/?id=<%= x._id %>"><button type="button" class="btn btn-danger">DELETE</button></a> -->
                                                                 <button type="button"
                                                                     class="btn btn-danger delete-address"
                                                                     data-id="<%= x._id %>">DELETE</button>
@@ -581,8 +567,7 @@
                         const formData = new FormData();
                         formData.append('croppedImage', blob, 'cropped-image.jpg');
 
-                        // Append any other necessary data to the form (if needed)
-                        // formData.append('otherField', otherValue);
+
 
                         // Submit the form data to the backend using Fetch API or XMLHttpRequest
                         fetch('/updateProfile', {
@@ -591,7 +576,6 @@
                         })
                             .then(response => {
                                 if (response.ok) {
-                                    console.log('Cropped image submitted successfully!');
                                     window.location.reload();
                                 } else {
                                     console.error('Failed to submit cropped image.');
@@ -1157,8 +1141,7 @@ $('#changePasswordBtn').on('click', function () {
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <script>
     window.addEventListener('DOMContentLoaded', event => {
-        // Simple-DataTables
-        // https://github.com/fiduswriter/Simple-DataTables/wiki
+
         const datatablesSimple = document.getElementById('datatablesSimple');
         if (datatablesSimple) {
             new simpleDatatables.DataTable(datatablesSimple);

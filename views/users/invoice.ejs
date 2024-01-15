@@ -16,9 +16,6 @@
                         <header class="card-header">
                             <div class="row align-items-center">
                                 <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                                    <!-- <span>
-                                        <i class="material-icons md-calendar_today"></i> <b><%#= order.createdAt.toLocaleDateString() %></b>
-                                    </span> <br> -->
                                     <small class="text-muted">Order ID:<%= order.orderDate %> </small>
                                 </div>
                                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">                                   
@@ -43,15 +40,6 @@
                                                         This is the receipt for a payment of <strong> <%= order.totalPrice %></strong> 
                                                     </div>
                         
-                                                    <!-- <div class="payment-info">
-                                                        <div class="row">
-                                                          
-                                                            <div class="col-sm-6 ">
-                                                                <span>Payment Date</span>
-                                                                <strong><%#= order.createdAt.toLocaleDateString() %></strong>
-                                                            </div>
-                                                        </div>
-                                                    </div> -->
                         
                                                     <div class="payment-details">
                                                         <div class="row">
@@ -154,17 +142,6 @@
             </div>
         </section> <!-- content-main end// -->
         <br><br><br><br><br><br><br>
-<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
-<script>
-    window.jsPDF = window.jspdf.jsPDF;
-let doc = new jsPDF();
-document.getElementById('downloadPdf').addEventListener('click', function () {
-  doc.text('Invoice', 20, 20);
-  doc.autoTable({ html: '#invoiceDownload' ,margin: { top: 40 }});
-  doc.save('invoice.pdf');
-});
-</script> -->
+
 <%- include('../layouts/footeruser.ejs') %>
        

@@ -115,48 +115,6 @@
             </div>
         </main>
         <script>
-            // function Unlistandlist(productId) {
-            //     Swal.fire({
-            //         title: "Are you sure?",
-            //         text: "Please confirm to unlist this product!",
-            //         icon: "warning",
-            //         showCancelButton: true,
-            //         confirmButtonColor: "#3085d6",
-            //         cancelButtonColor: "#d33",
-            //         confirmButtonText: "Yes, delete it!",
-            //     }).then((result) => {
-            //         if (result.isConfirmed) {
-            //         // Perform the deletion via AJAX/fetch to the server
-            //         fetch(`/admin/delete-add_product?id=${productId}`, {
-            //             method: 'GET',
-            //             // Add other necessary headers or configurations
-            //         }).then(response => {
-            //             if (response.ok) {
-            //             // Product successfully deleted
-            //             Swal.fire({
-            //                 title: "success",
-            //                 text: "Please confirm to list this product!",
-            //                 icon: "success",
-            //                 timer: 2000,
-            //                 timeProgressBar: true,
-            //                 showConfirmButton: false,
-
-
-            //             })
-            //                 .then(() => {
-            //                 // Redirect after displaying the success message
-            //                 window.location.href = '/admin/product'; // Redirect to a suitable page
-            //                 });
-            //             } else {
-                            
-            //             Swal.fire("Error!", "Failed to delete product", "error");
-            //             }
-            //         }).catch(error => {
-            //             Swal.fire("Error!", "Failed to delete product", "error");
-            //         });
-            //         }
-            //     });
-            // }
             function Unlistandlist(productId, action) {
                 let titleText, confirmText, successText, url;
                 

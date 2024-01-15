@@ -14,6 +14,7 @@ const path = require("path");
 const app = express();
 
 app.set("view engine", "ejs");
+app.set("views", "./views");
 
 app.use(
   session({
@@ -42,8 +43,14 @@ app.use("/", userRoute);
 //for admin route
 app.use("/admin", adminRoute);
 
+app.use((req, res, next) => {
+  res.status(404).render("./layouts/404Error", { userData: null });
+  next();
+});
+
+
 app.listen(5000, function () {
   console.log(
-    "Server is running...Registration Page at http://localhost:5000/register"
+    "Server is running..."
   );
 });

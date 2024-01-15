@@ -17,23 +17,6 @@
                     </span> <br>
                     <small class="text-muted">Order ID: 3453012</small>
                 </div>
-                <!-- <div class="col-lg-6 col-md-6 ms-auto text-md-end"> -->
-                     <!-- <li class="dropdown nav-item me-4">
-                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">select status </a> 
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Confirmed">Confirmed</a>
-                            <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Shipped">Shipped</a>
-                            <a class="dropdown-item" href="/admin/orderStatusChange?id=<%= order._id%>&status=Delivered">Delivered</a> 
-                              <a class="dropdown-item"href="/admin/orderStatusChange?id=<%= order._id%>&status=Cancelled">Cancelled</a> 
-                     
-                           
-                         
-                        </div>
-                    </li>  -->
-                    
-               
-                     <!-- <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>  -->
-                <!-- </div> -->
             </div>
         </header>
         <div class="card-body">
@@ -49,7 +32,6 @@
                                 <%= order.user.name %> <br> <%=order.user.mobile %>
                             </p>
                             <br>
-                            <!-- <a href="#">View profile</a> -->
                         </div>
                     </article>
                 </div> 
@@ -77,7 +59,6 @@
                                          Pending
                                      <% } %>
                             </p>
-                            <!-- <a href="#">Download info</a> -->
                         </div>
                     </article>
                 </div> 
@@ -91,7 +72,6 @@
                             <p class="mb-1">
                                 City: <%=order.address.city %>, <%=order.address.street %> <br><%=order.address.houseName %> <br> <%=order.address.pincode %>
                             </p>
-                            <!-- <a href="#">View profile</a> -->
                         </div>
                     </article>
                 </div> 
@@ -144,12 +124,9 @@
                                                 if(item.status != 'Delivered'&& item.status != 'Returned' && (item.approve==null || item.approve=='not set') && item.status != 'Cancelled') {%>
                                                 <select id="status_<%= item.product._id %>" onchange="statusChangeConfirm('<%= order._id %>','<%= item.product._id %>')">
 
-                                                    <!-- <option value="Cancelled" <%= item.status === 'Shipped' ? 'disabled' : (item.status === 'Cancelled' ? 'selected' : '') %>>Cancel</option> -->
                                                     <option value="Confirmed" <%= item.status === 'Shipped' ? 'disabled' : (item.status === 'Confirmed' ? 'selected' : '') %>>Confirmed</option>
                                                     <option value="Shipped" <%= item.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
                                                     <option value="Delivered" <%= item.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                                    <!-- Uncomment the following line to add the Cancelled option -->
-                                                    <!-- <option value="Cancelled" <%= item.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option> -->
                                                 </select>
                                                 <% }else if(item.approve=='pending'){ %>
                                                     <button type="button" class="btn btn-success" onclick="returnProductconfirm('<%= order._id %>','<%=item.product._id %>')">Approve Return</button>
@@ -301,7 +278,6 @@
             const requestData = {
                 productId
             };
-            console.log(requestData,'');
             fetch(`/admin/returnapprove?id=${id}`, {
                 method: 'POST',
                 headers: {

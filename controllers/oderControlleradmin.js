@@ -48,7 +48,6 @@ const listOrderDetails=async(req,res)=>{
             path: "items.product",
             model: "Product",
           })
-     console.log(order,"order");
       res.render("orderDetails", { order,admin });
         } catch (error) {
           console.log(error.message);
@@ -60,7 +59,6 @@ const orderStatusChange = async (req, res) => {
       const orderId = req.query.id;
       const {status,productId}=req.body
      
-      console.log('inside change');
       const admin = req.session.adminData;
  
    
@@ -76,7 +74,6 @@ const orderStatusChange = async (req, res) => {
           model: "Product",
         });
  
-  console.log(order,"orderorder");
 
 
 
@@ -119,83 +116,6 @@ const orderStatusChange = async (req, res) => {
   }; 
 
 
-//   const loadSalesReport =async(req,res)=>{
-
-
-   
-  
-   
-    
-//     let query = { 'product.paymentStatus': "success" };
-
-//     if (req.query.paymentMethod) {
-//       if (req.query.paymentMethod === "onlinePayment") {
-//         query.paymentMethod = "onlinePayment";
-//       } else if (req.query.paymentMethod === "Wallet") {
-//         query.paymentMethod = "Wallet";
-//       } else if (req.query.paymentMethod === "CashOnDelivery") {
-//         query.paymentMethod = "CashOnDelivery";
-//       }
-//     }
-//     if (req.query.status) {
-//       if (req.query.status === "Daily") {
-//         query.orderDate = dateFun.getDailyDateRange();
-//       } else if (req.query.status === "Weekly") {
-//         query.orderDate = dateFun.getWeeklyDateRange();
-//       }else if (req.query.status === "Monthly") {
-//         query.orderDate = dateFun.getMonthlyDateRange();
-//       } 
-      
-//       else if (req.query.status === "Yearly") {
-//         query.orderDate = dateFun.getYearlyDateRange();
-//       }
-//       else if (req.query.status === "All") {
-//         query.paymentStatus = "success";
-//       }
-//     }
-
-//     const orders = await Order.find(query)
-//     .populate("user")
-//     .populate({
-//       path: "address",
-//       model: "Address",
-//     })
-//     .populate({
-//       path: "items.product",
-//       model: "Product",
-//     })
-//     .sort({ orderDate: -1 });
-//     console.log(orders,"orders");
-//  // total revenue
-//  const totalRevenue = orders.reduce(
-//   (acc, order) => acc + order.totalAmount,
-//   0
-// );
-
-
-// // all returned orders
-
-// const totalSales = orders.length;
-//     // total Sold Products
-//     const totalProductsSold = orders.reduce(
-//       (acc, order) => acc + order.items.length,
-//       0
-//     );
-
-
-
-
-//   res.render("admin/salesReport",{
-
-//     orders,
-
-//     totalRevenue,
-
-//     totalSales,
-//     totalProductsSold,
-//     req
-//   } );
-//   }
 
 const returnData =async (req, res)=>{
   try {
@@ -216,7 +136,6 @@ const returnData =async (req, res)=>{
   
     const user = order.user;
     let totalAmount = order.totalAmount;
-    console.log(totalAmount, "totalAmount");
     const product = order.items.find(
       (item) => item.product._id.toString() === productId
     );

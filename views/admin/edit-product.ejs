@@ -26,7 +26,6 @@
                                         <select name="category" class="form-control" onchange="displaySubCategory(this.value, '<%= JSON.stringify(category) %>')">
                                             <% category.forEach((cat) => {
                                                 if (cat.is_listed) { %>
-                                                    <!-- <option <% if (cat._id.toString() === product.category.toString()) { %>disabled selected <% } %>><%= cat.name %></option> -->
                                                     <option value="<%= cat._id %>" <% if (cat._id.toString() === product.category.toString()) { %>disabled selected <% } %> >
                                                         <%= cat.name %>
                                                     </option>
