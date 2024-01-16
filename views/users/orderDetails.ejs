@@ -177,9 +177,9 @@
             <dl class="dlist d-flex">
                 <dt>Grand total:</dt>
                     <% if(order.coupon){ %>
-                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %> </b> (Coupon Applied)</dd>
+                        <dd><b class="ms-2 h6">₹<%= order.totalAmount.toFixed(2) %> </b> (Coupon Applied)</dd>
                     <% } else { %>
-                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %></b> </dd>
+                        <dd><b class="ms-2 h6">₹<%= order.totalAmount.toFixed(2) %></b> </dd>
                     <% } %>
             </dl>
         </article>
