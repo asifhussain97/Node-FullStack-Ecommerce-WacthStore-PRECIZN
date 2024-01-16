@@ -5,7 +5,7 @@ const session = require('express-session');
 const mongoose = require("mongoose");
 const config = require("./config/config"); // Now require other modules after loading dotenv
 
-mongoose.connect("mongodb://127.0.0.1:27017/e-commerce");
+mongoose.connect("mongodb+srv://asifhussain8697:Chilluz9747@cluster0.sndtkuk.mongodb.net/e-commerce");
 
 const userRoute = require("./routes/userRoute");
 const adminRoute = require("./routes/adminRoute");
