@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Product = require("../models/product")
 const Category = require("../models/category")
+const Cart=require('../models/cartModel')
 const path=require("path")
 const sharp=require("sharp")
 
@@ -32,18 +33,14 @@ const addProduct = async(req,res)=>{
     const categoryData = await Category.find(); 
     const images = [];
     const subcat = req.body.sub_category
-    const category = await Category.findOne({ sub_category: { $in: [subcat] } }); 
-    const index = category.sub_category.indexOf(subcat);
     for (let i = 0; i < req.files.length; i++) {
       // Modify this to the path of the temporary uploaded file
       const file = req.files[i];
-
       // Generate a random integer for the file name
       const randomInteger = Math.floor(Math.random() * 20000001);
       const imageDirectory = path.join('public', 'assets', 'img', 'product');
       const imgFileName = "cropped" + randomInteger + ".jpg";
       const imagePath = path.join(imageDirectory, imgFileName);
-      console.log(imagePath, "Image path");
 
       // Perform cropping using sharp module
       const croppedImage = await sharp(file.path)
@@ -54,13 +51,11 @@ const addProduct = async(req,res)=>{
 
       // If cropping is successful, add the cropped image to imageData array
       if (croppedImage) {
-        console.log("end",images);
 
         images.push(imgFileName);
       }
     }
 
-    console.log(images);
     const newProduct = {
       name: req.body.name,
       image: images,
@@ -72,16 +67,17 @@ const addProduct = async(req,res)=>{
       productColor: req.body.productColor,
       gender: req.body.gender,
     }
-    const existProduct = await Product.findOne({ name: { $regex: new RegExp('^' + newProduct.name + '$', 'i') } });
+    const existProduct = await Product.findOne({ name: { $regex: new RegExp('^' + newProduct.name.replace(/\s+/g, ' ').trim() + '$', 'i') } });
     if (existProduct) {
-      res.render('addProduct', { admin:userData, errorMessage: 'this product already exists', category: categoryData })
+      res.status(200).json({ success: false, message: 'This product already exists' });
+      return
     } else {
       const product = new Product({
         name: newProduct.name,
         image: newProduct.image,
         description: newProduct.description,
         category: newProduct.category,
-        sub_category:index,
+        sub_category:subcat,
         price: newProduct.price,
         discount_price: newProduct.discount_price,
         stock: newProduct.stock,
@@ -90,10 +86,11 @@ const addProduct = async(req,res)=>{
       });
       const productData = await product.save();
 
-      res.redirect('/admin/addProduct');
-   }
+      res.status(200).json({ success: true });
+    }
   } catch (error) {
-    console.log(error.message);
+    res.status(200).json({ success: false, message: error.message });
+    return      
   }
 }
 
@@ -118,8 +115,6 @@ const updateProduct = async (req, res) => {
     const id = req.body.idproduct;
     let images=[],delets=[]
     const subcat = req.body.sub_category
-    const categorydata = await Category.findOne({ sub_category: { $in: [subcat] } }); 
-    const index = categorydata.sub_category.indexOf(subcat);
     const productData = await Product.findById({ _id:id });  
     const {
       name,
@@ -131,65 +126,68 @@ const updateProduct = async (req, res) => {
       productColor,
       gender, 
     }=req.body
-    if (req.body.deletecheckbox) {
-      delets.push(req.body.deletecheckbox); 
-      delets = delets.flat().map(x=>Number(x))
-      images = productData.image.filter((img, idx) => !delets.includes(idx));
+    const existProduct = await Product.findOne({ name: { $regex: new RegExp('^' + name.replace(/\s+/g, ' ').trim() + '$', 'i') } });
+    if (existProduct&&productData.name!=req.body.name) {
+      res.status(200).json({ success: false, message: 'This product already exists' });
+      return
     }
     else{
-      images = productData.image.map((img)=>{return img});
-    }
-    if(req.files.length!=0){
-      for (let i = 0; i < req.files.length; i++) {
-        // Modify this to the path of the temporary uploaded file
-        const file = req.files[i];
-  
-        // Generate a random integer for the file name
-        const randomInteger = Math.floor(Math.random() * 20000001);
-        const imageDirectory = path.join('public', 'assets', 'img', 'product');
-        const imgFileName = "cropped" + randomInteger + ".jpg";
-        const imagePath = path.join(imageDirectory, imgFileName);
-  
-        console.log(imagePath, "Image path");
-  
-        // Perform cropping using sharp module
-        const croppedImage = await sharp(file.path)
-          .resize(280, 300, {
-            fit: "cover",
-          })
-          .toFile(imagePath);
-  
-        // If cropping is successful, add the cropped image to imageData array
-        console.log("lkjgfsldkfj",images);
-  
-        if (croppedImage) {
-          console.log("end",images);
-  
-          images.push(imgFileName);
-        }
+      if (req.body.deletecheckbox) {
+        delets.push(req.body.deletecheckbox); 
+        delets = delets.flat().map(x=>Number(x))
+        images = productData.image.filter((img, idx) => !delets.includes(idx));
       }
-    }
-    await Product.findByIdAndUpdate(
-      { _id: req.body.idproduct },
-      {
-        $set: {
-          name: name,
-          image: images,
-          description: description,
-          sub_category:index,
-          category: category,
-          price: price,
-          discount_price: discount_price,
-          stock: stock,
-          productColor: productColor,
-          gender: gender,
-        }
+      else{
+        images = productData.image.map((img)=>{return img});
       }
-    )
+      if(req.files.length!=0){
+        for (let i = 0; i < req.files.length; i++) {
+          // Modify this to the path of the temporary uploaded file
+          const file = req.files[i];
     
-    res.redirect('/admin/product');
+          // Generate a random integer for the file name
+          const randomInteger = Math.floor(Math.random() * 20000001);
+          const imageDirectory = path.join('public', 'assets', 'img', 'product');
+          const imgFileName = "cropped" + randomInteger + ".jpg";
+          const imagePath = path.join(imageDirectory, imgFileName);
+    
+    
+          // Perform cropping using sharp module
+          const croppedImage = await sharp(file.path)
+            .resize(280, 300, {
+              fit: "cover",
+            })
+            .toFile(imagePath);
+    
+          // If cropping is successful, add the cropped image to imageData array  
+          if (croppedImage) {  
+            images.push(imgFileName);
+          }
+        }
+      }
+      await Product.findByIdAndUpdate(
+        { _id: req.body.idproduct },
+        {
+          $set: {
+            name: name,
+            image: images,
+            description: description,
+            sub_category:subcat,
+            category: category,
+            price: price,
+            discount_price: discount_price,
+            stock: stock,
+            productColor: productColor,
+            gender: gender,
+          }
+        }
+      )                         
+    
+      res.status(200).json({ success: true });
+    }
   } catch (error) {
-      console.log(error.message);
+    res.status(200).json({ success: false, message: error.message });
+    return      
   }
 };
 
@@ -225,11 +223,27 @@ const deleteAndaddProduct = async (req, res) => {
 
 const product_details = async (req, res) => {
     try {
-  
-      const userData = await User.findById({ _id: req.session.user_id });
-      const id = req.query.id;
-      const productData= await Product.findById({_id: id}); 
-      res.render("product-details", { user: userData, products:productData  });
+      if(!req.session.user_id){
+        const id = req.query.id;
+        const productData= await Product.findById({_id: id}); 
+        res.render("product-details", { user: null,products:productData  });
+      }  
+      else{
+        const userData = await User.findById({ _id: req.session.user_id });
+        const userId = req.session.user_id;
+        const id = req.query.id;
+        const productData= await Product.findById({_id: id}); 
+
+        let existingCart=false;
+        let existingCartItem=false;
+        existingCart = await Cart.findOne({ user: userId }).populate("items.product");
+
+        if (existingCart) {
+          existingCartItem = existingCart.items.find((item) => item.product._id.toString() === id);
+        }  
+
+        res.render("product-details", { user: userData, products:productData,existingCartItem  });
+      }    
     } catch (error) {
       console.log(error.message);
     }

@@ -1,0 +1,72 @@
+<%- include('../layouts/headeradmin.ejs') %>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <div id="layoutSidenav_content">
+    <main>
+  <section  class="content-main">
+    <div class="container-fluid px-4">
+        <div class="p-0 d-flex justify-content-between container-fluid">
+            <h1 class="mt-4 mb-3">Order List</h1>
+            <div class="d-flex align-items-center">
+                
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Table
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple" class="table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Order</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <% order.forEach(order_data => { %>
+                            <tr>
+                                <td><%= order_data._id %></td>
+                                <td><%= new Date(order_data.orderDate).toLocaleDateString() %></td>
+                                <td><%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
+                                <td>
+                                  <% let f = 0;
+                                     order_data.items.forEach(function(item) {
+                                         if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') {
+                                             f = 1;
+                                         }
+                                     });
+                                     if (f === 0) { %>
+                                         Completed
+                                     <% } else { %>
+                                         Pending
+                                     <% } %>
+                                </td>
+                                <td><%= order_data.totalAmount %></td>
+                                <td><a href="/admin/orderDetails?id=<%= order_data._id %>" class="btn-small d-block">View</a></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+
+<%- include('../layouts/footeradmin.ejs') %>

@@ -12,41 +12,6 @@
 </head>
 
 <body>
-    <!-- <div class="container  text-center">
-        <div class="row  justify-content-center">
-            <div  class="  col-md-6">
-                 Registration Form 
-            <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-                <div style="width: 2000px;" class=" rounded-5  card bg-transparent custom-form-container">
-                  <div class="card-body rounded-5  bg-dark bg-opacity-10">
-                        
-                        <h1 class="head card-title text-center"><b>Signup</b></h1>
-                        <br>
-                        <form action="/register" method="post">
-                           
-                            
-                        </form>
-
-                        <p class="mt-3">Already have an account? <a class="text-decoration-none" href="/login">login</a></p>
-                        <div style="position: relative; width: 100%;" class="justify-content-center text-center">
-                        <% 
-                          if (typeof errorMessage !== 'undefined') {
-                        %>
-                            <p style="position: absolute; transform: translate(-50%, -50%); left: 50%; color:crimson;"><%= errorMessage %></p>
-                        <%
-                          }
-                        %>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>    
-            </div>
-            <div class="text-center">
-                <img style="width: 200px; height: 300px; border-radius: 40px;" src="/signin.jpg" />
-            </div>
-        </div>
-    </div> -->
         <div class="main container d-flex flex-column justify-content-center rounded-5 ">
               <h1 class="head card-title text-center"><b>Signup</b></h1>
               <div class="card-body d-flex flex-row  justify-content-around rounded-5 " > 
@@ -106,8 +71,19 @@
                         <div style="height: 3rem;" class="text-center">
                             <button type="submit" class="rounded-4  btn  btn-full-width btn-dark">Register</button>
                         </div>
+                        <div class="form-group">
+                            <label for="referral-toggle"></label>
+                            <a class="btn btn-link" id="referral-toggle">Do you have a referral code?</a>
+                        </div>
+                    
+                        <div class="mb-1 custom-form-field" id="referral-code-group" style="<%= referral ? 'display: block;' : 'display: none;' %>">
+                            <span class="inputs rounded-4 input-group-text">
+                                <!-- You can change the icon as needed -->
+                                <i class="fa-solid fa-code"></i>                                
+                                <input type="text" class="rounded-4 border-0 ms-2 form-control" name="referralCode" id="referralCode" placeholder="Enter the referral code" value="<%= referral %>" <%= referral ? 'readonly' : '' %>>
+                            </span>                        
+                        </div>
                   </form>
-                  <p style="color: black;" class="mt-3">Already have an account? <a class="text-decoration-none" href="/login">Login</a></p>
                   <div style="position: relative; width: 100%;" class="justify-content-center text-center">
                     <% 
                     if (typeof errorMessage !== 'undefined') {
@@ -117,6 +93,8 @@
                     }
                     %>
                   </div>
+                  <p style="color: black;" class="mt-3">Already have an account? <a class="text-decoration-none" href="/login">Login</a></p>
+                  
                 </div>
               </div>  
         </div>
@@ -124,7 +102,7 @@
     <script>
         function nameChaking(){
         let name=document.getElementById("name").value;
-        if (name === "") {
+        if (name.trim() === "") {
                 document.getElementById("errorname").innerHTML = "Please enter your name";
                 return false;
             } else if (/^[a-zA-Z ]+$/.test(name) == false) {
@@ -147,7 +125,7 @@
         }
         function numberChaking(){
         let num=document.getElementById("number").value;
-            if(/^\d{10}$/.test(num)==false){
+            if (/^[1-9]\d{9}$/.test(num) === false || /^(.)\1*$/.test(num)) {
                 document.getElementById("errornumber").innerHTML="please enter a valid number";
                 return false
             }else{
@@ -158,7 +136,7 @@
         let password=document.getElementById("password").value;
         function passwordChaking(){
             password=document.getElementById("password").value;
-            if(password==""){
+            if(password.trim()==""){
                 document.getElementById("errorpassword").innerHTML="create your password";
                 return false
             }
@@ -203,6 +181,25 @@
             }
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const referralToggle = document.getElementById('referral-toggle');
+          const referralCodeGroup = document.getElementById('referral-code-group');
+      
+          // Check if referral code is not null, then display the referral code group
+          if ("<%= referral %>" !== "") {
+            referralCodeGroup.style.display = 'block';
+          }
+      
+          referralToggle.addEventListener('click', function () {
+            if (referralCodeGroup.style.display === 'none') {
+              referralCodeGroup.style.display = 'block';
+            } else {
+              referralCodeGroup.style.display = 'none';
+            }
+          });
+        });
+      </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>

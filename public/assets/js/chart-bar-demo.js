@@ -2,17 +2,28 @@
 Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#292b2c';
 
+let dailyOrderArray = document.getElementById("dailyOrderArray").value;
+
+dailyOrderArray = dailyOrderArray.trim(); // Remove leading and trailing whitespace
+dailyOrderArray = dailyOrderArray.split(",");
+dailyOrderArray = dailyOrderArray.map((item) => Number(item));
 // Bar Chart Example
 var ctx = document.getElementById("myBarChart");
 var myLineChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: [ 'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'],
     datasets: [{
       label: "Revenue",
       backgroundColor: "rgba(2,117,216,1)",
       borderColor: "rgba(2,117,216,1)",
-      data: [4215, 5312, 6251, 7841, 9821, 14984],
+      data: dailyOrderArray // Use the array directly here
     }],
   },
   options: {
@@ -31,7 +42,7 @@ var myLineChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: 15000,
+          max: Math.max(...dailyOrderArray), // Dynamically set the max value based on data
           maxTicksLimit: 5
         },
         gridLines: {

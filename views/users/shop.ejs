@@ -14,43 +14,133 @@
   <!-- Google fonts-->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
   <!-- Core theme CSS (includes Bootstrap)-->
-  <link href="/styles.css" rel="stylesheet" />
   <link href="/stylesadmin.css" rel="stylesheet"/>
+  <link href="/styles.css" rel="stylesheet" />
+
+<!-- Add this in your HTML or EJS file -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 </head>
+<style>
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #ffbf00;
+  border-right: none;
+  padding: 5px;
+  height: 36px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+}
+
+.searchTerm:focus{
+  color: #000000;
+}
+
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #ffbf00;
+  background: #ffbf00;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/*Resize the wrap to see the search bar change!*/
+.wrap{
+  width: 30%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* .checked {
+    color: orange;
+} */
+#layoutSidenav_nav {
+            scrollbar-width: thin; /* Adjust the width of the scrollbar */
+            scrollbar-color: gray black; /* Customize the color of the scrollbar */
+        }
+    
+            /* Webkit browsers (Chrome, Safari) */
+        #layoutSidenav_nav::-webkit-scrollbar {
+            width: 8px; /* Adjust the width of the scrollbar */
+        }
+
+        /* Track */
+        #layoutSidenav_nav::-webkit-scrollbar-track {
+            background: black; /* Track color */
+            border-radius: 10px; /* Round at the ends */
+        }
+
+        /* Handle */
+        #layoutSidenav_nav::-webkit-scrollbar-thumb {
+            background: darkgrey; /* Thumb color */
+            border-radius: 10px; /* Round at the ends */
+        }
+        .subcategory label {
+        font-size: 12px; /* Adjust the size as needed */
+        }
+</style>
 
 <body id="page-top">
   <!-- Navigation-->
     <nav  style="background-color: black; z-index: 2000;" class=" navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink" id="mainNav">
         <div class="container-fluid ms-3">
             <div class="d-flex">
-                <a class="navbar-brand" href="#page-top"><img src="/logo.png" alt="..." /></a>
+                <a class="navbar-brand" href="/"><img src="/logo.png" alt="..."></a>
                 <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 nav-link text-light" id="sidebarToggle" href="#!"><i class=" fas fa-bars"></i></button>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
-
+            <div class="wrap">
+                <div class="search">
+                   <input type="text" id="searchInput" class="searchTerm" placeholder="What are you looking for?">
+                   <button type="submit" class="searchButton">
+                     <i class="fa fa-search"></i>
+                  </button>
+                </div>
+             </div>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="#team"></a></li> -->
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i id="profileicon" class=" fas fa-user fa-fw"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end" style="background-color: black;"  aria-labelledby="navbarDropdown">
-                            <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-heart"></i>&nbsp;Wishlist</a></li>
-                            <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-cart-shopping"></i>&nbsp;Cart</a></li>
-                            <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-gear"></i>&nbsp;Settings</a></li>
-                            <hr style="color: white;">
-                            <li><a class="nav-link ms-3" href="/logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;Logout</a></li>
-                        </ul>
-                    </li>
+                    <% if (user) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i id="profileicon" class="fas fa-bars"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end " style="background-color: black;"  aria-labelledby="navbarDropdown">
+                                <li><a class="nav-link ms-3" href="/profile"><i class="fa-solid fa-user"></i>&nbsp;Profile</a></li>
+                                <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-heart"></i>&nbsp;Wishlist</a></li>
+                                <li><a class="nav-link ms-3" href="/cart"><i class="fa-solid fa-cart-shopping"></i>&nbsp;Cart</a></li>
+                                <li><a class="nav-link ms-3" href="/orderSuccess"><i class="fa-solid fa-box-open"></i>&nbsp;Orders</a></li>
+                                <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-gear"></i>&nbsp;Settings</a></li>
+                                <hr style="color: white;">
+                                <li><a class="nav-link ms-3" href="/logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;Logout</a></li>
+                            </ul>
+                        </li>
+                    <% } else{%>
+                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    <% }%>            
                 </ul>
             </div>
         </div>
@@ -58,80 +148,85 @@
 
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav" style="position: fixed; overflow: auto; justify-content: center; height: 100%;  width: 200px; background-color: black;">
+            <form>
             <nav style="background-color: black; padding-top: 20px;" class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="pt-5 sb-sidenav-menu">
                     <div class="nav">
+                        <hr  style="color: white; margin-bottom: 0px;">
+
                         <div style="padding-left: 40px; font-size: larger; color: white;" class="sb-sidenav-menu-heading">
                             Category
                         </div>
                         <hr style="color: white;">
                         <% for (const cat of category) { 
                             if(cat.is_listed==true){ %>
-                                <div class="sb-nav-link-icon" style="color: white; display: flex; flex-direction: column; align-items: center;">
-                                    <a style="color: white; padding-left: 40px; display: flex; align-items: center;" class="nav-link" href="#" data-category-id="<%= cat.id %>">
-                                        <i class="fas fa-plus-circle" style="display: inline;"></i>
-                                        <i class="fas fa-minus-circle" style="display: none;"></i>
+                                <div class="sb-nav-link-icon" style="color: white; display: flex; flex-direction: column;  ">
+                                    <a style="color: white;  display: flex; align-items: center;" class="nav-link" href="#!" data-category-id="<%= cat.id %>">
+                                        <i id="plus2_<%= cat.id %>" class="fas fa-plus-circle"></i>
                                         &nbsp; <%= cat.name %>
                                     </a>
                                     <div class="subcategory" id="subcategory_<%= cat.id %>" style="display: none;">
                                         <% for (let i=0; i<cat.sub_category.length; i++) { %>
-                                            <div class="ps-5 py-3 text-light"><a class="text-decoration-none text-light" href=""><%= cat.sub_category[i] %></a></div>
+                                            <div class="ps-4 py-3 text-light">
+                                                <label>
+                                                    <input type="radio" name="subcategory" value="<%= cat.sub_category[i] %>">
+                                                    <%= cat.sub_category[i] %>
+                                                </label>
+                                            </div>
                                         <% } %>
                                     </div>
                                 </div>
                         <% } } %>
+                        <hr  style="color: white; margin-bottom: 0px;">
+                <div style="padding-left: 40px; font-size: larger; color: white;" class="sb-sidenav-menu-heading">
+                    Price Range
+                </div>
+                <hr style="color: white;">
+                <div class="ps-3 py-3 text-light">
+                    <label>
+                        <input type="radio" name="price_range" value="0_1000">
+                        Below 1000
+                    </label>
+                </div>
+                <div class="ps-3 py-3 text-light">
+                    <label>
+                        <input type="radio" name="price_range" value="1000_1999">
+                        1000-1999
+                    </label>
+                </div>
+                <div class="ps-3 py-3 text-light">
+                    <label>
+                        <input type="radio" name="price_range" value="2000_2999">
+                        2000-2999
+                    </label>
+                </div>
+                <div class="ps-3 py-3 text-light">
+                    <label>
+                        <input type="radio" name="price_range" value="3000_10000">
+                        Above 3000
+                    </label>
+                </div>
+                <div class="px-2 py-3 d-flex jus text-light">
+                    <input type="submit" class="btn btn-primary w-100 me-2" value="Filter">
+                    <a class="btn btn-danger w-50" href="/shop"><i class="fa-solid fa-xmark"></i></a>
+                </div>
                     </div>
                 </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const categoryLinks = document.querySelectorAll('.nav-link');
                 
-                        categoryLinks.forEach(function(link) {
-                            link.addEventListener('click', function(event) {
-                                event.preventDefault();
-                
-                                const categoryId = this.getAttribute('data-category-id');
-                                const subcategory = document.getElementById(`subcategory_${categoryId}`);
-                                const plusIcon = this.querySelector(`[data-category-id="${categoryId}"] .fa-plus-circle`);
-                                const minusIcon = this.querySelector(`[data-category-id="${categoryId}"] .fa-minus-circle`);
-                
-                                if (subcategory.style.display === 'none') {
-                                    subcategory.style.display = 'block';
-                                    plusIcon.style.display = 'none';
-                                    minusIcon.style.display = 'inline';
-                                    this.parentElement.style.backgroundColor = 'grey'; // Change background color
-                                } else {
-                                    subcategory.style.display = 'none';
-                                    plusIcon.style.display = 'inline';
-                                    minusIcon.style.display = 'none';
-                                    this.parentElement.style.backgroundColor = 'black'; // Reset background color
-                                }
-                            });
-                        });
-                    });
-                </script>
-
-                <div style="background-color: black;" class="mb-3 sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    <%if(user){%>
-                      <%= user.name %>
-                    <% } %>
-                </div>
             </nav>
+            </form>
         </div>
         <div id="layoutSidenav_content">
             <main>
                 <section style="padding-left: 12.5rem;" class="py-5">
                     <div class="container px-4 px-lg-5 mt-5">
-                        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5  justify-content-left">
+                        <div id="productGrid" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5  justify-content-left">
                             <% for (const product of products) { 
                                 if(product.is_listed==true){
                                 %>
-                                <div class="col mb-4"> <!-- Adjusted mb-4 instead of mb-5 -->
+                                <div class="cardsofproduct col mb-4"> <!-- Adjusted mb-4 instead of mb-5 -->
                                     <div class="card h-100" style="max-width: 230px;"> <!-- Added max-width to limit card size -->
-                                        <!-- Sale badge-->
-                                        <!-- <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem;">Sale</div> -->
-                                        <!-- Product image-->
+                                        
                                         <% if (product.image.length > 0) { %>
                                             <a style="height: 200px; margin: 10px;" href="/product-details?id=<%= product._id %>">
                                                 <img style="height: 200px;" class="card-img-top" src="/assets/img/product/<%= product.image[0] %>" alt="..." />
@@ -142,32 +237,45 @@
                                             </a>
                                         <% } %>
                                         <!-- Product details-->
-                                        <div class="card-body pt-2 p-4">
-                                            <div class="text-center">
+                                        <div class="card-body pt-0 pb-0 p-3">
+                                            <div class="text-start">
                                                 <!-- Product name-->
-                                                <div style="height: 50px; overflow: hidden; margin-bottom: 20px;">
+                                                <div style="height: 50px; overflow: hidden; margin-bottom: 0px;">
                                                     <a class="text-decoration-none" href="/product-details?id=<%= product._id %>">
-                                                        <h5 class="text-dark fw-bolder" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; text-overflow: ellipsis;"><%= product.name %></h5>
+                                                        <h6 class="text-dark fw-bolder" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; text-overflow: ellipsis;"><%= product.name %></h6>
                                                     </a>
                                                 </div>
                                                 <!-- Product price-->
-                                                <% if (product.discount_price) { %>
-                                                    <h6 class="text-muted">₹<%= product.discount_price %> - <s>₹<%= product.price %></s></h6>
+                                                <%if( product.discountStatus==true && new Date(product.discountStart) <= new Date() && new Date() <= new Date(product.discountEnd)){
+                                                    const percentageOff = ((product.price - product.discountPrice) / product.price) * 100; %>
+                                                    <h6 class="text-muted d-inline">₹<%= product.discountPrice %> - <s>₹<%= product.price %></s></h6> <span style="font-size: 12px; background-color: rgb(255, 255, 255); " class=" text-success">-<%= percentageOff.toFixed(2) %>%</span>
                                                 <% } else { %>
                                                     <h6 class="text-muted">₹<%= product.price %></h6>
                                                 <% } %>
                                             </div>
                                         </div>
                                         <!-- Product actions-->
-                                        <div class="d-flex justify-content-around card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                            <!-- <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Buy Now</a></div>
-                                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#"><i class="fa-solid fa-cart-shopping"></i></a></div> -->
-                                            <div class="text-center">
-                                                <a  href="/product-details?id=<%= product._id %>" class="btn btn-outline-dark btn-sm mt-auto" href="#">Buy Now</a>
-                                            </div>
-                                            <div class="text-center">
-                                                <a class="btn btn-outline-dark btn-sm mt-auto" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
-                                            </div>
+                                        <div class="d-flex justify-content-center card-footer px-4 pt-0 pb-3 border-top-0 bg-transparent">
+
+                                            <% if (product.stock<=0) { %>
+                                                <div class="text-center">
+                                                    <a class="text-danger text-decoration-none mt-auto" href="#">Out of Stock</a>
+                                                </div>
+                                            <% } else { %>
+                                                <div class=" w-100">
+                                                    <form id="myForm<%= product._id %>">                   
+                                                        <div class="product-action-1 float-end show">
+                                                            <input type="hidden" value="<%= product._id %>" name="productData_id"> 
+                                                            <input type="hidden" value="1" name="qty">
+                                                            <button type="submit" aria-label="Add To Cart" class="action-btn btn btn-outline-dark btn-sm hover-up">
+                                                                <i class="fa-solid fa-cart-shopping"></i>                                                        
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                
+                                            <% } %>
+
                                         </div>
                                     </div>
                                 </div>
@@ -177,36 +285,260 @@
                 </section>
             </main>
         </div>
-        
     </div>
     <footer style="background-color: #000000; padding-left: 12.5rem;" class="footer py-2">
         <div class="container">
-          <div class="row align-items-center">
-            <div style="color: #ffc800" class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
-            <div class="col-lg-4 my-3 my-lg-0">
-              <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800"  href="#!" aria-label="Twitter"><i style="color: black;" class="fab fa-twitter"></i></a>
-              <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="#!" aria-label="Facebook"><i style="color: black;" class="fab fa-facebook-f"></i></a>
-              <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="#!" aria-label="LinkedIn"><i style="color: black;" class="fab fa-linkedin-in"></i></a>
+            <div class="row align-items-center">
+                <div style="color: #ffc800" class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
+                <div class="col-lg-4 my-3 my-lg-0">
+                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800"  href="https://twitter.com/" target="_blank" aria-label="Twitter"><i style="color: black;" class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="https://www.facebook.com/" target="_blank" aria-label="Facebook"><i style="color: black;" class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="https://www.linkedin.com/" target="_blank" aria-label="LinkedIn"><i style="color: black;" class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a style="color: #ffc800" class=" text-decoration-none me-3" href="#!">Privacy Policy</a>
+                    <a style="color: #ffc800" class=" text-decoration-none" href="#!">Terms of Use</a>
+                </div>
             </div>
-            <div class="col-lg-4 text-lg-end">
-              <a style="color: #ffc800" class=" text-decoration-none me-3" href="#!">Privacy Policy</a>
-              <a style="color: #ffc800" class=" text-decoration-none" href="#!">Terms of Use</a>
-            </div>
-          </div>
         </div>
-      </footer>
-<!-- Bootstrap core JS-->
+    </footer>
+    
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Script for category links -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
 <script src="/scripts.js"></script>
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-<!-- * *                               SB Forms JS                               * *-->
-<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-<script src="/main.js"></script>
 <script src="/scriptsadmin.js"></script>
+
+<script>
+
+// Function to show toast alert
+function showToast(message, type) {
+    Toastify({
+        text: message,
+        duration: 3000, // Duration in milliseconds
+        gravity: 'bottom', // Position: 'top', 'bottom', 'left', 'right'
+        backgroundColor: type === 'success' ? '#33cc33' : '#ff3333', // Change colors based on success/failure
+    }).showToast();
+}
+
+// Function to handle form submission
+function addcartform(event) {
+    event.preventDefault();
+    const formId = event.target.id; // Get the form ID that triggered the event
+    const productData_id = document.querySelector(`#${formId} [name="productData_id"]`).value;
+    const qty = document.querySelector(`#${formId} [name="qty"]`).value;
+
+    fetch('/cart', {
+        method: 'POST',
+        body: JSON.stringify({ productData_id, qty }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (!data.existing) {
+            if (data.success) {
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message, 'error');
+            }
+        } else {
+            window.location.href = '/cart';
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        showToast('Internal server error', 'error');
+    });
+}
+
+// Add event listeners to all forms
+const forms = document.querySelectorAll('form');
+forms.forEach(form => {
+    form.addEventListener('submit', addcartform);
+});
+  
+//search
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const productGrid = document.getElementById("productGrid");
+    const products = productGrid.getElementsByClassName("cardsofproduct");
+
+    searchInput.addEventListener("input", function () {
+        const searchText = searchInput.value.toLowerCase();
+
+        for (let i = 0; i < products.length; i++) {
+            const productName = products[i].querySelector("h6").textContent.toLowerCase(); // Change 'h2 a' to 'h6' based on your HTML structure
+
+            if (!searchText || productName.includes(searchText)) {
+                products[i].style.display = "block"; // Show the product card
+            } else {
+                products[i].style.display = "none"; // Hide the product card
+            }
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    let openedCategory = null;
+    let openedPlus = null;
+    const handleCategoryLinks = function(event) {
+        if (event.target.classList.contains('nav-link')) {
+            event.preventDefault();
+
+            const categoryId = event.target.getAttribute('data-category-id');
+            const subcategory = document.getElementById(`subcategory_${categoryId}`);
+            const plusIcon = document.getElementById(`plus2_${categoryId}`);
+
+            if (openedCategory !== null && openedCategory !== subcategory) {
+                // Collapse the previously opened category
+                openedCategory.style.display = 'none';
+                openedPlus.style.transform = 'rotate(0deg)'; // Reset rotation
+                openedDiv.style.backgroundColor = '';
+            }
+
+            if (subcategory.style.display === 'none') {
+                subcategory.style.display = 'block';
+                plusIcon.style.transform = 'rotate(45deg)'; // Rotate the plus icon
+                event.target.style.backgroundColor = 'rgb(100, 100, 100)'; // Change background color
+                openedCategory = subcategory;
+                openedPlus = plusIcon
+                openedDiv = event.target;
+            } else {
+                subcategory.style.display = 'none';
+                plusIcon.style.transform = 'rotate(0deg)'; // Reset rotation
+                event.target.style.backgroundColor = ''; // Reset background color
+                openedCategory = null;
+            }
+        }
+    };
+
+    document.querySelector('.nav').addEventListener('click', handleCategoryLinks);
+});
+
+// Wait for the DOM content to be loaded
+$(document).ready(function() {
+    // Listen for form submission
+    $('form').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get the checked subcategory and price range values
+        const subcategoryValue = $('input[name="subcategory"]:checked').val();
+        const priceRangeValue = $('input[name="price_range"]:checked').val();
+
+        // Check if both subcategory and price range are selected
+        if (subcategoryValue && priceRangeValue) {
+            // Perform AJAX request with both values
+            performFilterRequest(subcategoryValue, priceRangeValue);
+        } else if (subcategoryValue) {
+            // Only subcategory is selected
+            performFilterRequest(subcategoryValue, null);
+        } else if (priceRangeValue) {
+            // Only price range is selected
+            performFilterRequest(null, priceRangeValue);
+        } else {
+            // Neither subcategory nor price range is selected
+            // Prevent form submission
+            return false;
+        }
+    });
+
+    // Function to perform the AJAX request
+    function performFilterRequest(subcategory, priceRange) {
+        // Perform AJAX request
+        $.ajax({
+            url: '/filter',
+            type: 'POST',
+            data: {
+                subcategory: subcategory,
+                priceRange: priceRange
+            },
+            success: function(response) {
+                // Handle success response
+                const filteredProducts = response.filteredProducts;
+                // Update the product listing with filtered products
+                updateProductListing(filteredProducts);
+            },
+            error: function(error) {
+                // Handle error response
+                console.error('Error:', error);
+            }
+        });
+    }
+
+
+    function updateProductListing(products) {
+        const productGrid = $('#productGrid');
+        productGrid.empty(); // Clear existing products
+
+        for (const product of products) {
+            if (product.is_listed === true) { // Check if the product is listed
+                const productHTML = `
+                    <div class="cardsofproduct col mb-4">
+                        <div class="card h-100" style="max-width: 230px;"> 
+                            ${product.image.length > 0 ?
+                                `<a style="height: 200px; margin: 10px;" href="/product-details?id=${product._id}">
+                                    <img style="height: 200px;" class="card-img-top" src="/assets/img/product/${product.image[0]}" alt="..." />
+                                </a>` :
+                                `<a style="height: 200px; margin: 10px;" href="/product-details?id=${product._id}">
+                                    <img style="height: 200px;" class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                                </a>`
+                            }
+                            <div class="card-body pt-0 pb-0 p-3">
+                                <div class="text-start">
+                                    <div style="height: 50px; overflow: hidden; margin-bottom: 0px;">
+                                        <a class="text-decoration-none" href="/product-details?id=${ product._id }">
+                                            <h6 class="text-dark fw-bolder" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; text-overflow: ellipsis;">${ product.name }</h6>
+                                        </a>
+                                    </div>
+                                    ${product.discountStatus && new Date(product.discountStart) <= new Date() && new Date() <= new Date(product.discountEnd) ?
+                                        `<h6 class="text-muted d-inline">₹${product.discountPrice} - <s>₹${product.price}</s></h6> <span style="font-size: 12px; background-color: rgb(255, 255, 255); " class=" text-success">-${(((product.price - product.discountPrice) / product.price) * 100).toFixed(2)}%</span>` : 
+                                        `<h6 class="text-muted">₹${product.price}</h6>`
+                                    }
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-around card-footer px-4 pt-0 pb-3 border-top-0 bg-transparent">
+
+                                ${product.stock <= 0 ?
+                                    `<div class="text-center">
+                                        <a class="text-danger text-decoration-none mt-auto" href="#">Out of Stock</a>
+                                    </div>` : `
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star checked"></span>
+                                    <span class="fa fa-star"></span>
+                                    <span class="fa fa-star"></span>
+                                    <div class="text-center">
+                                        <form id="myForm${product._id}">                   
+                                            <div class="product-action-1 show">
+                                                <input type="hidden" value="${product._id}" name="productData_id"> 
+                                                <input type="hidden" value="1" name="qty">
+                                                <button type="submit" aria-label="Add To Cart" class="action-btn btn btn-outline-dark btn-sm hover-up">
+                                                    <i class="fa-solid fa-cart-shopping"></i>                                                        
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>`
+                                }
+
+                            </div>
+                        </div>
+                    </div>`;
+                productGrid.append(productHTML); // Append each product HTML
+            }
+        };
+    }
+});
+
+</script>
 
 </body>
 
 </html>
+
+
+

@@ -19,7 +19,7 @@ const Product = new mongoose.Schema({
     required: true,
   },
   sub_category: {
-    type: Number,
+    type: String,
     required: true,
   },
   price: {
@@ -30,6 +30,16 @@ const Product = new mongoose.Schema({
     type: Number,
     required: true
   },
+  discountPrice: {
+    type: Number,
+  },
+  discountStatus:{
+    type:Boolean,
+    default:false
+  },
+  discount:Number,
+  discountStart:Date,
+  discountEnd:Date,
   stock: {
     type: Number,
     required: true
@@ -54,7 +64,3 @@ const Product = new mongoose.Schema({
 module.exports = mongoose.model('Product', Product);
 
 
-//   brand:{
-//     type:String,
-//     required:true
-// },

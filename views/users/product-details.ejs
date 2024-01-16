@@ -1,13 +1,8 @@
 
-  <!-- Masthead-->
-  <!-- <header class="masthead">
-            <div class="container">
-                <div class="masthead-heading text-uppercase">Seek & Find Your<br>Unique Time!</div>
-                <div class="masthead-subheading">Crafted for elegance,<br>Fashioned for sophistication,<br>Engineered for punctuality,<br>our exquisite timepieces are now available to all</div>
-                <a class="btn btn-primary btn-xl text-uppercase" href="#services">explore now</a>
-            </div>
-        </header> -->
 <%- include('../layouts/headeruser.ejs') %>      
+<!-- Add this in your HTML or EJS file -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <style>
 .image-container {
   width: 440px;
@@ -42,6 +37,9 @@
     flex: 0 0 5.5%; /* Adjust the width percentage as needed */
     max-width: 5.5%;
   }
+                  /* .checked {
+                    color: orange;
+                  } */
 </style>
   <div style="margin-top: 150px; margin-bottom: 200px;" class=" site-section">
     <div class="container">
@@ -65,53 +63,106 @@
           </h2>
           <p></p>
           <p class="mb-4"><%= products.description %></p>
-          <p><strong class="text-primary h4">₹<%= products.discount_price %> - <s>₹
-                  <%= products.price %>
-                </s></strong></p>
-  
-                <div class="mb-5">
-                  <div class="input-group mb-3" style="max-width: 120px;">
-                      <div class="input-group-prepend">
-                          <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
-                      </div>
-                      <input type="text" class="form-control text-center" value="1" placeholder=""
-                          aria-label="Example text with button addon" aria-describedby="button-addon1">
-                      <div class="input-group-append">
-                          <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
-                      </div>
+
+          <div class="product_sort_info font-xs mb-4">
+            <ul style="list-style: none; ">
+                <li class="mb-10 text-muted"><i class="fa-solid fa-crown"></i> 1 Year Warranty</li>
+                <li class="mb-10 text-muted"><i class="fa-solid fa-rotate"></i> 7 Day Return
+                    Policy</li>
+                <li class="text-muted"><i class="fa-regular fa-credit-card"></i> Cash on Delivery available
+                </li>
+            </ul>
+          </div>
+          <%if( products.discountStatus==true && new Date(products.discountStart) <= new Date() && new Date() <= new Date(products.discountEnd)){
+            const percentageOff = ((products.price - products.discountPrice) / products.price) * 100; %>
+          <p>
+            <strong class="text-dark h4">₹<%= products.discountPrice %></strong>
+            - <s class="text-secondary h6">₹<%= products.price %></s> <span style="font-size: 12px; background-color: rgb(255, 255, 255); " class=" text-success"><%= percentageOff.toFixed(2) %>% Off</span>
+          </p>
+          <% } else { %>
+            <p>
+              <strong class="text-dark h4">₹<%= products.price %></strong>
+            </p>
+          <% } %>
+
+            <% if (products.stock<=0) { %>
+              <div class="text-center">
+                  <a class="text-danger text-decoration-none mt-auto" href="#">Out of Stock</a>
+              </div>
+          <% } else { %>
+          <div class="d-flex">
+            <form id="myForm">
+              <input type="hidden" value="<%= products._id %>"name="productData_id" id="">
+              <div class="mt-2 d-flex detail-extralink">
+                <%  if(!existingCartItem){ %>
+                    <input type="number" name="qty" class="w-25 me-2" value="1" min="1" max="10">
+                  <% } else  {%>
+                    <input type="hidden" name="qty" value="0">
+                  <% }%>
+                  <div class=" product-extra-link2 my-1">
+
+                      <button type="submit" class="btn btn-outline-dark btn-sm btn-product btn-cart"><i class="fa-solid fa-cart-shopping"></i> <%= existingCartItem ? 'Go To Cart' : 'Add To Cart' %></button>
+
+
+                      <button aria-label="Add To Wishlist" class=" btn action-btn hover-up p-3  "
+                          ><i class="fi-rs-heart  "></i></button>
                   </div>
               </div>
-              
-              <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const plusBtn = document.querySelector('.js-btn-plus');
-                    const minusBtn = document.querySelector('.js-btn-minus');
-                    const inputField = document.querySelector('.form-control');
-            
-                    plusBtn.addEventListener('click', function () {
-                        inputField.value = parseInt(inputField.value) + 1;
-                    });
-            
-                    minusBtn.addEventListener('click', function () {
-                        const currentValue = parseInt(inputField.value);
-                        if (currentValue > 1) { // Change the condition to 1 instead of 0
-                            inputField.value = currentValue - 1;
-                        } else {
-                            inputField.value = 1; // Set the value to 1 if it's already 1 or less
-                        }
-                    });
-                });
-            </script>
-          <div class="d-flex">
-            <p><a href="/cart.html" class="buy-now btn btn-sm btn-primary">Buy Now</a></p>
-            <p class="ms-3"><a href="/cart.html" class="buy-now btn btn-sm btn-primary">Add To Cart</a></p>
+            </form>
           </div>
+          <% } %>
 
         </div>
       </div>
     </div>
   </div>
   <script>
+// Function to show toast alert
+function showToast(message, type) {
+    Toastify({
+        text: message,
+        duration: 3000, // Duration in milliseconds
+        gravity: 'bottom', // Position: 'top', 'bottom', 'left', 'right'
+        backgroundColor: type === 'success' ? '#33cc33' : '#ff3333', // Change colors based on success/failure
+    }).showToast();
+}
+
+// Function to handle form submission
+function addcartform(event) {
+    event.preventDefault();
+    const formId = event.target.id; // Get the form ID that triggered the event
+    const productData_id = document.querySelector(`#${formId} [name="productData_id"]`).value;
+    const qty = document.querySelector(`#${formId} [name="qty"]`).value;
+
+    fetch('/cart', {
+        method: 'POST',
+        body: JSON.stringify({ productData_id, qty }),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      
+        if (!data.existing) {
+            if (data.success) {
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message, 'error');
+            }
+        } else {
+            window.location.href = '/cart';
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        showToast('Internal server error', 'error');
+    });
+}
+// Add event listener to your form submission
+document.getElementById('myForm').addEventListener('submit', addcartform);
+
+
     function changeMainImage(imageUrl) {
     const mainImage = document.getElementById('mainImage');
     mainImage.src = `/assets/img/product/${imageUrl}`;
@@ -125,31 +176,3 @@
     });
   </script>
   <%- include('../layouts/footeruser.ejs') %>
-
-  <!-- Footer-->
-  <!-- <footer style="background-color: #000000" class="footer py-3">
-    <div class="container">
-      <div class="row align-items-center">
-        <div style="color: #ffc800" class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
-        <div class="col-lg-4 my-3 my-lg-0">
-          <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800"  href="#!" aria-label="Twitter"><i style="color: black;" class="fab fa-twitter"></i></a>
-          <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="#!" aria-label="Facebook"><i style="color: black;" class="fab fa-facebook-f"></i></a>
-          <a class="btn btn-dark btn-social mx-2" style="background-color: #ffc800" href="#!" aria-label="LinkedIn"><i style="color: black;" class="fab fa-linkedin-in"></i></a>
-        </div>
-        <div class="col-lg-4 text-lg-end">
-          <a style="color: #ffc800" class=" text-decoration-none me-3" href="#!">Privacy Policy</a>
-          <a style="color: #ffc800" class=" text-decoration-none" href="#!">Terms of Use</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/scripts.js"></script>
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  <!-- * *                               SB Forms JS                               * *
-  <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *
-  <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-</body>
-
-</html> -->

@@ -6,7 +6,7 @@
                 <h1 class="mt-4 mb-3">Editing: <%= product.name %></h1>
             </div>
         
-            <form action="/admin/edit-product" method="post" enctype="multipart/form-data" id="product-form" onsubmit="return validateProduct()">
+            <form enctype="multipart/form-data" id="product-form">
                 <section class="content-main">
                     <div class="row">
                         <div class="col-lg-6">
@@ -26,7 +26,6 @@
                                         <select name="category" class="form-control" onchange="displaySubCategory(this.value, '<%= JSON.stringify(category) %>')">
                                             <% category.forEach((cat) => {
                                                 if (cat.is_listed) { %>
-                                                    <!-- <option <% if (cat._id.toString() === product.category.toString()) { %>disabled selected <% } %>><%= cat.name %></option> -->
                                                     <option value="<%= cat._id %>" <% if (cat._id.toString() === product.category.toString()) { %>disabled selected <% } %> >
                                                         <%= cat.name %>
                                                     </option>
@@ -38,11 +37,12 @@
                                     <div class="mb-4" id="subCategoryDiv">
                                         <label for="product_subcategory" class="form-label">Product sub-category</label>
                                         <select name="sub_category" class="form-control" id="subCategorySelect">
+                                            <option value=""></option>
                                             <% if (product.category) {
                                                 const selectedCategory = category.find(cat => cat._id.toString() === product.category.toString());
                                                 if (selectedCategory && selectedCategory.sub_category.length > 0) {
-                                                    selectedCategory.sub_category.forEach((subCat, index) => { %>
-                                                        <option value="<%= subCat %>" <% if (index === parseInt(product.sub_category)) { %>disabled selected <% } %>><%= subCat %></option>
+                                                    selectedCategory.sub_category.forEach((subCat) => { %>
+                                                        <option value="<%= subCat %>" <% if (product.sub_category == subCat) { %>disabled selected <% } %>><%= subCat %></option>
                                                     <% });
                                                 }
                                             } %>
@@ -98,7 +98,12 @@
                                     </div>
                                     <div class="mb-4">
                                         <label for="product_gender" class="form-label">Gender</label>
-                                        <input type="text" name="gender" placeholder="Type here" value="<%= product.gender %>" class="form-control" id="product_gender">
+                                        <select name="gender" class="form-select" id="product_gender">
+                                            <option value="" >Select Gender</option>
+                                            <option value="Men" <%= product.gender === 'Men' ? 'selected disabled' : '' %> >Men</option>
+                                            <option value="Women" <%= product.gender === 'Women' ? 'selected disabled' : '' %> >Women</option>
+                                            <option value="Kids" <%= product.gender === 'Kids' ? 'selected disabled' : '' %> >Kids</option>
+                                        </select>
                                         <div class="error-message" style="color: red;" id="product_gender-error"></div>
                                     </div>
                                     <div class="mb-4">
@@ -146,6 +151,7 @@
                                                 const newlyAddedContainer = document.querySelector('.newly-added-images-container');
 
                                                 if (input.files && input.files.length > 0) {
+                                                    newlyAddedContainer.innerHTML = ''
                                                     for (let i = 0; i < input.files.length; i++) {
                                                         const reader = new FileReader();
                                                         reader.onload = function (e) {
@@ -202,10 +208,21 @@
             subCategoryError.textContent = '';
             return true; // Allow form submission
         }
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('product-form');
-            const allowedFormats = ['image/jpeg', 'image/png', 'image/webp','image/jpg']; 
-            form.addEventListener('submit', function(event) {
+            const allowedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                const formIsValid = validateProductForm(); // Validate the product form
+
+                if (formIsValid) {
+                    await handleProductFormSubmission();
+                }
+            });
+
+            function validateProductForm() {
                 const product_title = document.getElementById("product_title").value.trim();
                 const category = document.querySelector('select[name="category"]').value.trim();
                 const product_price = document.getElementById("product_price").value.trim();
@@ -228,13 +245,13 @@
 
                 let formIsValid = true;
 
-                if (product_title.trim() === "") {
+                if (!(product_title.trim().length >= 2 && /^[a-zA-Z]/.test(product_title.trim()))) {
                     product_title_error.innerHTML = "Please enter product name";
                     formIsValid = false;
                 } else {
                     product_title_error.innerHTML = "";
                 }
-                if (category.trim() === "") {
+                if (category.trim() === "" ) {
                     category_error.innerHTML = "Please select a category";
                     formIsValid = false;
                 } else {
@@ -242,21 +259,25 @@
                         formIsValid = false;
                     }
                     category_error.innerHTML = "";
-                }
-                if (isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0) {
+                } 
+                                              
+                if (isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 1) {
                     product_price_error.innerHTML = "Please enter a valid price";
                     formIsValid = false;
                 } else {
                     product_price_error.innerHTML = "";
                 }
 
-                if (isNaN(product_discount) || product_discount.trim() === "" || parseFloat(product_discount) < 0) {
+                if (isNaN(product_discount) || product_discount.trim() === "" || parseFloat(product_discount) < 1) {
                     product_discount_error.innerHTML = "Please enter a valid discount";
+                    formIsValid = false;
+                } else if (parseFloat(product_discount) >= parseFloat(product_price)) {
+                    product_discount_error.innerHTML = "Discount cannot be equal or greater than product price";
                     formIsValid = false;
                 } else {
                     product_discount_error.innerHTML = "";
                 }
-                if (isNaN(product_quantity) || product_quantity.trim() === "") {
+                if (isNaN(product_quantity) || product_quantity.trim() === "" || parseFloat(product_quantity) < 0) {
                     product_quantity_error.innerHTML = "Please enter product quantity";
                     formIsValid = false;
                 } else {
@@ -274,7 +295,7 @@
                 } else {
                     product_gender_error.innerHTML = "";
                 }
-                if (product_description.trim() === "") {
+                if (!(product_description.trim().length >= 2 && /^[a-zA-Z]/.test(product_description.trim()))) {
                     product_description_error.innerHTML = "Please enter product description";
                     formIsValid = false;
                 } else {
@@ -296,10 +317,55 @@
                         image_error.innerHTML = "";
                     }
                 }
-                if (!formIsValid) {
-                    event.preventDefault(); // Prevent form submission if validation fails
+                return formIsValid;
+            }
+            async function handleProductFormSubmission() {
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(`/admin/edit-product`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Product has been updated',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href='/admin/product'; // Redirect to a suitable page
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: result.message,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6', // Change the color as needed
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while adding the product',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6', // Change the color as needed
+                        confirmButtonText: 'OK',
+                    });
                 }
-            });
+            }
         });
     </script>
 <%- include('../layouts/footeradmin.ejs') %>

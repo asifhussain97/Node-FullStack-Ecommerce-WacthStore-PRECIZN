@@ -1,0 +1,311 @@
+<%- include('../layouts/headeradmin.ejs') %>
+<div id="layoutSidenav_content">
+    <main>
+<section class=" content-main">
+    <div class="content-header">
+        <div>
+            <h5 class="content-title card-title">Order detail</h5>
+            <p>Details for Order ID: 3453012</p>
+        </div>
+    </div>
+    <div class="card">
+        <header class="card-header">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                    <span>
+                        <i class="material-icons md-calendar_today"></i> <b>Wed, Aug 13, 2020, 4:34PM</b>
+                    </span> <br>
+                    <small class="text-muted">Order ID: 3453012</small>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="row mb-50 mt-20 order-info-wrap">
+                <div class="col-md-4">
+                    <article class="icontext align-items-start">
+                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                            <i class="text-primary material-icons md-person"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1">Customer</h6>
+                            <p class="mb-1">
+                                <%= order.user.name %> <br> <%=order.user.mobile %>
+                            </p>
+                            <br>
+                        </div>
+                    </article>
+                </div> 
+                <div class="col-md-4">
+                    <article class="icontext align-items-start">
+                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                            <i class="text-primary material-icons md-local_shipping"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1">Order info</h6>
+                            <p class="mb-1">
+                                Shipping: Fargo express <br>
+                                Pay method:
+                                <%= order.items[0].paymentMethod  %> <br>
+                                Status:
+                                <% let f = 0;
+                                    order.items.forEach(function(item) {
+                                        if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') {
+                                            f = 1;
+                                         }
+                                     });
+                                     if (f === 0) { %>
+                                         Completed
+                                     <% } else { %>
+                                         Pending
+                                     <% } %>
+                            </p>
+                        </div>
+                    </article>
+                </div> 
+                <div class="col-md-4">
+                    <article class="icontext align-items-start">
+                        <span class="icon icon-sm rounded-circle bg-primary-light">
+                            <i class="text-primary material-icons md-place"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1">Deliver to</h6>
+                            <p class="mb-1">
+                                City: <%=order.address.city %>, <%=order.address.street %> <br><%=order.address.houseName %> <br> <%=order.address.pincode %>
+                            </p>
+                        </div>
+                    </article>
+                </div> 
+            </div> 
+            <div class="row">
+                <div class="col-lg-11">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="40%">Product</th>
+                                    <th width="20%">Unit Price</th>
+                                    <th width="20%">Quantity</th>
+                                    <th width="20%">Status</th>
+                                    <th width="20%" class="text-end">Total</th>
+                                    <th width="20%" class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let subtotal=0; order.items.forEach(function(item) { let total=item.product.discount_price * item.quantity; 
+                                    if (item.status!="Cancelled" ) 
+                                {  subtotal +=total;}   %>
+                                        <tr>
+                                            <td>
+                                                <a class="itemside text-decoration-none text-black d-flex" href="#">
+                                                    <div class="left">
+                                                        <img src="/assets/img/product/<%=item.product.image[0]%>"
+                                                        style="width: 40px; height: 40px; border-radius: 5px; border: 1px solid #747474;" class="img-xs" alt="Item">
+                                                    </div>
+                                                    <div class="ms-2 info">
+                                                        <%=item.product.name %>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                ₹<%=item.product.discount_price %>
+                                            </td>
+                                            <td>
+                                                <%=item.quantity %>
+                                            </td>
+                                            <td>
+                                                <%=item.status %>
+                                                
+                                            </td>
+                                            <td class="text-end">
+                                                ₹<%= total %>
+                                            </td>
+                                            <td>
+                                                <%
+                                                if(item.status != 'Delivered'&& item.status != 'Returned' && (item.approve==null || item.approve=='not set') && item.status != 'Cancelled') {%>
+                                                <select id="status_<%= item.product._id %>" onchange="statusChangeConfirm('<%= order._id %>','<%= item.product._id %>')">
+
+                                                    <option value="Confirmed" <%= item.status === 'Shipped' ? 'disabled' : (item.status === 'Confirmed' ? 'selected' : '') %>>Confirmed</option>
+                                                    <option value="Shipped" <%= item.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                                    <option value="Delivered" <%= item.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                                </select>
+                                                <% }else if(item.approve=='pending'){ %>
+                                                    <button type="button" class="btn btn-success" onclick="returnProductconfirm('<%= order._id %>','<%=item.product._id %>')">Approve Return</button>
+                                                <% } else{%>
+                                                    ....
+                                                <% } %>
+
+                                            </td>
+                                            
+                                        </tr>
+                                        <% 
+                                            }) %>
+                                <tr>
+                                    <td colspan="3"></td>
+
+                                    <td colspan="3">
+                                        <article class="float-end">
+                                            <dl class="dlist d-flex">
+                                                <dt>Subtotal:</dt>
+                                                <dd class="ms-2">₹<%= subtotal %></dd>
+                                            </dl>
+                                            <dl class="dlist d-flex">
+                                                <dt>Shipping cost:</dt>
+                                                <dd class="ms-2">₹0.00</dd>
+                                            </dl>
+                                            <dl class="dlist d-flex">
+                                                <dt>Grand total:</dt>
+                                                    <% if(order.coupon){ %>
+                                                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %> </b> (Coupon Applied)</dd>
+                                                    <% } else { %>
+                                                        <dd><b class="ms-2 h6">₹<%= order.totalAmount %></b> </dd>
+                                                    <% } %>
+                                            </dl>
+                                            <dl class="dlist d-flex">
+                                                <dt class="text-muted">Status:</dt>
+                                                <dd>
+                                                    <% let t = 0;
+                                                        order.items.forEach(function(item) {
+                                                            if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.paymentStatus=='Pending') {
+                                                                t = 1;
+                                                            }
+                                                        });
+                                                        if (t === 0) { %>
+                                                            <span class="badge rounded-pill alert-success text-success">Success</span>
+                                                        <% } else { %>
+                                                            <span class="badge rounded-pill alert-success text-secondary">Pending</span>
+                                                        <% } %>
+                                                </dd>
+                                            </dl>
+                                        </article>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive// -->
+                </div> 
+               
+              
+            </div>
+        </div>
+    </div> 
+</section> 
+</main>
+<script>
+    
+    function statusChangeConfirm(id,productId) {
+        const status = document.getElementById(`status_${productId}`).value;
+        if (!status) {
+            alert('Status not recieved');
+            return
+        }
+        Swal.fire({
+            title: "Please Confirm!",
+            text: "You are changing the status",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User clicked "Yes," so proceed with removing the item
+                statusChange(id,productId,status);
+            }
+            else{
+                window.location.reload();
+            }
+        });
+    }
+
+    function statusChange(id,productId,status) {
+
+        const requestData = {
+
+            status,
+           productId
+         };
+
+
+        fetch(`/admin/orderStatusChange?id=${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: "Success",
+                        text: data.message,
+                        icon: "success",
+                        timer: 2000,
+                        timeProgressBar: true,
+                        showConfirmButton: false,
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    alert('Error occurred while canceling order');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error occurred while canceling order');
+            });
+    }
+
+    function returnProductconfirm(id,productId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked "Yes," so proceed with removing the item
+                    returnProduct(id,productId);
+                }
+            });
+        }
+
+        function returnProduct(id,productId) {
+            
+            const requestData = {
+                productId
+            };
+            fetch(`/admin/returnapprove?id=${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Success",
+                            text: data.message,
+                            icon: "success",
+                            timer: 2000,
+                            timeProgressBar: true,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert('Error occurred while canceling order');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error occurred while returning order');
+                });
+        }
+</script>
+<%- include('../layouts/footeradmin.ejs') %>

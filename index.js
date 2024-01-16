@@ -1,8 +1,11 @@
+require('dotenv').config(); // Load environment variables first
+
 const express = require("express");
 const session = require('express-session');
 const mongoose = require("mongoose");
-const config = require("./config/config");
-mongoose.connect("mongodb://127.0.0.1:27017/e-commerce");
+const config = require("./config/config"); // Now require other modules after loading dotenv
+
+mongoose.connect("mongodb+srv://asifhussain8697:Chilluz9747@cluster0.sndtkuk.mongodb.net/e-commerce");
 
 const userRoute = require("./routes/userRoute");
 const adminRoute = require("./routes/adminRoute");
@@ -11,6 +14,7 @@ const path = require("path");
 const app = express();
 
 app.set("view engine", "ejs");
+app.set("views", "./views");
 
 app.use(
   session({
@@ -39,8 +43,14 @@ app.use("/", userRoute);
 //for admin route
 app.use("/admin", adminRoute);
 
+app.use((req, res, next) => {
+  res.status(404).render("./layouts/404Error", { userData: null });
+  next();
+});
+
+
 app.listen(5000, function () {
   console.log(
-    "Server is running...Registration Page at http://localhost:5000/register"
+    "Server is running..."
   );
 });

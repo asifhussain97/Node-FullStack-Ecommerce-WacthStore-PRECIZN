@@ -1,0 +1,98 @@
+<%- include('../layouts/headeruser.ejs') %>      
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+
+<style>
+  body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+  }
+
+  .main {
+      flex-grow: 1;
+  }
+
+  .footer {
+      background-color: #000000;
+      color: #ffc800;
+      width: 100%;
+      flex-shrink: 0;
+  }
+
+  .nav-item .nav-link.active {
+      background-color: rgb(189, 189, 189);
+      /* Change this to the desired color */
+      /* You can add other styling properties as needed */
+  }
+</style>
+<main class="main">
+
+  <section class="pt-150 pb-150">
+    <div class="mb-4">
+      
+      <div class="card mx-3">
+          <table id="datatablesSimple">
+              <thead>
+                  <tr>
+                      <th>Order</th>
+                      <th>Order Date</th>
+                      <th>Delivery Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tfoot>
+                  <tr>
+                      <th>Order</th>
+                      <th>Order Date</th>
+                      <th>Delivery Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+              </tfoot>
+              <tbody>
+                  <% order.forEach(order_data => { %>
+                      <tr>
+                          <td><%= order_data._id %></td>
+                          <td><%= new Date(order_data.orderDate).toLocaleDateString() %></td>
+                          <td><%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
+                          <td>
+                            <% let f = 0;
+                               order_data.items.forEach(function(item) {
+                                   if(item.status !== 'Cancelled' && item.status !== 'Delivered' && item.status !== 'Returned') {
+                                       f = 1;
+                                   }
+                               });
+                               if (f === 0) { %>
+                                   Completed
+                               <% } else { %>
+                                   Pending
+                               <% } %>
+                          </td>
+                          <td><a href="/orderDetails/<%= order_data._id%>"  class="btn btn-primary btn-sm d-block text-decoration-none">View</a></td>
+                      </tr>
+                  <% }); %>
+              </tbody>
+          </table>
+      </div>
+  </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', event => {
+
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            new simpleDatatables.DataTable(datatablesSimple);
+        }
+    });
+
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
+<%- include('../layouts/footeruser.ejs') %>

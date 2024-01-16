@@ -5,7 +5,7 @@
             <div class="p-0 d-flex justify-content-between container-fluid">
                 <h1 class="mt-4 mb-3">Editing: <%= category.name %></h1>
             </div>
-            <form action="/admin/edit-category" method="post" enctype="multipart/form-data" id="category-form" onsubmit="return validateCategory()">
+            <form enctype="multipart/form-data" id="category-form">
                 <section class="content-main">
                     <div class="row">
                         <div class="col-lg-6">
@@ -18,7 +18,11 @@
                                     <div class="mb-4">
                                         <label for="category_name" class="form-label">Category name</label>
                                         <input type="text" name="name" placeholder="Type here" value="<%= category.name %>" class="form-control" id="category_name">
-                                        <div class="error-message" style="color: red;" id="category_name-error"></div>
+                                        <% if (typeof errorMessage !== 'undefined') {%>
+                                            <div class="error-message" style="color: red;" id="category_name-error"><%= errorMessage %></div>
+                                        <%} else{ %>
+                                            <div class="error-message" style="color: red;" id="category_name-error"></div>
+                                        <%} %>
                                     </div>
                                     <div class="row gx-3">
                                         <div class="col-md-12 card mb-4">
@@ -72,26 +76,10 @@
                     </div>
                 </section> <!-- content-main end// -->
             </form>
-            <div style="position: relative; width: 100%;" class="justify-content-center text-center">
-                <% 
-                if (typeof errorMessage !== 'undefined') {
-                %>
-                <p style="position: absolute; transform: translate(-50%, -50%); left: 50%; color: crimson; white-space: nowrap;"><%= errorMessage %></p>
-                <%
-                }
-                %>
-            </div>
         </div>
     </main>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryImageInput = document.getElementById('category_image');
-            const categoryImagePreview = document.getElementById('category_image_preview');
-
-            categoryImageInput.addEventListener('change', function() {
-                displayCategoryImage(this, categoryImagePreview);
-            });
-        });
+        
 
         function displayCategoryImage(input, preview) {
             const file = input.files[0];
@@ -154,7 +142,7 @@
 
             // Validation rules...
             // Check title
-            if (title.trim() === "") {
+            if (!(title.trim().length >= 2 && /^[a-zA-Z]/.test(title.trim()))) {
                 titleError.innerHTML = "Please enter category name";
                 formIsValid = false;
             } else {
@@ -162,7 +150,7 @@
             }
 
             // Check description
-            if (description.trim() === "") {
+            if (!(description.trim().length >= 4 && /^[a-zA-Z]/.test(description.trim()))) {
                 descriptionError.innerHTML = "Please enter description";
                 formIsValid = false;
             } else {
@@ -215,15 +203,87 @@
 
             return formIsValid && subCategoryValid;                
         }
+        
+        
 
+        // Modify Submitcat to accept the event parameter
+        async function Submitcat(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const formIsValid = validateForm('category-form'); // Validate the form
+
+            if (formIsValid) {
+                const form = document.getElementById('category-form');
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(`/admin/edit-category`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Category has been updated',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/admin/category';; // Redirect to a suitable page
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: result.message,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6', // Change the color as needed
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while updating the category',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6', // Change the color as needed
+                    confirmButtonText: 'OK',
+                    });
+                }
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('category-form');
+
+            // Event listener to validate form on submission
             form.addEventListener('submit', function(event) {
                 if (!validateForm('category-form')) {
                     event.preventDefault(); // Prevent form submission if validation fails
                 }
             });
+
+            // Event listener for displaying category image preview
+            const categoryImageInput = document.getElementById('category_image');
+            const categoryImagePreview = document.getElementById('category_image_preview');
+
+            categoryImageInput.addEventListener('change', function() {
+                displayCategoryImage(this, categoryImagePreview);
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('category-form');
+            form.addEventListener('submit', Submitcat); // Attach Submitcat to form submission event
         });
     </script>
+    
 <%- include('../layouts/footeradmin.ejs') %>
 

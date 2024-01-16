@@ -1,131 +1,193 @@
 <%- include('../layouts/headeradmin.ejs') %>      
 
-              <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4 mb-3">Dashboard</h1>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        Daily Sale
-                                    </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-                                </div>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4 mb-3">Dashboard</h1>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-success-light"><i
+                                    class="text-success material-icons md-local_shipping"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Orders</h6> <span>
+                                    <%= totalOrders %>
+                                </span>
+                                <span class="text-sm">
+                                    Total number of orders.
+                                </span>
                             </div>
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Monthly Sale
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Orders
-                            </div>
-                            <div class="card-body">
-                            </div>
-                        </div>
+                        </article>
                     </div>
-                </main>
-                
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-info-light"><i
+                                    class="text-info material-icons md-shopping_basket"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Products</h6> <span>
+                                    <%= totalProducts %>
+                                </span>
+                                <span class="text-sm">
+                                    In <%= totalCategories %> Categories
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-warning-light"><i
+                                    class="text-warning material-icons md-qr_code"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Total Categories</h6> <span>&nbsp; <%= totalCategories
+                                        %></span>
+                                <span class="text-sm">
+                                    In <%= totalCategories %> Categories
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-info-light"><i
+                                    class="text-info material-icons md-shopping_basket"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Monthly earning</h6> <span>$&nbsp; <%=
+                                        monthlyEarningsValue %>
+                                </span>
+                                <span class="text-sm">
+                                    Total monthly earning.
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex">
+                <div class="col-xl-9">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Sale statistics</h5>
+                            <input type="hidden" value="<%= monthlyOrderCounts %>" id="monthlySalesArray" />
+                            <input type="hidden" value="<%= dailyOrderCounts %>" id="dailyOrderArray" />
+
+
+                            <input type="hidden" value="<%= yearlyOrderCounts %>" id="yearlyOrderCounts" />
+
+                            <button class="btn btn-xs   btn btn-sm btn-light font-xs rounded"
+                                onclick="displayChart('Weekly', this)">Weekly</button>
+                            <button class="btn btn-sm btn-light font-xs rounded"
+                                onclick="displayChart('Monthly', this)">Monthly</button>
+                            <button class="btn btn-sm btn-light font-xs rounded"
+                                onclick="displayChart('Yearly', this)">Yearly</button>
+                            <canvas id="myBarChart" height="120px"></canvas>
+                            <canvas id="myChartMonthly" height="120px" style="display: none;"></canvas>
+                            <canvas id="myChartYearly" height="120px" style="display: none;"></canvas>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4 text-center">
+                <header class="card-header">
+                    <h4 class="card-title">Latest orders</h4>
+                </header>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <!-- <table class="table align-middle table-nowrap mb-0"> -->
+                                <table id="datatablesSimple">
+                                    <thead>
+                                        <tr>
+                                            <th>Order</th>
+                                            <th>Order Date</th>
+                                            <th>Delivery Date</th>
+                                            <th>Total</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Order</th>
+                                            <th>Order Date</th>
+                                            <th>Delivery Date</th>
+                                            <th>Total</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <% order.forEach(function(order_data) { %>
+            
+                                            <tr>
+                                                <td>
+                                                    <%= order_data._id %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(order_data.orderDate).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(order_data.deliveryDate).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <%= order_data.totalAmount %>
+                                                </td>
+                                                <td><a href="/admin/orderDetails?id=<%= order_data._id %>"
+                                                        class="btn-small d-block text-decoration-none">View</a></td>
+                                            </tr>
+                                            <% }) %>
+            
+                                    </tbody>
+                                </table>
+                        </div>
+                    </div> <!-- table-responsive end// -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Functions to display respective charts
+        function displayChart(chartType, button) {
+            highlightButton(button);
+
+            if (chartType === 'Weekly') {
+                showChart('myChartWeekly');
+                hideChart('myChartMonthly');
+                hideChart('myChartYearly');
+            } else if (chartType === 'Monthly') {
+                hideChart('myChartWeekly');
+                showChart('myChartMonthly');
+                hideChart('myChartYearly');
+            } else if (chartType === 'Yearly') {
+                hideChart('myChartWeekly');
+                hideChart('myChartMonthly');
+                showChart('myChartYearly');
+            }
+        }
+
+        function showChart(chartId) {
+            document.getElementById(chartId).style.display = 'block';
+        }
+
+        function hideChart(chartId) {
+            document.getElementById(chartId).style.display = 'none';
+        }
+
+        function highlightButton(button) {
+
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => btn.classList.remove('btn-xs'));
+
+            button.classList.add('btn-xs');
+        }
+
+
+    </script>
+
 <%- include('../layouts/footeradmin.ejs') %>
 
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= locals.title %></title>
-  <meta name="description" content="<%= locals.description %>">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-  
-</head>
-<body>
-  
-<div class="card text-left">
-  <div class="card-header">
-      <h3>Welcome, <%= admin.name %></h3>
-  </div>
-  <a href="/admin/dashboard" class="btn btn-primary">Dashboard</a>
-  <div class="card-body">
-    <h5 class="card-title"> Admin Profile</h5>
-    <p class="card-text"> 
-      <table width="50%">
-  
-      <tr>
-          <td>Email</td>
-          <td><%= admin.email %></td>
-      </tr>
-      <tr>
-          <td>Mobile</td>
-          <td><%= admin.mobile %></td>
-      </tr>
-     
-  </table></p>
-  <br>
-    <a href="/admin/logout" class="btn btn-primary">Logout</a>
-  </div>
-  
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  </body>
-  
-  </html> -->
-
-
-  <!-- <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
-                        </ol> -->
-                        <!-- <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Warning Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Success Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->

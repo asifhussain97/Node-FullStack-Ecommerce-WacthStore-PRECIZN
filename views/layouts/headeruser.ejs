@@ -16,6 +16,12 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
   <!-- Core theme CSS (includes Bootstrap)-->
   <link href="/styles.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
   
 </head>
 
@@ -29,21 +35,24 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                <!-- <li class="nav-item"><a class="nav-link" href="#team"></a></li> -->
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <% if (user) { %>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i id="profileicon" class=" fas fa-user fa-fw"></i></a>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i id="profileicon" class="fas fa-bars"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end " style="background-color: black;"  aria-labelledby="navbarDropdown">
-                        <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-heart"></i>&nbsp;Wishlist</a></li>
-                        <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-cart-shopping"></i>&nbsp;Cart</a></li>
+                        <li><a class="nav-link ms-3" href="/profile"><i class="fa-solid fa-user"></i>&nbsp;Profile</a></li>
+                        <li><a class="nav-link ms-3" href="/cart"><i class="fa-solid fa-cart-shopping"></i>&nbsp;Cart</a></li>
+                        <li><a class="nav-link ms-3" href="/orderSuccess"><i class="fa-solid fa-box-open"></i>&nbsp;Orders</a></li>
                         <li><a class="nav-link ms-3" href="#!"><i class="fa-solid fa-gear"></i>&nbsp;Settings</a></li>
                         <hr style="color: white;">
                         <li><a class="nav-link ms-3" href="/logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;Logout</a></li>
                     </ul>
                 </li>
+                <% } else{%>
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                <% }%>
             </ul>
         </div>
     </div>

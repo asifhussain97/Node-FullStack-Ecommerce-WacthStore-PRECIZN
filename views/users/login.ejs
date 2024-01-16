@@ -29,6 +29,20 @@
                         <%
                         }
                         %>
+                        <% if (typeof successmessage !== 'undefined') { %>
+                          <p id="successMessage" style="position: absolute; transform: translate(-50%, -50%); left: 50%; color: rgb(20, 220, 20); font-size: 14px; white-space: nowrap;"><%= successmessage %></p>
+                      <% } %>
+                      
+                      <script>
+                          // Check if the success message exists
+                          const successMessage = document.getElementById('successMessage');
+                          if (successMessage) {
+                              // After 1.5 seconds, hide the success message
+                              setTimeout(function() {
+                                  successMessage.style.display = 'none';
+                              }, 1900);
+                          }
+                      </script>
                       </div>
                       <br>
                       <form action="/login" method="post">
@@ -53,7 +67,7 @@
                           </div>
                       </form>
                       <p style="color: black;" class="mt-4">Don't have an account? <a class="text-decoration-none" href="/register">Sign Up</a></p>
-                      <!-- <p style="color: black;" class="mt-2">go to <a class="text-decoration-none" href="/admin">Admin login</a></p> -->
+                      <a class="text-decoration-none" href="/forgotPassword">Forgot password?</a>
                   </div>
               </div>
               <!-- End Login Form -->
