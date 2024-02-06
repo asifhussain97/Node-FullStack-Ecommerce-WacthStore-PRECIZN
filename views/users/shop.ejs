@@ -223,9 +223,9 @@ body{
                         <div id="productGrid" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5  justify-content-left">
                             <% for (const product of products) { 
                                 if(product.is_listed==true){
-                                %>
-                                <div class="cardsofproduct col mb-4"> <!-- Adjusted mb-4 instead of mb-5 -->
-                                    <div class="card h-100" style="max-width: 230px;"> <!-- Added max-width to limit card size -->
+                                    if(user){%>
+                                        <div class="cardsofproduct col mb-4"> <!-- Adjusted mb-4 instead of mb-5 -->
+                                        <div class="card h-100" style="max-width: 230px;"> <!-- Added max-width to limit card size -->
                                         
                                         <% if (product.image.length > 0) { %>
                                             <a style="height: 200px; margin: 10px;" href="/product-details?id=<%= product._id %>">
@@ -279,7 +279,63 @@ body{
                                         </div>
                                     </div>
                                 </div>
-                            <%} } %>
+                                <%} else { %>
+                                    <div class="cardsofproduct col mb-4"> <!-- Adjusted mb-4 instead of mb-5 -->
+                                        <div class="card h-100" style="max-width: 230px;"> <!-- Added max-width to limit card size -->
+                                        
+                                        <% if (product.image.length > 0) { %>
+                                            <a style="height: 200px; margin: 10px;" href="/login">
+                                                <img style="height: 200px;" class="card-img-top" src="/assets/img/product/<%= product.image[0] %>" alt="..." />
+                                            </a>
+                                        <% } else { %>
+                                            <a style="height: 200px; margin: 10px;" href="/login">
+                                                <img style="height: 200px;" class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                                            </a>
+                                        <% } %>
+                                        <!-- Product details-->
+                                        <div class="card-body pt-0 pb-0 p-3">
+                                            <div class="text-start">
+                                                <!-- Product name-->
+                                                <div style="height: 50px; overflow: hidden; margin-bottom: 0px;">
+                                                    <a class="text-decoration-none" href="/login">
+                                                        <h6 class="text-dark fw-bolder" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; text-overflow: ellipsis;"><%= product.name %></h6>
+                                                    </a>
+                                                </div>
+                                                <!-- Product price-->
+                                                <%if( product.discountStatus==true && new Date(product.discountStart) <= new Date() && new Date() <= new Date(product.discountEnd)){
+                                                    const percentageOff = ((product.price - product.discountPrice) / product.price) * 100; %>
+                                                    <h6 class="text-muted d-inline">₹<%= product.discountPrice %> - <s>₹<%= product.price %></s></h6> <span style="font-size: 12px; background-color: rgb(255, 255, 255); " class=" text-success">-<%= percentageOff.toFixed(2) %>%</span>
+                                                <% } else { %>
+                                                    <h6 class="text-muted">₹<%= product.price %></h6>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        <!-- Product actions-->
+                                        <div class="d-flex justify-content-center card-footer px-4 pt-0 pb-3 border-top-0 bg-transparent">
+
+                                            <% if (product.stock<=0) { %>
+                                                <div class="text-center">
+                                                    <a class="text-danger text-decoration-none mt-auto" href="#">Out of Stock</a>
+                                                </div>
+                                            <% } else { %>
+                                                <div class=" w-100">
+                                                    <form id="myForm<%= product._id %>">                   
+                                                        <div class="product-action-1 float-end show">
+                                                            <input type="hidden" value="<%= product._id %>" name="productData_id"> 
+                                                            <input type="hidden" value="1" name="qty">
+                                                            <button type="submit" aria-label="Add To Cart" class="action-btn btn btn-outline-dark btn-sm hover-up">
+                                                                <i class="fa-solid fa-cart-shopping"></i>                                                        
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                
+                                            <% } %>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <%} } } %>
                         </div>
                     </div>
                 </section>
