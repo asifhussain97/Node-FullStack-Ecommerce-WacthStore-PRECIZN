@@ -39,7 +39,8 @@
                 <div class="row justify-content-center">
                     <div class="scrollable-container">
                         <% for (const product of products) { 
-                            if(product.is_listed){%>
+                            if(product.is_listed){
+                                if(user){%>
                             <div class="card">
                                         <% if (product.image.length > 0) { %>
                                             <a style="height: 200px;" href="/product-details?id=<%= product._id %>">
@@ -65,7 +66,33 @@
                                             </div>
                                         </div>
                             </div>
-                        <% } } %>
+                        <%}else{%>
+                            <div class="card">
+                                <% if (product.image.length > 0) { %>
+                                    <a style="height: 200px;" href="/login">
+                                        <img style="height: 200px;" class="card-img-top" src="/assets/img/product/<%= product.image[0] %>" alt="..." />
+                                    </a>
+                                <% } else { %>
+                                    <a style="height: 200px;" href="/login">
+                                        <img style="height: 200px;" class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                                    </a>
+                                <% } %>
+                                <div class="card-body ps-4 pe-4 pt-4 pb-2">
+                                    <div class="text-center">
+                                        <div style="height: 50px; overflow: hidden; margin-bottom: 20px;">
+                                            <a class="text-decoration-none" href="/login">
+                                                <h5 class="text-dark fw-bolder" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; text-overflow: ellipsis;"><%= product.name %></h5>
+                                            </a>
+                                        </div>
+                                        <% if (product.discount_price) { %>
+                                            <h6 class="text-muted">₹<%= product.discount_price %> - <s>₹<%= product.price %></s></h6>
+                                        <% } else { %>
+                                            <h6 class="text-muted">₹<%= product.price %></h6>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } } } %>
                     </div>
                 </div>
             </div>
@@ -80,7 +107,8 @@
                 <div class="row justify-content-center">
                     <div class="scrollable-container">
                         <%products.sort((a, b) => new Date(b.productAddDate) - new Date(a.productAddDate));  for (const product of products) { 
-                            if(product.is_listed){ %>
+                            if(product.is_listed){ 
+                                if(user){%>
 
                             <div class="card">
                                         <% if (product.image.length > 0) { %>
@@ -107,7 +135,33 @@
                                             </div>
                                         </div>
                             </div>
-                        <%} } %>
+                        <%}else{%>
+                            <div class="card">
+                                <% if (product.image.length > 0) { %>
+                                    <a style="height: 200px;" href="/login">
+                                        <img style="height: 200px;" class="card-img-top" src="/assets/img/product/<%= product.image[0] %>" alt="..." />
+                                    </a>
+                                <% } else { %>
+                                    <a style="height: 200px;" href="/login">
+                                        <img style="height: 200px;" class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                                    </a>
+                                <% } %>
+                                <div class="card-body ps-4 pe-4 pt-4 pb-2">
+                                    <div class="text-center">
+                                        <div style="height: 50px; overflow: hidden; margin-bottom: 20px;">
+                                            <a class="text-decoration-none" href="/login">
+                                                <h5 class="text-dark fw-bolder" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; text-overflow: ellipsis;"><%= product.name %></h5>
+                                            </a>
+                                        </div>
+                                        <% if (product.discount_price) { %>
+                                            <h6 class="text-muted">₹<%= product.discount_price %> - <s>₹<%= product.price %></s></h6>
+                                        <% } else { %>
+                                            <h6 class="text-muted">₹<%= product.price %></h6>
+                                        <% } %>
+                                    </div>
+                                </div>
+                    </div>
+                    <%  }} } %>
                     </div>
                 </div>
             </div>
